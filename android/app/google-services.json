@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "689705725823",
+    "project_id": "milk-bazzar-f8f58",
+    "storage_bucket": "milk-bazzar-f8f58.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689705725823:android:1e11573e5eec0ef1b6344a",
+        "android_client_info": {
+          "package_name": "com.example.milk_bazzar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "689705725823-bqip9lndff2b19o6l428rchcrtsll3qt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.milk_bazzar",
+            "certificate_hash": "50cf9ceaa9ee215daf9f909abcdc228b7fc6763d"
+          }
+        },
+        {
+          "client_id": "689705725823-iore4ifsbkqam1v4san08ofv5kd8s0q9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTCyIfGuCe5dB3yhV1Z8yIkyHSt6mrNxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689705725823-iore4ifsbkqam1v4san08ofv5kd8s0q9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
