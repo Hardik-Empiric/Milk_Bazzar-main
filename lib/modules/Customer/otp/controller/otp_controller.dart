@@ -23,7 +23,7 @@ class OtpController extends GetxController {
       Get.snackbar(LocaleString().correctOTP.tr, LocaleString().loginSuccess.tr,
           backgroundColor: AppColors.darkBlue, colorText: AppColors.white);
       await auth.signInWithCredential(credential);
-      Get.toNamed(AppRoutes.welcome);
+      Get.toNamed(AppRoutes.home);
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       prefs.setBool("Login", true);
