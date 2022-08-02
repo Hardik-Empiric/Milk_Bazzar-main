@@ -64,7 +64,10 @@ class _ModeState extends State<Mode> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    appLogo(width: 0.35, height: 0.20),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: appLogo(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
@@ -121,7 +124,6 @@ class _ModeState extends State<Mode> {
         },
         child: Container(
           height: SizeData.height * 0.055,
-          width: SizeData.width * 0.8,
           margin: const EdgeInsets.only(left: 20, top: 25, right: 20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),

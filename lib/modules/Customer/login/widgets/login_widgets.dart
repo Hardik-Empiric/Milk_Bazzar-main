@@ -67,7 +67,10 @@ class _LoginFormState extends State<LoginForm> {
             physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
-                appLogo(width: 0.35, height: 0.20),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: appLogo(),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: GlobalText(
@@ -146,19 +149,21 @@ class _LoginFormState extends State<LoginForm> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              height: SizeData.height*0.063,
-                              width: SizeData.width*0.15,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Theme.of(context).backgroundColor,
-                                  border: Border.all(
-                                      color: AppColors.borderColor,
-                                      width: 2)),
-                              child: countryCodePicker(context),
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Theme.of(context).backgroundColor,
+                                    border: Border.all(
+                                        color: AppColors.borderColor,
+                                        width: 2)),
+                                child: countryCodePicker(context),
+                              ),
                             ),
-                            SizedBox(
-                              width: SizeData.width * 0.520,
+                            Expanded(
+                              flex: 7,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
                                 validator: (val) {
@@ -295,33 +300,33 @@ class _LoginFormState extends State<LoginForm> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                                width: SizeData.width * 0.57,
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: LocaleString().iAgreeCheckBoxTextPart1.tr,
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: LocaleString().iAgreeCheckBoxTextPart2.tr,
-                                        style: const TextStyle(
-                                          color: AppColors.darkBlue,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                      TextSpan(text: LocaleString().and.tr,),
-                                      TextSpan(
-                                        text: LocaleString().iAgreeCheckBoxTextPart3.tr,
-                                        style: const TextStyle(
-                                          color: AppColors.darkBlue,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ],
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  text: LocaleString().iAgreeCheckBoxTextPart1.tr,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
                                   ),
-                                )),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: LocaleString().iAgreeCheckBoxTextPart2.tr,
+                                      style: const TextStyle(
+                                        color: AppColors.darkBlue,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                    TextSpan(text: LocaleString().and.tr,),
+                                    TextSpan(
+                                      text: LocaleString().iAgreeCheckBoxTextPart3.tr,
+                                      style: const TextStyle(
+                                        color: AppColors.darkBlue,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -373,28 +378,31 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   goToSignIn() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        GlobalText(
-          text: LocaleString().alreadyAccount.tr,
-          color: AppColors.textColor1,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.toNamed(AppRoutes.register);
-          },
-          child: GlobalText(
-            text: LocaleString().singIn.tr,
-            color: AppColors.darkBlue,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GlobalText(
+            text: LocaleString().alreadyAccount.tr,
+            color: AppColors.textColor1,
             fontWeight: FontWeight.w500,
             fontSize: 15,
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(AppRoutes.register);
+            },
+            child: GlobalText(
+              text: LocaleString().singIn.tr,
+              color: AppColors.darkBlue,
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

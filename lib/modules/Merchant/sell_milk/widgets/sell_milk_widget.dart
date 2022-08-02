@@ -10,6 +10,7 @@ import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
 import '../controller/sell_milk_controller.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SellMilk extends StatefulWidget {
   const SellMilk({Key? key}) : super(key: key);
@@ -25,9 +26,20 @@ class _SellMilkState extends State<SellMilk> {
 
   bool isCheck = false;
 
-  Duration duration = const Duration(hours: 7, minutes: 00);
-
   String _selectedMenu = DateTime.now().year.toString();
+
+  final List<String> genderItems = [
+    'Customer 1',
+    'Customer 2',
+    'Customer 3',
+    'Customer 4',
+    'Customer 5',
+    'Customer 6',
+  ];
+
+  String? selectedValue;
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +83,10 @@ class _SellMilkState extends State<SellMilk> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    appLogo(width: 0.35, height: 0.20),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: appLogo(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
@@ -93,23 +108,24 @@ class _SellMilkState extends State<SellMilk> {
                         name: LocaleString().time.tr,
                         msg: LocaleString().selectTime.tr,
                         onTap: () {
-                          _showDialog(CupertinoTimerPicker(
-                            backgroundColor: Theme.of(context).backgroundColor,
-                            mode: CupertinoTimerPickerMode.hm,
-                            initialTimerDuration: duration,
-                            // This is called when the user changes the timer duration.
-                            onTimerDurationChanged: (Duration newDuration) {
-                              setState(() => duration = newDuration);
-                            },
-                          ),
+                          _showDialog(
+                            CupertinoTimerPicker(
+                              backgroundColor:
+                                  Theme.of(context).backgroundColor,
+                              mode: CupertinoTimerPickerMode.hm,
+                              initialTimerDuration:
+                                  sellMilkController.duration.value,
+                              // This is called when the user changes the timer duration.
+                              onTimerDurationChanged: (Duration newDuration) {
+                                sellMilkController.duration.value = newDuration;
+                              },
+                            ),
                           );
-
                         },
                         icon: Icons.date_range),
-                    advancePicker(
+                    selectCustomer(
                       name: LocaleString().customer.tr,
                       msg: LocaleString().selectCustomer.tr,
-                      onTap: () {},
                       icon: Icons.keyboard_arrow_down_rounded,
                     ),
                     sessionPicker(
@@ -117,11 +133,9 @@ class _SellMilkState extends State<SellMilk> {
                       msg: LocaleString().selectSession.tr,
                       icon: Icons.keyboard_arrow_up_rounded,
                     ),
-                    advancePicker(
+                    literPicker(
                       name: LocaleString().liter.tr,
                       msg: LocaleString().selectLiter.tr,
-                      onTap: () {},
-                      icon: Icons.keyboard_arrow_down_rounded,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -156,7 +170,12 @@ class _SellMilkState extends State<SellMilk> {
 
   cancelButton() {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          sellMilkController.liter.value = 0.0;
+          sellMilkController.duration.value =
+              const Duration(hours: 7, minutes: 00);
+          sellMilkController.isMorningSelected.value = true;
+        },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.only(right: 35, left: 35),
           primary: AppColors.lightBlue,
@@ -168,11 +187,129 @@ class _SellMilkState extends State<SellMilk> {
         ));
   }
 
-  advancePicker({
+  selectCustomer({
     required String name,
     required String msg,
-    required Function() onTap,
     required IconData icon,
+  }) {
+    return GestureDetector(
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.only(right: 20, left: 20),
+        child: Stack(
+          alignment: Alignment(-0.9, -0.8),
+          children: [
+            Container(
+              height: SizeData.height * 0.06,
+              width: SizeData.width * 0.8,
+              margin:
+                  const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: AppColors.borderColor, width: 2)),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                // child: Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Padding(
+                //       padding: const EdgeInsets.only(left: 2),
+                //       child: GlobalText(
+                //         text: msg,
+                //         fontWeight: FontWeight.w500,
+                //         fontSize: 12,
+                //         color: AppColors.darkGrey,
+                //       ),
+                //     ),
+                //     CircleAvatar(
+                //       radius: 10,
+                //       backgroundColor: AppColors.borderColor,
+                //       child: Icon(
+                //         icon,
+                //         color: AppColors.blue,
+                //         size: 20,
+                //       ),
+                //     )
+                //   ],
+                // ),
+                child: DropdownButtonFormField2(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  dropdownDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  isExpanded: true,
+                  hint: GlobalText(
+                    text: msg,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                    color: AppColors.darkGrey,
+                  ),
+                  icon: CircleAvatar(
+                    radius: 10,
+                    backgroundColor: AppColors.borderColor,
+                    child: Icon(
+                      icon,
+                      color: AppColors.blue,
+                      size: 20,
+                    ),
+                  ),
+                  iconSize: 30,
+                  buttonHeight: 50,
+                  items: genderItems
+                      .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select customer.';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    //Do something when changing the item if you want.
+                  },
+                  onSaved: (value) {
+                    selectedValue = value.toString();
+                  },
+                ),
+              ),
+            ),
+            Container(
+              color: Theme.of(context).backgroundColor,
+              padding: EdgeInsets.all(4),
+              child: GlobalText(
+                text: name,
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.label,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  timePicker({
+    required name,
+    required msg,
+    required onTap,
+    required icon,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -197,95 +334,17 @@ class _SellMilkState extends State<SellMilk> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 2),
-                      child: GlobalText(
-                        text: msg,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                        color: AppColors.darkGrey,
+                      child: Obx(
+                        () => GlobalText(
+                          text:
+                              "${sellMilkController.duration.value.toString().split(".")[0].split(":")[0]} : ${sellMilkController.duration.value.toString().split(".")[0].split(":")[1]}",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
                     ),
-                    (name != LocaleString().time.tr)
-                        ? CircleAvatar(
-                            radius: 10,
-                            backgroundColor: AppColors.borderColor,
-                            child: Icon(
-                              icon,
-                              color: AppColors.blue,
-                              size: 20,
-                            ),
-                          )
-                        : Icon(
-                            icon,
-                            color: AppColors.darkGrey,
-                            size: 25,
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              color: Theme.of(context).backgroundColor,
-              padding: EdgeInsets.all(4),
-              child: GlobalText(
-                text: name,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color: AppColors.label,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  timePicker({
-    required String name,
-    required String msg,
-    required Function() onTap,
-    required IconData icon,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 20, left: 20),
-        child: Stack(
-          alignment: Alignment(-0.9, -0.8),
-          children: [
-            Container(
-              height: SizeData.height * 0.06,
-              width: SizeData.width * 0.8,
-              margin:
-              const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: AppColors.borderColor, width: 2)),
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2),
-                      child: GlobalText(
-                        text: "${duration.toString().split(".")[0].split(":")[0]} : ${duration.toString().split(".")[0].split(":")[1]}",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    (name != LocaleString().time.tr)
-                        ? CircleAvatar(
-                      radius: 10,
-                      backgroundColor: AppColors.borderColor,
-                      child: Icon(
-                        icon,
-                        color: AppColors.blue,
-                        size: 20,
-                      ),
-                    )
-                        : Icon(
+                    Icon(
                       icon,
                       color: AppColors.darkGrey,
                       size: 25,
@@ -306,6 +365,94 @@ class _SellMilkState extends State<SellMilk> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  literPicker({
+    required String name,
+    required String msg,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20, left: 20),
+      child: Stack(
+        alignment: Alignment(-0.9, -0.8),
+        children: [
+          Container(
+            height: SizeData.height * 0.06,
+            width: SizeData.width * 0.8,
+            margin:
+                const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: AppColors.borderColor, width: 2)),
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, left: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2),
+                    child: Obx(
+                      () => GlobalText(
+                        text: sellMilkController.liter.value.toString(),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 17,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          sellMilkController.liter.value += 0.5;
+                        },
+                        child: CircleAvatar(
+                          radius: 17,
+                          backgroundColor: AppColors.borderColor,
+                          child: Icon(
+                            Icons.add,
+                            color: AppColors.blue,
+                            size: 25,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 15),
+                      GestureDetector(
+                        onTap: () {
+                          if (sellMilkController.liter.value > 0)
+                            sellMilkController.liter.value -= 0.5;
+                        },
+                        child: CircleAvatar(
+                          radius: 17,
+                          backgroundColor: AppColors.borderColor,
+                          child: Icon(
+                            Icons.remove,
+                            color: AppColors.blue,
+                            size: 25,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            color: Theme.of(context).backgroundColor,
+            padding: EdgeInsets.all(4),
+            child: GlobalText(
+              text: name,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: AppColors.label,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -352,21 +499,15 @@ class _SellMilkState extends State<SellMilk> {
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                      (name != LocaleString().time.tr)
-                          ? CircleAvatar(
-                              radius: 10,
-                              backgroundColor: AppColors.borderColor,
-                              child: Icon(
-                                icon,
-                                color: AppColors.blue,
-                                size: 20,
-                              ),
-                            )
-                          : Icon(
-                              icon,
-                              color: AppColors.darkGrey,
-                              size: 25,
-                            ),
+                      CircleAvatar(
+                        radius: 10,
+                        backgroundColor: AppColors.borderColor,
+                        child: Icon(
+                          icon,
+                          color: AppColors.blue,
+                          size: 20,
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -502,20 +643,20 @@ class _SellMilkState extends State<SellMilk> {
     showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) => Container(
-          height: 216,
-          padding: const EdgeInsets.only(top: 6.0),
-          // The Bottom margin is provided to align the popup above the system navigation bar.
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          // Provide a background color for the popup.
-          color: Theme.of(context).backgroundColor,
-          // Use a SafeArea widget to avoid system overlaps.
-          child: SafeArea(
-            top: false,
-            child: child,
-          ),
-        ));
+              height: 216,
+              padding: const EdgeInsets.only(top: 6.0),
+              // The Bottom margin is provided to align the popup above the system navigation bar.
+              margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              // Provide a background color for the popup.
+              color: Theme.of(context).backgroundColor,
+              // Use a SafeArea widget to avoid system overlaps.
+              child: SafeArea(
+                top: false,
+                child: child,
+              ),
+            ));
   }
 
   closeButton() {

@@ -1,33 +1,28 @@
+
 import 'package:flutter/material.dart';
 import 'package:milk_bazzar/utils/app_colors.dart';
 
 import '../../../../utils/app_constants.dart';
-import '../widgets/login_widgets.dart';
+import '../widgets/select_customer_widget.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+
+class SelectCustomerScreen extends StatefulWidget {
+  const SelectCustomerScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SelectCustomerScreen> createState() => _SelectCustomerScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-
-
+class _SelectCustomerScreenState extends State<SelectCustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(SizeData.height.toString());
-    print(SizeData.width.toString());
     SizeData(context);
 
     return Scaffold(
-
-
-
       // resizeToAvoidBottomInset: false,
       body: Stack(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         children: [
           /// BackLayer
           Column(
@@ -48,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
 
           /// FrontLayer
-         const LoginForm(),
+          const SelectCustomer(),
         ],
       ),
     );

@@ -5,7 +5,7 @@ import '../app_constants.dart';
 import '../app_images.dart';
 
 
-appLogo({required double width,required double height}) {
+appLogo() {
 
   return Container(
     decoration:  BoxDecoration(
@@ -21,8 +21,8 @@ appLogo({required double width,required double height}) {
     ),
     child: Image.asset(
       AppImages.appLogo,
-      height: SizeData.height * height,
-      width: SizeData.width * width,
+      height: 125,
+      width: 125,
     ),
   );
 }

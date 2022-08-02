@@ -76,7 +76,10 @@ class _ProfileState extends State<Profile> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    appLogo(width: 0.35, height: 0.20),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: appLogo(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
@@ -234,19 +237,20 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: SizeData.height*0.063,
-                      width: SizeData.width*0.15,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Theme.of(context).backgroundColor,
-                          border: Border.all(
-                              color: AppColors.borderColor,
-                              width: 2)),
-                      child: countryCodePicker(context),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Theme.of(context).backgroundColor,
+                            border: Border.all(
+                                color: AppColors.borderColor,
+                                width: 2)),
+                        child: countryCodePicker(context),
+                      ),
                     ),
-                    SizedBox(
-                      width: SizeData.width * 0.520,
+                    Expanded(
+                      flex: 7,
                       child: TextFormField(
                         keyboardType: TextInputType.number,
                         validator: (val) {
@@ -368,12 +372,10 @@ class _ProfileState extends State<Profile> {
           Get.back();
         },
         child: Container(
-            height: SizeData.height * 0.04,
-            width: SizeData.width * 0.085,
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color:  Theme.of(context).backgroundColor,
+              color: Theme.of(context).backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.blue.withOpacity(0.5),
@@ -383,10 +385,13 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-            child: Icon(
-              Icons.close_rounded,
-              size: 30,
-              color: Theme.of(context).primaryColor,
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Icon(
+                Icons.close_rounded,
+                size: 30,
+                color: Theme.of(context).primaryColor,
+              ),
             )),
       ),
     );

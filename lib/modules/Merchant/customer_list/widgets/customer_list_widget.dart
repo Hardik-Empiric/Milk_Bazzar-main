@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:milk_bazzar/modules/Customer/language/controller/LacaleString.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
-import 'package:milk_bazzar/utils/app_constants.dart';
 import 'package:milk_bazzar/utils/common_widget/global_text.dart';
 
 import '../../../../utils/app_colors.dart';
-import '../../language/controller/LacaleString.dart';
 
 class Searching extends StatefulWidget {
   const Searching({Key? key}) : super(key: key);
@@ -19,49 +18,29 @@ class _SearchingState extends State<Searching> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15, bottom: 15, right: 15),
-      child: Container(
-        child: SizedBox(
-          width: SizeData.width * 0.7,
-          child: TextField(
-            textAlign: TextAlign.center,
-            cursorHeight: 20,
-            cursorColor: Theme.of(context).primaryColor,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.only(top: 5),
-              suffixIcon:  Icon(Icons.mic, color: Theme.of(context).primaryColor),
-              hintText: LocaleString().searchCus.tr,
-              hintStyle: const TextStyle(
-                color: AppColors.darkGrey,
-                fontWeight: FontWeight.w500,
-              ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              prefixIcon: Icon(Icons.search_rounded, color: Theme.of(context).primaryColor),
-            ),
+      padding: const EdgeInsets.only(top: 15, bottom: 15, right: 15,left: 15),
+      child: TextField(
+        textAlign: TextAlign.center,
+        cursorHeight: 20,
+        cursorColor: Theme.of(context).primaryColor,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 5),
+          suffixIcon:  Icon(Icons.mic, color: Theme.of(context).primaryColor),
+          hintText: LocaleString().searchCus.tr,
+          hintStyle: const TextStyle(
+            color: AppColors.darkGrey,
+            fontWeight: FontWeight.w500,
           ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(13),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(13),
+          ),
+
+          prefixIcon: Icon(Icons.search_rounded, color: Theme.of(context).primaryColor),
         ),
       ),
     );
@@ -79,14 +58,14 @@ class _AddPersonState extends State<AddPerson> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 17, bottom: 17),
+      padding: const EdgeInsets.only(top: 17, bottom: 17,right: 15),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).backgroundColor,
           borderRadius: BorderRadius.circular(13),
           border: Border.all(color: AppColors.blue),
         ),
-        width: SizeData.width * 0.1,
+
         child: Transform.scale(
           scale: 0.6,
           child: Image.asset('assets/images/RC.png'),

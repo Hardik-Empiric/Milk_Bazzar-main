@@ -80,7 +80,10 @@ class _OTPVerificationState extends State<OTPVerification> {
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       children: [
-                        appLogo(width: 0.35, height: 0.20),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: appLogo(),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 20, top: 10),
                           child: GlobalText(

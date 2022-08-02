@@ -39,7 +39,7 @@ class _BillState extends State<Bill> {
               ),
               margin: const EdgeInsets.only(top: 7),
               height: SizeData.height * 0.04,
-              width: SizeData.width,
+              // width: SizeData.width,
               alignment: Alignment.center,
               child: GlobalText(
                 text: LocaleString().jaiminPatelVarachha.tr,
@@ -52,7 +52,7 @@ class _BillState extends State<Bill> {
                 color: Theme.of(context).backgroundColor,
               ),
               height: SizeData.height * 0.04,
-              width: SizeData.width,
+              // width: SizeData.width,
               alignment: Alignment.center,
               child: GlobalText(
                 text: LocaleString().billOf.tr,
@@ -194,7 +194,7 @@ class _BillState extends State<Bill> {
         border: Border.all(width: 0.5),
         color: color,
       ),
-      width: SizeData.width,
+      // width: SizeData.width,
       alignment: Alignment.center,
       padding: const EdgeInsets.all(10),
       child: Row(

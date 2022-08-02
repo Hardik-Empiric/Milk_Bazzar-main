@@ -27,7 +27,7 @@ class GlobalText extends StatelessWidget {
         style: TextStyle(
           color: color,
           fontSize: fontSize,
-          fontFamily: 'Graphik',
+          fontFamily: 'MPLUS1',
           fontWeight: fontWeight,
         ),
       ),

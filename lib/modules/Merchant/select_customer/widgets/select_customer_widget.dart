@@ -6,20 +6,20 @@ import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
-import '../../language/controller/LacaleString.dart';
-import '../controller/invoive_controller.dart';
+import '../../../Customer/language/controller/LacaleString.dart';
+import '../controller/select_customer_controller.dart';
 
-class Invoice extends StatefulWidget {
-  const Invoice({Key? key}) : super(key: key);
+class SelectCustomer extends StatefulWidget {
+  const SelectCustomer({Key? key}) : super(key: key);
 
   @override
-  State<Invoice> createState() => _InvoiceState();
+  State<SelectCustomer> createState() => _SelectCustomerState();
 }
 
 enum Menu { current, previous }
 
-class _InvoiceState extends State<Invoice> {
-  final InvoiceController invoiceController = Get.put(InvoiceController());
+class _SelectCustomerState extends State<SelectCustomer> {
+  final SelectCustomerController selectCustomerController = Get.put(SelectCustomerController());
 
   bool isCheck = false;
 
@@ -39,14 +39,14 @@ class _InvoiceState extends State<Invoice> {
         padding: const EdgeInsets.only(top: 100),
         child: Column(
           children: [
-            invoiceDetails(),
+            SelectCustomerDetails(),
           ],
         ),
       ),
     );
   }
 
-  invoiceDetails() {
+  SelectCustomerDetails() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Stack(
@@ -81,7 +81,7 @@ class _InvoiceState extends State<Invoice> {
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
                           color: Theme.of(context).primaryColor,
-                          text: LocaleString().viewInvoiceBill.tr,
+                          text: LocaleString().selectCustomer.tr,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -113,46 +113,46 @@ class _InvoiceState extends State<Invoice> {
       padding: const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 40),
       child: Container(
         color: Theme.of(context).backgroundColor,
-        // color: Colors.pink,
+        height: SizeData.height * 0.055,
         child: DropdownButtonFormField2(
-          // buttonWidth: SizeData.width * 0.8,
+          buttonWidth: SizeData.width * 0.8,
           barrierDismissible: true,
           decoration: InputDecoration(
-            fillColor: Colors.black,
             //Add isDense true and zero Padding.
             //Add Horizontal padding using buttonPadding and Vertical padding by increasing buttonHeight instead of add Padding here so that The whole TextField Button become clickable, and also the dropdown menu open under The whole TextField Button.
             isDense: true,
             contentPadding: EdgeInsets.zero,
             border: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 1, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 1, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 1, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             disabledBorder: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 1, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             errorBorder: OutlineInputBorder(
               borderSide:
-                  const BorderSide(width: 1, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             //Add more decoration as you want here
             //Add label If you want but add hint outside the decoration to be aligned in the button perfectly.
           ),
+          isExpanded: false,
           hint: GlobalText(
-            text: invoiceController.selectedValue.value,
+            text: selectCustomerController.selectedValue.value,
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.w600,
             fontSize: 13,
@@ -172,7 +172,7 @@ class _InvoiceState extends State<Invoice> {
             fontSize: 13,
           ),
           iconSize: 30,
-          buttonHeight: SizeData.height * 0.055,
+          buttonHeight: 60,
           buttonPadding: const EdgeInsets.only(left: 20, right: 10),
           dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
@@ -192,7 +192,7 @@ class _InvoiceState extends State<Invoice> {
             //Do something when changing the item if you want.
           },
           onSaved: (value) {
-            invoiceController.selectedValue.value = value.toString();
+            selectCustomerController.selectedValue.value = value.toString();
           },
         ),
       ),
@@ -244,18 +244,18 @@ class _InvoiceState extends State<Invoice> {
             setState(() {
               _selectedMenu = item.name.toString();
               if (_selectedMenu == 'current') {
-                invoiceController.isPreviousSelected.value = false;
+                selectCustomerController.isPreviousSelected.value = false;
 
-                invoiceController.isCurrentSelected.value = true;
-                if (invoiceController.isCurrentSelected.value) {
-                  invoiceController.isPreviousSelected.value = false;
+                selectCustomerController.isCurrentSelected.value = true;
+                if (selectCustomerController.isCurrentSelected.value) {
+                  selectCustomerController.isPreviousSelected.value = false;
                 }
               } else {
-                invoiceController.isCurrentSelected.value = false;
+                selectCustomerController.isCurrentSelected.value = false;
 
-                invoiceController.isPreviousSelected.value = true;
-                if (invoiceController.isPreviousSelected.value) {
-                  invoiceController.isCurrentSelected.value = false;
+                selectCustomerController.isPreviousSelected.value = true;
+                if (selectCustomerController.isPreviousSelected.value) {
+                  selectCustomerController.isCurrentSelected.value = false;
                 }
               }
             });
@@ -278,23 +278,24 @@ class _InvoiceState extends State<Invoice> {
                               ),
                               activeColor: AppColors.checkYearColor,
                               checkColor: AppColors.background,
-                              value: invoiceController.isCurrentSelected.value,
+                              value: selectCustomerController.isCurrentSelected.value,
                               onChanged: (value) {
                                 setState(() {
                                   _selectedMenu = Menu.current.name;
                                 });
-                                invoiceController.isCurrentSelected.value =
+                                selectCustomerController.isCurrentSelected.value =
                                     value!;
-                                if (invoiceController.isCurrentSelected.value) {
-                                  invoiceController.isPreviousSelected.value =
+                                if (selectCustomerController.isCurrentSelected.value) {
+                                  selectCustomerController.isPreviousSelected.value =
                                       false;
                                 }
+                                Get.back();
                               },
                             ),
                           ),
                         ),
                         GlobalText(
-                          text: invoiceController.currentYear.toString(),
+                          text: selectCustomerController.currentYear.toString(),
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).primaryColor,
                           fontSize: 14,
@@ -320,24 +321,26 @@ class _InvoiceState extends State<Invoice> {
                               ),
                               activeColor: AppColors.checkYearColor,
                               checkColor: AppColors.background,
-                              value: invoiceController.isPreviousSelected.value,
+                              value: selectCustomerController.isPreviousSelected.value,
                               onChanged: (value) {
                                 setState(() {
                                   _selectedMenu = Menu.previous.name;
                                 });
-                                invoiceController.isPreviousSelected.value =
+                                selectCustomerController.isPreviousSelected.value =
                                     value!;
-                                if (invoiceController
+                                if (selectCustomerController
                                     .isPreviousSelected.value) {
-                                  invoiceController.isCurrentSelected.value =
+                                  selectCustomerController.isCurrentSelected.value =
                                       false;
                                 }
+                                Get.back();
+
                               },
                             ),
                           ),
                         ),
                         GlobalText(
-                          text: invoiceController.previousYear.toString(),
+                          text: selectCustomerController.previousYear.toString(),
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).primaryColor,
                           fontSize: 14,
@@ -355,9 +358,11 @@ class _InvoiceState extends State<Invoice> {
       padding: const EdgeInsets.all(15),
       child: GestureDetector(
         onTap: () {
-          Get.back();
+
         },
         child: Container(
+            height: SizeData.height * 0.04,
+            width: SizeData.width * 0.085,
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -371,13 +376,10 @@ class _InvoiceState extends State<Invoice> {
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Icon(
-                Icons.close_rounded,
-                size: 30,
-                color: Theme.of(context).primaryColor,
-              ),
+            child: Icon(
+              Icons.close_rounded,
+              size: 30,
+              color: Theme.of(context).primaryColor,
             )),
       ),
     );
@@ -392,7 +394,7 @@ class _InvoiceState extends State<Invoice> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () {
-          Get.toNamed(AppRoutes.generateBill);
+
         },
         child: GlobalText(
           text: LocaleString().done.tr,

@@ -29,10 +29,10 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               height: SizeData.height * 0.09,
               color: Theme.of(context).backgroundColor,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Searching(),
-                  AddPerson(),
+                  Expanded(child: Searching(),flex: 9,),
+                  Expanded(child: AddPerson(),flex: 2,),
                 ],
               ),
             ),

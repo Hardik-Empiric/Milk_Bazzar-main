@@ -63,7 +63,7 @@ class _WelcomeState extends State<Welcome> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    appLogo(width: 0.35, height: 0.20),
+                    Padding(padding: EdgeInsets.all(10),child: appLogo(),),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
@@ -83,7 +83,7 @@ class _WelcomeState extends State<Welcome> {
                     ),
                     fields(msg: LocaleString().invoiceBill.tr,navigatorPageName: AppRoutes.invoice),
                     fields(msg: LocaleString().settings.tr,navigatorPageName: AppRoutes.settings),
-                    doneButton(),
+                    // doneButton(),
                   ],
                 ),
               ),
@@ -102,15 +102,13 @@ class _WelcomeState extends State<Welcome> {
 
       },
       child: Container(
-        height: SizeData.height * 0.055,
-        width: SizeData.width * 0.8,
         margin: const EdgeInsets.all(20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: AppColors.borderColor, width: 2)),
         alignment: Alignment.center,
         child: Padding(
-          padding: const EdgeInsets.only(right: 10, left: 10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

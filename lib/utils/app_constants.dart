@@ -11,8 +11,20 @@ class SizeData {
 
   SizeData(BuildContext context){
 
-    width = MediaQuery.of(context).size.width;
-    height = MediaQuery.of(context).size.height;
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    if(isPortrait)
+      {
+        width = MediaQuery.of(context).size.width;
+        height = MediaQuery.of(context).size.height;
+
+      }
+    else
+      {
+        height = MediaQuery.of(context).size.width;
+      }
+
+
 
   }
 

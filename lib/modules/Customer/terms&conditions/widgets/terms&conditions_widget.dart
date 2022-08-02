@@ -65,4 +65,5 @@ class _TermsConditionsState extends State<TermsConditions> {
       ),
     );
   }
+
 }

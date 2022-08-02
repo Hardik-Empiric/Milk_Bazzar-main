@@ -6,7 +6,6 @@ import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
 import '../../language/controller/LacaleString.dart';
 
-
 class SplashView extends StatefulWidget {
   const SplashView({Key? key}) : super(key: key);
 
@@ -21,7 +20,10 @@ class _SplashViewState extends State<SplashView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          appLogo(height: 0.3, width: 0.4),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: appLogo(),
+          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 25),
             child: GlobalText(

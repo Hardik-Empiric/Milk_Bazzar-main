@@ -30,7 +30,6 @@ class _SettingsState extends State<Settings> {
       child: Padding(
         padding: const EdgeInsets.only(top: 100),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             SettingsDetails(),
           ],
@@ -66,7 +65,10 @@ class _SettingsState extends State<Settings> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    appLogo(width: 0.35, height: 0.20),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: appLogo(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
@@ -115,6 +117,39 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  closeButton() {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: GestureDetector(
+        onTap: () {
+          Get.back();
+        },
+        child: Container(
+            margin: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Theme.of(context).backgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.blue.withOpacity(0.5),
+                  offset: const Offset(0, 0),
+                  spreadRadius: 0,
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Icon(
+                Icons.close_rounded,
+                size: 30,
+                color: Theme.of(context).primaryColor,
+              ),
+            )),
+      ),
+    );
+  }
+
   normalFields({required String msg, required String navigatorPageName}) {
     return GestureDetector(
       onTap: () async {
@@ -131,8 +166,7 @@ class _SettingsState extends State<Settings> {
 
       },
       child: Container(
-        height: SizeData.height * 0.055,
-        width: SizeData.width * 0.8,
+        height: SizeData.height * 0.06,
         margin: (msg == AppTexts.logout)
             ? const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 0)
             : const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 15),
@@ -188,7 +222,6 @@ class _SettingsState extends State<Settings> {
         children: [
           Container(
             height: SizeData.height * 0.06,
-            width: SizeData.width * 0.8,
             margin:
                 const EdgeInsets.only(left: 20, right: 20, bottom: 15, top: 15),
             decoration: BoxDecoration(
@@ -233,38 +266,6 @@ class _SettingsState extends State<Settings> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  closeButton() {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: GestureDetector(
-        onTap: () {
-          Get.back();
-        },
-        child: Container(
-            height: SizeData.height * 0.04,
-            width: SizeData.width * 0.085,
-            margin: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.blue.withOpacity(0.5),
-                  offset: const Offset(0, 0),
-                  spreadRadius: 0,
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: Icon(
-              Icons.close_rounded,
-              size: 30,
-              color: Theme.of(context).primaryColor,
-            )),
       ),
     );
   }

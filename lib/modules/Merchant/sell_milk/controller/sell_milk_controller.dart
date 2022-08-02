@@ -17,28 +17,14 @@ class SellMilkController extends GetxController {
   RxString morningSession = 'Morning'.obs;
   RxString eveningSession = 'Evening'.obs;
 
+
+
   RxBool isMorningSelected = true.obs;
   RxBool isEveningSelected = false.obs;
 
+  RxDouble liter = 0.0.obs;
+
+  Rx<Duration> duration = const Duration(hours: 7, minutes: 00).obs;
+
+
 }
-
-
-final List<String> monthItems = [
-  LocaleString().jan.tr,
-  LocaleString().feb.tr,
-  LocaleString().mar.tr,
-  LocaleString().apr.tr,
-  LocaleString().may.tr,
-  LocaleString().jun.tr,
-  LocaleString().jul.tr,
-  LocaleString().aug.tr,
-  LocaleString().sep.tr,
-  LocaleString().oct.tr,
-  LocaleString().nov.tr,
-  LocaleString().dec.tr,
-];
-
-
-
-
-final List<String> yearItems = [];

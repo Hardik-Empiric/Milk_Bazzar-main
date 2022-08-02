@@ -82,7 +82,10 @@ class _LanguageState extends State<Language> {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    appLogo(width: 0.35, height: 0.20),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: appLogo(),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
@@ -172,7 +175,6 @@ class _LanguageState extends State<Language> {
         },
         child: Container(
           height: SizeData.height * 0.055,
-          width: SizeData.width * 0.8,
           margin: const EdgeInsets.only(left: 20, top: 25, right: 20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -224,8 +226,6 @@ class _LanguageState extends State<Language> {
           Get.back();
         },
         child: Container(
-            height: SizeData.height * 0.04,
-            width: SizeData.width * 0.085,
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -239,10 +239,13 @@ class _LanguageState extends State<Language> {
                 ),
               ],
             ),
-            child: Icon(
-              Icons.close_rounded,
-              size: 30,
-              color: Theme.of(context).primaryColor,
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Icon(
+                Icons.close_rounded,
+                size: 30,
+                color: Theme.of(context).primaryColor,
+              ),
             )),
       ),
     );

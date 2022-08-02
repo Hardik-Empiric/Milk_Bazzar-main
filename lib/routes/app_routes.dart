@@ -15,5 +15,6 @@ class AppRoutes {
   static const generateBill = '/generateBill';
   static const home = '/home';
   static const sellMilk = '/sellMilk';
+  static const selectCustomer = '/selectCustomer';
 
 }

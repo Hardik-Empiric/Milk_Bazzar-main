@@ -149,6 +149,10 @@ class LocaleString extends Translations {
   String addMilkButtonText = "Add Milk";
   String cancelButtonText = "Cancel";
 
+  String allEnglishDigits  = "0 1 2 3 4 5 6 7 8 9";
+  String allGujaratiDigits = "૦ ૧ ૨ ૩ ૪ ૫ ૬ ૭ ૮ ૯";
+  String allHindiDigits    = "० १ २ ३ ४ ५ ६ ७ ८ ९";
+
   String termsAndConditions =
       "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de Finibus Bonorum et Malorum' (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, 'Lorem ipsum dolor sit amet..', comes from a line in section 1.10.32.The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from 'de Finibus Bonorum et Malorum' by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.";
 
@@ -365,7 +369,7 @@ class LocaleString extends Translations {
           iAgreeCheckBoxTextPart2: " ગોપનીયતા નીતિ",
           iAgreeCheckBoxTextPart3: " સેવાની શરતો",
           termsAndConditions:
-              "લોકપ્રિય માન્યતાથી વિપરીત, લોરેમ ઇપ્સમ એ ફક્ત રેન્ડમ ટેક્સ્ટ નથી. તે 45 બીસીના શાસ્ત્રીય લેટિન સાહિત્યના ટુકડામાં મૂળ ધરાવે છે, જે તેને 2000 વર્ષથી વધુ જૂનું બનાવે છે. વર્જિનિયામાં હેમ્પડન-સિડની કૉલેજના લેટિન પ્રોફેસર રિચાર્ડ મેકક્લિન્ટોકે લોરેમ ઇપ્સમ પેસેજમાંથી એક વધુ અસ્પષ્ટ લેટિન શબ્દ, કોન્સેકટુર, શોધી કાઢ્યો અને શાસ્ત્રીય સાહિત્યમાં આ શબ્દના ટાંકીને જોતાં, અસંદિગ્ધ સ્ત્રોતની શોધ કરી. લોરેમ ઇપ્સમ 45 બીસીમાં લખાયેલ સિસેરો દ્વારા 'ડી ફિનિબસ બોનોરમ એટ માલોરમ' (ધ એક્સ્ટ્રીમ્સ ઓફ ગુડ એન્ડ એવિલ) ના વિભાગ 1.10.32 અને 1.10.33માંથી આવે છે. આ પુસ્તક નૈતિકતાના સિદ્ધાંત પરનો એક ગ્રંથ છે, જે પુનરુજ્જીવન દરમિયાન ખૂબ જ લોકપ્રિય છે. Lorem Ipsum ની પ્રથમ પંક્તિ, 'Lorem ipsum dolor sit amet..', વિભાગ 1.10.32 માં એક પંક્તિમાંથી આવે છે. 1500 ના દાયકાથી ઉપયોગમાં લેવાતા લોરેમ ઇપ્સમનો પ્રમાણભૂત ભાગ નીચે રસ ધરાવતા લોકો માટે પુનઃઉત્પાદિત કરવામાં આવ્યો છે. Cicero દ્વારા 'de Finibus Bonorum et Malorum' ના વિભાગો 1.10.32 અને 1.10.33 પણ તેમના ચોક્કસ મૂળ સ્વરૂપમાં પુનઃઉત્પાદિત કરવામાં આવ્યા છે, તેની સાથે એચ. રેકહામ દ્વારા 1914ના અનુવાદના અંગ્રેજી સંસ્કરણો પણ છે.",
+              "લોકપ્રિય માન્યતાથી વિપરીત, લોરેમ ઇપ્સમ એ ફક્ત રેન્ડમ ટેક્સ્ટ નથી. તે 45 બીસીના શાસ્ત્રીય લેટિન સાહિત્યના ટુકડામાં મૂળ ધરાવે છે, જે તેને ૨૦૦૦ વર્ષથી વધુ જૂનું બનાવે છે. વર્જિનિયામાં હેમ્પડન-સિડની કૉલેજના લેટિન પ્રોફેસર રિચાર્ડ મેકક્લિન્ટોકે લોરેમ ઇપ્સમ પેસેજમાંથી એક વધુ અસ્પષ્ટ લેટિન શબ્દ, કોન્સેકટુર, શોધી કાઢ્યો અને શાસ્ત્રીય સાહિત્યમાં આ શબ્દના ટાંકીને જોતાં, અસંદિગ્ધ સ્ત્રોતની શોધ કરી. લોરેમ ઇપ્સમ 45 બીસીમાં લખાયેલ સિસેરો દ્વારા 'ડી ફિનિબસ બોનોરમ એટ માલોરમ' (ધ એક્સ્ટ્રીમ્સ ઓફ ગુડ એન્ડ એવિલ) ના વિભાગ 1.10.32 અને 1.10.33માંથી આવે છે. આ પુસ્તક નૈતિકતાના સિદ્ધાંત પરનો એક ગ્રંથ છે, જે પુનરુજ્જીવન દરમિયાન ખૂબ જ લોકપ્રિય છે. Lorem Ipsum ની પ્રથમ પંક્તિ, 'Lorem ipsum dolor sit amet..', વિભાગ 1.10.32 માં એક પંક્તિમાંથી આવે છે. 1500 ના દાયકાથી ઉપયોગમાં લેવાતા લોરેમ ઇપ્સમનો પ્રમાણભૂત ભાગ નીચે રસ ધરાવતા લોકો માટે પુનઃઉત્પાદિત કરવામાં આવ્યો છે. Cicero દ્વારા 'de Finibus Bonorum et Malorum' ના વિભાગો 1.10.32 અને 1.10.33 પણ તેમના ચોક્કસ મૂળ સ્વરૂપમાં પુનઃઉત્પાદિત કરવામાં આવ્યા છે, તેની સાથે એચ. રેકહામ દ્વારા 1914ના અનુવાદના અંગ્રેજી સંસ્કરણો પણ છે.",
           jan: "જાન્યુઆરી",
           feb: "ફેબ્રુઆરી",
           mar: "માર્ચ",
@@ -381,14 +385,14 @@ class LocaleString extends Translations {
           searchCus: "ગ્રાહક શોધો",
           ronald: "રોનાલ્ડ રિચાર્ડ્સ",
           ronaldMonth: "માર્ચની કુલ રકમ છે ",
-          ronaldAmount: "2,500",
+          ronaldAmount: "૨,૫૦૦",
           jaiminPatelVarachha: "જૈમિન પટેલ/વરાછા",
-          billOf: "બિલ ઓફ: એપ્રિલ / 2022",
+          billOf: "બિલ ઓફ: એપ્રિલ / ૨૦૨૨",
           date: "તારીખ",
           morning: "સવાર",
           evening: "સાંજ",
           cowMilk: "ગાયનું દૂધ :-",
-          cowMilkAmount: "79L * ₹ 58 = ₹ 458",
+          cowMilkAmount: "૭૯L * ₹ ૫૮ = ₹ 458",
           totalLiter: "કુલ લિટર:-",
           totalLiterAmount: "79L",
           pMonth: "પાછલા મહિનાનો બાકી:-",
