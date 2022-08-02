@@ -6,6 +6,8 @@ import 'package:get/route_manager.dart';
 import 'package:milk_bazzar/modules/Merchant/home/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../models/login_models/loginModels.dart';
+import '../../../../routes/app_routes.dart';
 import '../../login/screens/login_screen.dart';
 import '../../welcome_screen/screens/welcome_screen.dart';
 
@@ -21,7 +23,9 @@ class SplashController extends GetxController {
 
     Timer(const Duration(seconds: 2), () {
       prefs.getBool("Login") ?? false
-          ? Get.offAll(const HomeScreen())
+          ? (LoginModels.phone == 8460711716)
+              ? Get.offAllNamed(AppRoutes.home)
+              : Get.offAllNamed(AppRoutes.welcome)
           : Get.offAll(const LoginScreen());
     });
   }
