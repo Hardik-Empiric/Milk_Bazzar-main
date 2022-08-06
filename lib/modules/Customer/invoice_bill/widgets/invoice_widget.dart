@@ -90,7 +90,7 @@ class _InvoiceState extends State<Invoice> {
                       child: GlobalText(
                         text: LocaleString().selectMonthYearText.tr,
                         fontSize: 14,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

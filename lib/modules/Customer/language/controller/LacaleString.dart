@@ -131,6 +131,7 @@ class LocaleString extends Translations {
   String received = "Received Amount:-";
   String receivedAmount = "₹ 582";
   String total = "Total Amount:-";
+  String totalText = "Total";
   String totalAmount = "₹ 4582";
   String sendToJaiminPatel = "Send To Jaimin Patel";
 
@@ -149,9 +150,19 @@ class LocaleString extends Translations {
   String addMilkButtonText = "Add Milk";
   String cancelButtonText = "Cancel";
 
-  String allEnglishDigits  = "0 1 2 3 4 5 6 7 8 9";
+  String allEnglishDigits = "0 1 2 3 4 5 6 7 8 9";
   String allGujaratiDigits = "૦ ૧ ૨ ૩ ૪ ૫ ૬ ૭ ૮ ૯";
-  String allHindiDigits    = "० १ २ ३ ४ ५ ६ ७ ८ ९";
+  String allHindiDigits = "० १ २ ३ ४ ५ ६ ७ ८ ९";
+
+  String addCustomer = "Add Customer";
+  String addCustomerMsg = "Please fill the details And Create Customer";
+
+  String customerCategory = "Select Customer's Bill Category";
+  String pendingAmount = "Pending Amount Monthly";
+  String allCustomerBill = "All Customer Bill";
+  String totalPending = "Total 5 Customer";
+  String totalCustomer = "Total 50 Customer";
+  String amount = "Total 50 Customer";
 
   String termsAndConditions =
       "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de Finibus Bonorum et Malorum' (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, 'Lorem ipsum dolor sit amet..', comes from a line in section 1.10.32.The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from 'de Finibus Bonorum et Malorum' by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.";
@@ -275,8 +286,6 @@ class LocaleString extends Translations {
           total: "Total Amount:-",
           totalAmount: "₹ 4582",
           sendToJaiminPatel: "Send To Jaimin Patel",
-
-
           sellMilk: "Sell Milk",
           milkDataAdd: "Please Add Milk's Data Carefully",
           time: "Time",
@@ -291,6 +300,16 @@ class LocaleString extends Translations {
           selectLiter: "Select Your Liter",
           addMilkButtonText: "Add Milk",
           cancelButtonText: "Cancel",
+
+
+          addCustomer: "Add Customer",
+          addCustomerMsg: "Please fill the details And Create Customer",
+
+          customerCategory : "Select Customer's Bill Category",
+          pendingAmount : "Pending Amount Monthly",
+          allCustomerBill : "All Customer Bill",
+          totalPending : "Total 5 Customer",
+          totalCustomer : "Total 50 Customer",
         },
         'gu_IN': {
           changeLan: 'ભાષા બદલો',
@@ -330,6 +349,7 @@ class LocaleString extends Translations {
           mobileNumberText: "મોબાઇલ નંબર",
           continueText: "ચાલુ રાખો",
           settingText: "સેટિંગ્સ",
+          totalText : "કુલ",
           sellMilText: "દૂધ વેચો",
           updateProfileText: "પ્રોફાઇલ અપડેટ કરો",
           editProfileText: "છબી સંપાદિત કરો",
@@ -404,7 +424,6 @@ class LocaleString extends Translations {
           total: "કુલ રકમ:-",
           totalAmount: "₹ 4582",
           sendToJaiminPatel: "જૈમીન પટેલને મોકલો",
-
           sellMilk: "દૂધ વેચો",
           milkDataAdd: "કૃપા કરીને દૂધનો ડેટા કાળજીપૂર્વક ઉમેરો",
           time: "સમય",
@@ -419,6 +438,15 @@ class LocaleString extends Translations {
           selectLiter: "તમારું લિટર પસંદ કરો",
           addMilkButtonText: "દૂધ ઉમેરો",
           cancelButtonText: "રદ કરો",
+
+          addCustomer: "ગ્રાહક ઉમેરો",
+          addCustomerMsg: "કૃપા કરીને વિગતો ભરો અને ગ્રાહક બનાવો",
+
+          customerCategory : "ગ્રાહકની બિલ કેટેગરી પસંદ કરો",
+          pendingAmount : "માસિક બાકી રકમ",
+          allCustomerBill : "બધા ગ્રાહક બિલ",
+          totalPending : "કુલ 5 ગ્રાહક",
+          totalCustomer : "કુલ 50 ગ્રાહક",
         },
         'hi_IN': {
           changeLan: 'भाषा बदलो',
@@ -532,7 +560,6 @@ class LocaleString extends Translations {
           total: "कुल राशि:-",
           totalAmount: "₹ 4582",
           sendToJaiminPatel: "जैमिन पटेल को भेजें",
-
           sellMilk: "दूध बेचें",
           milkDataAdd: "कृपया दूध का डेटा सावधानी से जोड़ें",
           time: "समय",
@@ -547,6 +574,16 @@ class LocaleString extends Translations {
           selectLiter: "अपने लीटर का चयन करें",
           addMilkButtonText: "दूध डालें",
           cancelButtonText: "रद्द करना",
+
+          addCustomer: "ग्राहक जोड़ें",
+          addCustomerMsg: "कृपया विवरण भरें और ग्राहक बनाएं",
+
+          customerCategory : "ग्राहक की बिल श्रेणी चुनें",
+          pendingAmount : "लंबित राशि मासिक",
+          allCustomerBill : "सभी ग्राहक बिल",
+          totalPending : "कुल 5 ग्राहक",
+          totalCustomer : "कुल 50 ग्राहक",
+          totalText : "कुल",
         },
       };
 }

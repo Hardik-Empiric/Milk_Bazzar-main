@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:milk_bazzar/modules/Merchant/add_customer/screens/add_customer_screen.dart';
 import 'package:milk_bazzar/modules/Merchant/sell_milk/screens/sell_milk_screen.dart';
 import '../modules/Customer/generate_bill/screens/generate_bill_screen.dart';
 import '../modules/Customer/invoice_bill/screens/invoice_screen.dart';
@@ -12,6 +13,7 @@ import '../modules/Customer/settings/screens/settings_screen.dart';
 import '../modules/Customer/splash/screens/splash_screen.dart';
 import '../modules/Customer/terms&conditions/screens/terms&conditions_screen.dart';
 import '../modules/Customer/welcome_screen/screens/welcome_screen.dart';
+import '../modules/Merchant/customer_category/screens/customer_category_screen.dart';
 import '../modules/Merchant/customer_list/screens/customer_list_screen.dart';
 import '../modules/Merchant/home/screens/home_screen.dart';
 import '../modules/Merchant/select_customer/screens/select_customer_screen.dart';
@@ -44,6 +46,8 @@ class AppPages{
     GetPage(name: AppRoutes.home, page: () => const HomeScreen()),
     GetPage(name: AppRoutes.sellMilk, page: () => const SellMilkScreen()),
     GetPage(name: AppRoutes.selectCustomer, page: () => const SelectCustomerScreen()),
+    GetPage(name: AppRoutes.addCustomer, page: () => const AddCustomerScreen()),
+    GetPage(name: AppRoutes.customerCategory, page: () => const CustomerCategoryScreen()),
 
   ];
 

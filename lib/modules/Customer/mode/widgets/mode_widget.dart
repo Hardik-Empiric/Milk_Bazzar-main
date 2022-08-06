@@ -81,7 +81,7 @@ class _ModeState extends State<Mode> {
                       child: GlobalText(
                         text: LocaleString().selectMode.tr,
                         fontSize: 13,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -158,7 +158,7 @@ class _ModeState extends State<Mode> {
                   text: msg,
                   color: (modeController.i.value == index)
                       ? Theme.of(context).primaryColor
-                      : AppColors.textColor1,
+                      : Theme.of(context).hintColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),

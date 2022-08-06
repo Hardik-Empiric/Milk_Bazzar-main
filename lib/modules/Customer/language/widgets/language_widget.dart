@@ -100,7 +100,7 @@ class _LanguageState extends State<Language> {
                       child: GlobalText(
                         text: LocaleString().changeLan.tr,
                         fontSize: 13,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -206,7 +206,7 @@ class _LanguageState extends State<Language> {
                   text: msg,
                   color: (languageController.i.value == index)
                       ? Theme.of(context).primaryColor
-                      : AppColors.textColor1,
+                      : Theme.of(context).hintColor,
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),

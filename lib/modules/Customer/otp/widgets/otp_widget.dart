@@ -96,7 +96,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                             text:
                             "${LocaleString().sentMsg.tr} +91 ${LoginModels.phone}",
                             fontSize: 14,
-                            color: AppColors.textColor1,
+                            color: Theme.of(context).hintColor,
                             fontWeight: FontWeight.w500),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -188,7 +188,7 @@ class _OTPVerificationState extends State<OTPVerification> {
                           children: [
                             GlobalText(
                               text: LocaleString().didNotReceiveOtp.tr,
-                              color: AppColors.textColor1,
+                              color: Theme.of(context).hintColor,
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
                             ),

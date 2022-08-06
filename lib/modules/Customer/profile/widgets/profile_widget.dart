@@ -93,7 +93,7 @@ class _ProfileState extends State<Profile> {
                       child: GlobalText(
                         text: LocaleString().profileMsg.tr,
                         fontSize: 13,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -204,8 +204,8 @@ class _ProfileState extends State<Profile> {
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 10),
                     labelText: LocaleString().fullName.tr,
-                    labelStyle: const TextStyle(
-                        color: AppColors.label,
+                    labelStyle:  TextStyle(
+                        color: Theme.of(context).hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
@@ -238,8 +238,9 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: Container(
+
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Theme.of(context).backgroundColor,
@@ -249,8 +250,9 @@ class _ProfileState extends State<Profile> {
                         child: countryCodePicker(context),
                       ),
                     ),
+                    Expanded(flex: 1,child: Container(),),
                     Expanded(
-                      flex: 7,
+                      flex: 12,
                       child: TextFormField(
                         keyboardType: TextInputType.number,
                         validator: (val) {
@@ -282,8 +284,8 @@ class _ProfileState extends State<Profile> {
                                       .pendingAmountColor,
                                   width: 2),
                             ),
-                            labelStyle: const TextStyle(
-                                color: AppColors.label,
+                            labelStyle:  TextStyle(
+                                color: Theme.of(context).hintColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: "Graphik"),
@@ -337,8 +339,8 @@ class _ProfileState extends State<Profile> {
                           color: AppColors.pendingAmountColor,
                           width: 2),
                     ),
-                    labelStyle: const TextStyle(
-                        color: AppColors.label,
+                    labelStyle:  TextStyle(
+                        color: Theme.of(context).hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),

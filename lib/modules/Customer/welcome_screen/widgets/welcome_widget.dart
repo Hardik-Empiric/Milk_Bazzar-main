@@ -77,7 +77,7 @@ class _WelcomeState extends State<Welcome> {
                       child: GlobalText(
                         text: LocaleString().welcomeMsg.tr,
                         fontSize: 14,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

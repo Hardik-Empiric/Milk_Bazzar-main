@@ -3,13 +3,11 @@ import 'dart:ui';
 
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/route_manager.dart';
-import 'package:milk_bazzar/modules/Merchant/home/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../models/login_models/loginModels.dart';
 import '../../../../routes/app_routes.dart';
 import '../../login/screens/login_screen.dart';
-import '../../welcome_screen/screens/welcome_screen.dart';
 
 class SplashController extends GetxController {
   Future<void> changePage() async {
@@ -22,10 +20,11 @@ class SplashController extends GetxController {
             : Get.updateLocale(const Locale('en', 'US'));
 
     Timer(const Duration(seconds: 2), () {
+      print(LoginModels.phone);
       prefs.getBool("Login") ?? false
           ? (LoginModels.phone == 8460711716)
               ? Get.offAllNamed(AppRoutes.home)
-              : Get.offAllNamed(AppRoutes.welcome)
+              : Get.offAllNamed(AppRoutes.home)
           : Get.offAll(const LoginScreen());
     });
   }

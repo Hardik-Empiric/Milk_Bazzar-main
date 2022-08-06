@@ -10,13 +10,14 @@ class AppColors {
   static Color lightBlue = Colors.lightBlue.shade50;
   static Color canvasColor = Colors.black12;
   static const white = Color(0xffffffff);
+  static const red = Colors.red;
   static const homeBackground = Color(0xffE5E5E5);
   static const label = Color(0xff434B5E);
   static const containerColor = Color(0xffF0F0F0);
   static const textColor = Color(0xff000000);
   static const darkBlue = Color(0xff2073F9);
   static const darkGrey = Color(0xff949AA8);
-  static const textColor1 = Color(0xff949aa8);
+  static const textColor1 = Color(0xffF6F6F6);
   static const borderColor = Color(0xffE6E8F4);
   static const hintTextColor = Color(0xffC4C4D0);
   static const textColor2 = Color(0xff8D8E92);

@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:milk_bazzar/modules/Merchant/customer_list/controller/customer_list_controller.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
@@ -28,14 +29,6 @@ class _SellMilkState extends State<SellMilk> {
 
   String _selectedMenu = DateTime.now().year.toString();
 
-  final List<String> genderItems = [
-    'Customer 1',
-    'Customer 2',
-    'Customer 3',
-    'Customer 4',
-    'Customer 5',
-    'Customer 6',
-  ];
 
   String? selectedValue;
 
@@ -100,7 +93,7 @@ class _SellMilkState extends State<SellMilk> {
                       child: GlobalText(
                         text: LocaleString().milkDataAdd.tr,
                         fontSize: 14,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -197,7 +190,7 @@ class _SellMilkState extends State<SellMilk> {
       child: Padding(
         padding: const EdgeInsets.only(right: 20, left: 20),
         child: Stack(
-          alignment: Alignment(-0.9, -0.8),
+          alignment: Alignment(-0.9, -0.95),
           children: [
             Container(
               height: SizeData.height * 0.06,
@@ -210,29 +203,6 @@ class _SellMilkState extends State<SellMilk> {
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                // child: Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Padding(
-                //       padding: const EdgeInsets.only(left: 2),
-                //       child: GlobalText(
-                //         text: msg,
-                //         fontWeight: FontWeight.w500,
-                //         fontSize: 12,
-                //         color: AppColors.darkGrey,
-                //       ),
-                //     ),
-                //     CircleAvatar(
-                //       radius: 10,
-                //       backgroundColor: AppColors.borderColor,
-                //       child: Icon(
-                //         icon,
-                //         color: AppColors.blue,
-                //         size: 20,
-                //       ),
-                //     )
-                //   ],
-                // ),
                 child: DropdownButtonFormField2(
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -263,11 +233,11 @@ class _SellMilkState extends State<SellMilk> {
                   ),
                   iconSize: 30,
                   buttonHeight: 50,
-                  items: genderItems
+                  items: contactLists
                       .map((item) => DropdownMenuItem<String>(
-                            value: item,
+                            value: item.fullName,
                             child: Text(
-                              item,
+                              item.fullName,
                               style: const TextStyle(
                                 fontSize: 14,
                               ),
@@ -296,7 +266,7 @@ class _SellMilkState extends State<SellMilk> {
                 text: name,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color: AppColors.label,
+                color: Theme.of(context).hintColor,
               ),
             ),
           ],
@@ -316,7 +286,7 @@ class _SellMilkState extends State<SellMilk> {
       child: Padding(
         padding: const EdgeInsets.only(right: 20, left: 20),
         child: Stack(
-          alignment: Alignment(-0.9, -0.8),
+          alignment: Alignment(-0.9, -0.95),
           children: [
             Container(
               height: SizeData.height * 0.06,
@@ -360,7 +330,7 @@ class _SellMilkState extends State<SellMilk> {
                 text: name,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color: AppColors.label,
+                color: Theme.of(context).hintColor,
               ),
             ),
           ],
@@ -376,7 +346,7 @@ class _SellMilkState extends State<SellMilk> {
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: Stack(
-        alignment: Alignment(-0.9, -0.8),
+        alignment: Alignment(-0.9, -0.95),
         children: [
           Container(
             height: SizeData.height * 0.06,
@@ -449,7 +419,7 @@ class _SellMilkState extends State<SellMilk> {
               text: name,
               fontWeight: FontWeight.w500,
               fontSize: 14,
-              color: AppColors.label,
+              color: Theme.of(context).hintColor,
             ),
           ),
         ],
@@ -472,7 +442,7 @@ class _SellMilkState extends State<SellMilk> {
           ),
           position: PopupMenuPosition.under,
           child: Stack(
-            alignment: Alignment(-0.9, -0.8),
+            alignment: Alignment(-0.9, -0.95),
             children: [
               Container(
                 height: SizeData.height * 0.06,
@@ -519,7 +489,7 @@ class _SellMilkState extends State<SellMilk> {
                   text: name,
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: AppColors.label,
+                  color: Theme.of(context).hintColor,
                 ),
               ),
             ],

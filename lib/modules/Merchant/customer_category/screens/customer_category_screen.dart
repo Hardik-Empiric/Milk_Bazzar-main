@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:milk_bazzar/utils/app_colors.dart';
 
 import '../../../../utils/app_constants.dart';
-import '../widgets/add_customer_widget.dart';
+import '../widgets/customer_category_widget.dart';
 
 
-class AddCustomerScreen extends StatefulWidget {
-  const AddCustomerScreen({Key? key}) : super(key: key);
+class CustomerCategoryScreen extends StatefulWidget {
+  const CustomerCategoryScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
+  State<CustomerCategoryScreen> createState() => _CustomerCategoryScreenState();
 }
 
-class _AddCustomerScreenState extends State<AddCustomerScreen> {
+class _CustomerCategoryScreenState extends State<CustomerCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +36,14 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               Expanded(
                 flex: 10,
                 child: Container(
-                  color:  Theme.of(context).backgroundColor,
+                  color: Theme.of(context).backgroundColor,
                 ),
               ),
             ],
           ),
 
           /// FrontLayer
-          const AddCustomer(),
+          const CustomerCategory(),
         ],
       ),
     );

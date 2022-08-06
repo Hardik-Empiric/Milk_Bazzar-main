@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:milk_bazzar/modules/Merchant/customer_list/controller/customer_list_controller.dart';
+import 'package:milk_bazzar/modules/Merchant/home/controller/home_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
@@ -10,18 +12,21 @@ import '../../../../utils/app_constants.dart';
 import '../../../../utils/app_text.dart';
 import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
-import '../../language/controller/LacaleString.dart';
-import '../controller/settings_controller.dart';
+import '../../../Customer/language/controller/LacaleString.dart';
+import '../controller/customer_category_controller.dart';
+import '../controller/customer_category_controller.dart';
+import 'customer_category_widget.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({Key? key}) : super(key: key);
+class CustomerCategory extends StatefulWidget {
+  const CustomerCategory({Key? key}) : super(key: key);
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<CustomerCategory> createState() => _CustomerCategoryState();
 }
 
-class _SettingsState extends State<Settings> {
-  final SettingsController settingsController = Get.put(SettingsController());
+class _CustomerCategoryState extends State<CustomerCategory> {
+  final CustomerCategoryController customerCategoryController = Get.put(CustomerCategoryController());
+  final HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +36,14 @@ class _SettingsState extends State<Settings> {
         padding: const EdgeInsets.only(top: 100),
         child: Column(
           children: [
-            SettingsDetails(),
+            CustomerCategoryDetails(),
           ],
         ),
       ),
     );
   }
 
-  SettingsDetails() {
+  CustomerCategoryDetails() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Stack(
@@ -73,39 +78,29 @@ class _SettingsState extends State<Settings> {
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
                           color: Theme.of(context).primaryColor,
-                          text: LocaleString().settings.tr,
+                          text: LocaleString().selectCustomer.tr,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: GlobalText(
-                        text: LocaleString().settingHintText.tr,
+                        text: LocaleString().customerCategory.tr,
                         fontSize: 14,
                         color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     advanceFields(
-                        alignment: const Alignment(-0.75, -0.95),
-                        name: LocaleString().profile.tr,
-                        msg: LocaleString().profileMsg.tr,
-                        navigatorPageName: AppRoutes.profile),
+                        alignment: const Alignment(-0.55, -0.8),
+                        name: LocaleString().pendingAmount.tr,
+                        msg: "${LocaleString().totalText.tr} ${contactLists.length} ${LocaleString().customer.tr}",
+                        navigatorPageName: AppRoutes.customerList),
                     advanceFields(
-                        alignment: const Alignment(-0.65, -0.95),
-                        name: LocaleString().termsCondition.tr,
-                        msg: LocaleString().termsCondition.tr,
-                        navigatorPageName: AppRoutes.termsConditions),
-                    advanceFields(
-                        alignment: const Alignment(-0.75, -0.95),
-                        name: LocaleString().language.tr,
-                        msg: LocaleString().languageMsg.tr,
-                        navigatorPageName: AppRoutes.language),
-                    normalFields(
-                        msg: LocaleString().mode.tr, navigatorPageName: AppRoutes.mode),
-                    normalFields(
-                        msg: LocaleString().logout.tr,
-                        navigatorPageName: AppRoutes.register),
+                        alignment: const Alignment(-0.65, -0.8),
+                        name: LocaleString().allCustomerBill.tr,
+                        msg: "${LocaleString().totalText.tr} ${contactLists.length} ${LocaleString().customer.tr}",
+                        navigatorPageName: AppRoutes.customerList),
                   ],
                 ),
               ),
@@ -150,64 +145,6 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  normalFields({required String msg, required String navigatorPageName}) {
-    return GestureDetector(
-      onTap: () async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-
-        if(msg == LocaleString().logout.tr)
-          {
-            prefs.setBool("Login", false);
-          }
-
-        (msg == LocaleString().logout.tr)
-            ? Get.offAllNamed(navigatorPageName)
-            : Get.toNamed(navigatorPageName);
-
-      },
-      child: Container(
-        height: SizeData.height * 0.06,
-        margin: (msg == AppTexts.logout)
-            ? const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 0)
-            : const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 15),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            border:
-                Border.all(color: AppColors.borderColor, width: 2)),
-        alignment: Alignment.center,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10, left: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GlobalText(
-                text: msg,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                color:Theme.of(context).primaryColor,
-              ),
-              (msg == LocaleString().mode.tr)
-                  ? const CircleAvatar(
-                      radius: 10,
-                      backgroundColor: AppColors.borderColor,
-                      child: Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: AppColors.blue,
-                        size: 12,
-                      ),
-                    )
-                  : const Icon(
-                      Icons.logout,
-                      color: AppColors.blue,
-                      size: 25,
-                    ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   advanceFields(
       {required String name,
       required Alignment alignment,
@@ -240,17 +177,15 @@ class _SettingsState extends State<Settings> {
                     fontSize: 12,
                     color: Theme.of(context).primaryColor,
                   ),
-                  (name != AppTexts.profile)
-                      ? const CircleAvatar(
+                  const CircleAvatar(
                           radius: 10,
                           backgroundColor: AppColors.borderColor,
                           child: Icon(
-                            Icons.arrow_forward_ios_rounded,
+                            Icons.keyboard_arrow_down_rounded,
                             color: AppColors.blue,
-                            size: 12,
+                            size: 20,
                           ),
-                        )
-                      : Container(),
+                        ),
                 ],
               ),
             ),

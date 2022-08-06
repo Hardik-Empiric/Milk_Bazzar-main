@@ -87,7 +87,7 @@ class _RegisterState extends State<Register> {
                 GlobalText(
                     text: LocaleString().conCode.tr,
                     fontSize: 14,
-                    color: AppColors.textColor1,
+                    color: Theme.of(context).hintColor,
                     fontWeight: FontWeight.w500),
 
                 Padding(
@@ -102,8 +102,9 @@ class _RegisterState extends State<Register> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              flex: 3,
+                              flex: 5,
                               child: Container(
+
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Theme.of(context).backgroundColor,
@@ -113,8 +114,9 @@ class _RegisterState extends State<Register> {
                                 child: countryCodePicker(context),
                               ),
                             ),
+                            Expanded(flex: 1,child: Container(),),
                             Expanded(
-                              flex: 7,
+                              flex: 12,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
                                 validator: (val) {
@@ -146,8 +148,8 @@ class _RegisterState extends State<Register> {
                                               .pendingAmountColor,
                                           width: 2),
                                     ),
-                                    labelStyle: const TextStyle(
-                                        color: AppColors.label,
+                                    labelStyle:  TextStyle(
+                                        color: Theme.of(context).hintColor,
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
                                         fontFamily: "Graphik"),
@@ -221,7 +223,7 @@ class _RegisterState extends State<Register> {
         children: [
           GlobalText(
             text: LocaleString().haveNotAnAccount.tr,
-            color: AppColors.textColor1,
+            color: Theme.of(context).hintColor,
             fontWeight: FontWeight.w500,
             fontSize: 15,
           ),

@@ -90,7 +90,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
                       child: GlobalText(
                         text: LocaleString().selectMonthYearText.tr,
                         fontSize: 14,
-                        color: AppColors.textColor1,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -394,7 +394,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () {
-
+              Get.toNamed(AppRoutes.generateBill);
         },
         child: GlobalText(
           text: LocaleString().done.tr,

@@ -31,7 +31,7 @@ class _TermsConditionsState extends State<TermsConditions> {
         child: Column(
           children: [
             closeButton(),
-            GlobalText(text: LocaleString().termsCondition.tr,fontSize: 20,fontWeight: FontWeight.bold),
+            GlobalText(text: LocaleString().termsCondition.tr,fontSize: 20,fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor,),
             Padding(
               padding: const EdgeInsets.only(top: 20,right: 5,left: 5),
               child: GlobalText(

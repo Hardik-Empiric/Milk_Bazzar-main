@@ -16,29 +16,21 @@ class OtpController extends GetxController {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  verifyOTP({required String vid, smsCode}) async {
+  verifyOTP({required String vid, required String smsCode}) async {
 
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: vid, smsCode: smsCode);
 
-    await auth.signInWithCredential(credential).then((value) async {
-      Get.snackbar(LocaleString().correctOTP.tr, LocaleString().loginSuccess.tr,
-          backgroundColor: AppColors.darkBlue, colorText: AppColors.white);
-      await auth.signInWithCredential(credential);
+    await auth.signInWithCredential(credential);
 
-      print(LoginModels.phone.toString());
-      if(LoginModels.phone == 8460711716)
-        {
-          Get.offAllNamed(AppRoutes.home);
+    Get.snackbar(LocaleString().correctOTP.tr, LocaleString().loginSuccess.tr,
+        backgroundColor: AppColors.darkBlue, colorText: AppColors.white);
 
-        }
-      else if(LoginModels.phone == 8160273716)
-        {
-          Get.offAllNamed(AppRoutes.welcome);
+    Get.offAllNamed(AppRoutes.home);
 
-        }
-      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      prefs.setBool("Login", true);
-    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool("Login", true);
+
   }
 }

@@ -25,11 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Obx(
       ()=> Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){},
-          backgroundColor: Theme.of(context).backgroundColor,
-          child: Image.asset('assets/icons/addContact.png',scale: 17),
-        ),
+
         backgroundColor: Theme.of(context).backgroundColor,
         body: pages[homeController.index.value],
         bottomNavigationBar: Container(

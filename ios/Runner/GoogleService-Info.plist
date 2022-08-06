@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>689705725823-q3s41cqvueutd92it3sds7j7cg2tqu35.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.689705725823-q3s41cqvueutd92it3sds7j7cg2tqu35</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>689705725823-bqip9lndff2b19o6l428rchcrtsll3qt.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAubQqQsDlrz01ApffkYBqs9-ndiVJD8lA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>689705725823</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.milkBazzar</string>
+	<key>PROJECT_ID</key>
+	<string>milk-bazzar-f8f58</string>
+	<key>STORAGE_BUCKET</key>
+	<string>milk-bazzar-f8f58.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:689705725823:ios:4e383199167a29fab6344a</string>
+</dict>
+</plist>

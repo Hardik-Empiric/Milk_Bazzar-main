@@ -10,6 +10,8 @@ class RegisterController extends GetxController{
 
   sendOtp({required String phone}) async {
 
+    print("send OTP Code Start");
+
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '+91$phone',
       timeout: const Duration(seconds: 60),
@@ -31,6 +33,9 @@ class RegisterController extends GetxController{
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
     );
+
+    print("send OTP Code End");
+
 
   }
 
