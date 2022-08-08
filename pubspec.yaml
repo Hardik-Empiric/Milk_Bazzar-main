@@ -36,12 +36,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^3.0.1
   flutter_svg: ^1.0.3
-  firebase_core: ^1.19.1
-  firebase_analytics: ^9.1.12
-  firebase_storage: ^10.2.15
-  cloud_firestore: ^3.1.14
+  firebase_core:
+  firebase_analytics:
+  firebase_storage:
+  cloud_firestore:
 #  firebase_crashlytics: ^2.8.4
-  firebase_auth: ^3.4.1
+  firebase_auth:
   get: ^4.3.8
   intl: ^0.17.0
   responsive_builder: ^0.4.1

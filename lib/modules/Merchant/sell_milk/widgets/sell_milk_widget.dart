@@ -30,7 +30,6 @@ class _SellMilkState extends State<SellMilk> {
   String _selectedMenu = DateTime.now().year.toString();
 
 
-  String? selectedValue;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -153,7 +152,26 @@ class _SellMilkState extends State<SellMilk> {
 
   addMilkButton() {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          addMilks.add(
+            AddMilk(
+                date: DateTime.now().day.toString(),
+                month: DateTime.now().month.toString(),
+                year: DateTime.now().year.toString(),
+                time: sellMilkController.duration.value.toString(),
+                customerName:  sellMilkController.customerName.value,
+                session: _selectedMenu.toString(),
+                liter: sellMilkController.liter.value.toString()),
+          );
+
+          print(addMilks[0].date);
+          print(addMilks[0].month);
+          print(addMilks[0].year);
+          print(addMilks[0].time);
+          print(addMilks[0].customerName);
+          print(addMilks[0].session);
+          print(addMilks[0].liter);
+        },
         style: ElevatedButton.styleFrom(
             padding: EdgeInsets.only(right: 30, left: 30)),
         child: GlobalText(
@@ -252,9 +270,7 @@ class _SellMilkState extends State<SellMilk> {
                   },
                   onChanged: (value) {
                     //Do something when changing the item if you want.
-                  },
-                  onSaved: (value) {
-                    selectedValue = value.toString();
+                    sellMilkController.customerName.value = value.toString();
                   },
                 ),
               ),

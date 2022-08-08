@@ -5,6 +5,7 @@ class LoginModels {
   static String name = '';
   static int? phone;
   static String? address;
+  static String imagePath = '';
   static bool? isChecked;
   static bool? yearChecked;
   static int? otp;

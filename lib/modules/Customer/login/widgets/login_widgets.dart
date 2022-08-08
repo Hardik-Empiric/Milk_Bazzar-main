@@ -1,4 +1,4 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../../models/login_models/loginModels.dart';
@@ -29,6 +29,27 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
+  List numbers = [];
+
+  getList() async {
+    var len = await FirebaseFirestore.instance
+        .collection('customers')
+        .get();
+
+    print(len.docs.length);
+    for (var docs in len.docs) {
+      Map<String, dynamic> data = docs.data();
+      numbers.add(data["number"]);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -51,7 +72,7 @@ class _LoginFormState extends State<LoginForm> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).backgroundColor,
-          boxShadow:  [
+          boxShadow: [
             BoxShadow(
               color: AppColors.shadow,
               offset: const Offset(0, 0),
@@ -74,7 +95,7 @@ class _LoginFormState extends State<LoginForm> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: GlobalText(
-                    color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).primaryColor,
                       text: LocaleString().getStartedText.tr,
                       fontSize: 24,
                       fontWeight: FontWeight.bold),
@@ -106,7 +127,7 @@ class _LoginFormState extends State<LoginForm> {
                             LoginModels.name = val!;
                           },
                           controller: fullNameController,
-                          style:  TextStyle(
+                          style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.w500,
                               fontFamily: "Graphik"),
@@ -114,7 +135,7 @@ class _LoginFormState extends State<LoginForm> {
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 10),
                               labelText: LocaleString().fullName.tr,
-                              labelStyle:  TextStyle(
+                              labelStyle: TextStyle(
                                   color: Theme.of(context).hintColor,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
@@ -122,8 +143,7 @@ class _LoginFormState extends State<LoginForm> {
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(
-                                    color:
-                                        AppColors.pendingAmountColor,
+                                    color: AppColors.pendingAmountColor,
                                     width: 2),
                               ),
                               focusedBorder: OutlineInputBorder(
@@ -134,8 +154,7 @@ class _LoginFormState extends State<LoginForm> {
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(
-                                    color: AppColors.borderColor,
-                                    width: 2),
+                                    color: AppColors.borderColor, width: 2),
                               ),
                               hintText: LocaleString().enterYourFullName.tr,
                               hintStyle: const TextStyle(
@@ -152,7 +171,6 @@ class _LoginFormState extends State<LoginForm> {
                             Expanded(
                               flex: 5,
                               child: Container(
-
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     color: Theme.of(context).backgroundColor,
@@ -162,7 +180,10 @@ class _LoginFormState extends State<LoginForm> {
                                 child: countryCodePicker(context),
                               ),
                             ),
-                            Expanded(flex: 1,child: Container(),),
+                            Expanded(
+                              flex: 1,
+                              child: Container(),
+                            ),
                             Expanded(
                               flex: 12,
                               child: TextFormField(
@@ -171,6 +192,10 @@ class _LoginFormState extends State<LoginForm> {
                                   if (val!.isEmpty) {
                                     return LocaleString().errorPhone.tr;
                                   }
+                                  else if(numbers.contains(val))
+                                    {
+                                      return "Number is Already register...";
+                                    }
                                   return null;
                                 },
                                 onSaved: (val) {
@@ -192,11 +217,10 @@ class _LoginFormState extends State<LoginForm> {
                                     errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
                                       borderSide: const BorderSide(
-                                          color: AppColors
-                                              .pendingAmountColor,
+                                          color: AppColors.pendingAmountColor,
                                           width: 2),
                                     ),
-                                    labelStyle:  TextStyle(
+                                    labelStyle: TextStyle(
                                         color: Theme.of(context).hintColor,
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
@@ -204,8 +228,7 @@ class _LoginFormState extends State<LoginForm> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
                                       borderSide: const BorderSide(
-                                          color: AppColors.blue,
-                                          width: 2),
+                                          color: AppColors.blue, width: 2),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
@@ -248,11 +271,10 @@ class _LoginFormState extends State<LoginForm> {
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(
-                                    color:
-                                        AppColors.pendingAmountColor,
+                                    color: AppColors.pendingAmountColor,
                                     width: 2),
                               ),
-                              labelStyle:  TextStyle(
+                              labelStyle: TextStyle(
                                   color: Theme.of(context).hintColor,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
@@ -265,8 +287,7 @@ class _LoginFormState extends State<LoginForm> {
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 borderSide: const BorderSide(
-                                    color: AppColors.borderColor,
-                                    width: 2),
+                                    color: AppColors.borderColor, width: 2),
                               ),
                               hintText: LocaleString().enterHomeAddress.tr,
                               hintStyle: const TextStyle(
@@ -286,8 +307,7 @@ class _LoginFormState extends State<LoginForm> {
                                 scale: 1.5,
                                 child: Checkbox(
                                   side: const BorderSide(
-                                      width: 1,
-                                      color: AppColors.borderColor),
+                                      width: 1, color: AppColors.borderColor),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
                                   ),
@@ -304,21 +324,28 @@ class _LoginFormState extends State<LoginForm> {
                             Expanded(
                               child: RichText(
                                 text: TextSpan(
-                                  text: LocaleString().iAgreeCheckBoxTextPart1.tr,
+                                  text:
+                                      LocaleString().iAgreeCheckBoxTextPart1.tr,
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: LocaleString().iAgreeCheckBoxTextPart2.tr,
+                                      text: LocaleString()
+                                          .iAgreeCheckBoxTextPart2
+                                          .tr,
                                       style: const TextStyle(
                                         color: AppColors.darkBlue,
                                         decoration: TextDecoration.underline,
                                       ),
                                     ),
-                                    TextSpan(text: LocaleString().and.tr,),
                                     TextSpan(
-                                      text: LocaleString().iAgreeCheckBoxTextPart3.tr,
+                                      text: LocaleString().and.tr,
+                                    ),
+                                    TextSpan(
+                                      text: LocaleString()
+                                          .iAgreeCheckBoxTextPart3
+                                          .tr,
                                       style: const TextStyle(
                                         color: AppColors.darkBlue,
                                         decoration: TextDecoration.underline,
@@ -344,6 +371,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     onPressed: () async {
                       if (_globalFromKey.currentState!.validate()) {
+
                         _globalFromKey.currentState!.save();
 
                         LoginModels.name = fullNameController.text;
@@ -351,16 +379,17 @@ class _LoginFormState extends State<LoginForm> {
                         LoginModels.address = addressController.text;
                         LoginModels.isChecked = loginController.isChecked.value;
 
-                        if (loginController.isChecked.value) {
-                          Get.toNamed(AppRoutes.otpVerification);
+                            if (loginController.isChecked.value) {
+                              Get.toNamed(AppRoutes.otpVerification);
 
-                          loginController.sendOtp(phone: phoneController.text);
-                        } else {
-                          Get.snackbar(
-                              LocaleString().errorCheck.tr,
-                              LocaleString().errorCheck.tr,
-                              backgroundColor: AppColors.darkBlue);
-                        }
+                              loginController.sendOtp(phone: phoneController.text);
+                            } else {
+                              Get.snackbar(
+                                LocaleString().errorCheck.tr,
+                                LocaleString().errorCheck.tr,
+                                backgroundColor: AppColors.darkBlue,
+                              );
+                            }
                       }
                     },
                     child: GlobalText(

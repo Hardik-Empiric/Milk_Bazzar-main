@@ -67,7 +67,7 @@ class _WelcomeState extends State<Welcome> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
-                          text: "${LocaleString().goodMorning.tr}${LoginModels.name.split(' ')[0]}",
+                          text: "${LocaleString().goodMorning.tr} ",
                           color: Theme.of(context).primaryColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),

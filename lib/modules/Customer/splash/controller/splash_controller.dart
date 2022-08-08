@@ -23,8 +23,8 @@ class SplashController extends GetxController {
       print(LoginModels.phone);
       prefs.getBool("Login") ?? false
           ? (LoginModels.phone == 8460711716)
-              ? Get.offAllNamed(AppRoutes.home)
-              : Get.offAllNamed(AppRoutes.home)
+              ? Get.offAllNamed(AppRoutes.welcome)
+              : Get.offAllNamed(AppRoutes.welcome)
           : Get.offAll(const LoginScreen());
     });
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,27 @@ class _RegisterState extends State<Register> {
 
   final TextEditingController phoneController = TextEditingController();
 
+
+  List numbers = [];
+
+  getList() async {
+    var len = await FirebaseFirestore.instance
+        .collection('customers')
+        .get();
+
+    print(len.docs.length);
+    for (var docs in len.docs) {
+      Map<String, dynamic> data = docs.data();
+      numbers.add(data["number"]);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getList();
+  }
 
 
   @override
@@ -122,6 +144,10 @@ class _RegisterState extends State<Register> {
                                 validator: (val) {
                                   if (val!.isEmpty) {
                                     return LocaleString().errorPhone.tr;
+                                  }
+                                  else if(!numbers.contains(val))
+                                  {
+                                    return "Number is not register...";
                                   }
                                   return null;
                                 },

@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -16,9 +19,6 @@ class Searching extends StatefulWidget {
 }
 
 class _SearchingState extends State<Searching> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,7 +29,12 @@ class _SearchingState extends State<Searching> {
         cursorColor: Theme.of(context).primaryColor,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.only(top: 5),
-          suffixIcon: Icon(Icons.mic, color: Theme.of(context).primaryColor),
+          suffixIcon: IconButton(
+            onPressed: () {
+
+            },
+            icon: Icon(Icons.mic, color: Theme.of(context).primaryColor),
+          ),
           hintText: LocaleString().searchCus.tr,
           hintStyle: const TextStyle(
             color: AppColors.darkGrey,
@@ -78,9 +83,14 @@ class _AddPersonState extends State<AddPerson> {
             border: Border.all(color: AppColors.blue),
           ),
           child: Obx(
-            ()=> Transform.scale(
+            () => Transform.scale(
               scale: 0.6,
-              child: Image.asset('assets/images/RC.png',color: (customerListController.isRemoveOn.value) ?AppColors.darkGrey :AppColors.blue,),
+              child: Image.asset(
+                'assets/images/RC.png',
+                color: (customerListController.isRemoveOn.value)
+                    ? AppColors.darkGrey
+                    : AppColors.blue,
+              ),
             ),
           ),
         ),

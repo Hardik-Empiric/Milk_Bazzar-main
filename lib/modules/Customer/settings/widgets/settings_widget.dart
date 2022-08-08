@@ -160,9 +160,17 @@ class _SettingsState extends State<Settings> {
             prefs.setBool("Login", false);
           }
 
-        (msg == LocaleString().logout.tr)
-            ? Get.offAllNamed(navigatorPageName)
-            : Get.toNamed(navigatorPageName);
+        if(msg == LocaleString().logout.tr)
+          {
+
+            await FirebaseAuth.instance.signOut();
+
+            Get.offAllNamed(navigatorPageName);
+          }
+        else
+          {
+            Get.toNamed(navigatorPageName);
+          }
 
       },
       child: Container(

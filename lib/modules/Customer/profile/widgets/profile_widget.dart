@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -30,9 +32,32 @@ class _ProfileState extends State<Profile> {
 
   final GlobalKey<FormState> _globalFromKey = GlobalKey<FormState>();
 
-  late TextEditingController fullNameController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+
+  var allData;
+  String profile_image_path = '';
+
+  getAllData() async {
+    var data = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
+
+    fullNameController.text = data.data()!['name'];
+    phoneController.text = data.data()!['number'];
+    addressController.text = data.data()!['add'];
+    profile_image_path = data.data()!['image'];
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllData();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +84,10 @@ class _ProfileState extends State<Profile> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).backgroundColor,
-              boxShadow:  [
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
+              boxShadow: [
                 BoxShadow(
                   color: AppColors.shadow,
                   offset: const Offset(0, 0),
@@ -71,7 +98,7 @@ class _ProfileState extends State<Profile> {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
+              const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -84,7 +111,9 @@ class _ProfileState extends State<Profile> {
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
                           text: LocaleString().updateProfile.tr,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme
+                              .of(context)
+                              .primaryColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -93,7 +122,9 @@ class _ProfileState extends State<Profile> {
                       child: GlobalText(
                         text: LocaleString().profileMsg.tr,
                         fontSize: 13,
-                        color: Theme.of(context).hintColor,
+                        color: Theme
+                            .of(context)
+                            .hintColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -128,39 +159,41 @@ class _ProfileState extends State<Profile> {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.only(top: 0, left: 60, right: 60, bottom: 0),
+              const EdgeInsets.only(top: 0, left: 60, right: 60, bottom: 0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   GestureDetector(
                     onTap: () async {
                       final XFile? photo =
-                          await _picker.pickImage(source: ImageSource.camera);
+                      await _picker.pickImage(source: ImageSource.camera);
 
-                      if (photo != null) {
+                      if (photo != null ) {
                         img_path = photo.path;
                         imgstatus = true;
                       } else {
-                        imgstatus = false;
+                        imgstatus = true;
                       }
-                      setState(() {});
+                      setState(() {
+                        profile_image_path = img_path;
+                      });
                     },
-                    child: imgstatus ? Container(
+                    child: profile_image_path.isNotEmpty ? Container(
                       height: 100,
                       width: 100,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.blue,
                           image: DecorationImage(
-                            image: FileImage(File(img_path)),
+                            image: FileImage(File(profile_image_path)),
                             fit: BoxFit.cover,
                           )),
                     ) : Container(
                       height: 100,
                       width: 100,
                       decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.blue,
+                        shape: BoxShape.circle,
+                        color: AppColors.blue,
                       ),
                       child: const Icon(Icons.camera),
                     ),
@@ -197,15 +230,19 @@ class _ProfileState extends State<Profile> {
                 },
                 controller: fullNameController,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme
+                        .of(context)
+                        .primaryColor,
                     fontWeight: FontWeight.w500,
                     fontFamily: "Graphik"),
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 10),
                     labelText: LocaleString().fullName.tr,
-                    labelStyle:  TextStyle(
-                        color: Theme.of(context).hintColor,
+                    labelStyle: TextStyle(
+                        color: Theme
+                            .of(context)
+                            .hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
@@ -243,17 +280,20 @@ class _ProfileState extends State<Profile> {
 
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme
+                                .of(context)
+                                .backgroundColor,
                             border: Border.all(
                                 color: AppColors.borderColor,
                                 width: 2)),
                         child: countryCodePicker(context),
                       ),
                     ),
-                    Expanded(flex: 1,child: Container(),),
+                    Expanded(flex: 1, child: Container(),),
                     Expanded(
                       flex: 12,
                       child: TextFormField(
+                        readOnly: true,
                         keyboardType: TextInputType.number,
                         validator: (val) {
                           if (val!.isEmpty) {
@@ -270,7 +310,9 @@ class _ProfileState extends State<Profile> {
                         ],
                         controller: phoneController,
                         style: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
                             fontWeight: FontWeight.w500,
                             fontFamily: "Graphik"),
                         decoration: InputDecoration(
@@ -284,8 +326,10 @@ class _ProfileState extends State<Profile> {
                                       .pendingAmountColor,
                                   width: 2),
                             ),
-                            labelStyle:  TextStyle(
-                                color: Theme.of(context).hintColor,
+                            labelStyle: TextStyle(
+                                color: Theme
+                                    .of(context)
+                                    .hintColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: "Graphik"),
@@ -325,8 +369,10 @@ class _ProfileState extends State<Profile> {
                 },
                 maxLines: 5,
                 controller: addressController,
-                style:  TextStyle(
-                    color: Theme.of(context).primaryColor,
+                style: TextStyle(
+                    color: Theme
+                        .of(context)
+                        .primaryColor,
                     fontWeight: FontWeight.w500,
                     fontFamily: "Graphik"),
                 decoration: InputDecoration(
@@ -339,8 +385,10 @@ class _ProfileState extends State<Profile> {
                           color: AppColors.pendingAmountColor,
                           width: 2),
                     ),
-                    labelStyle:  TextStyle(
-                        color: Theme.of(context).hintColor,
+                    labelStyle: TextStyle(
+                        color: Theme
+                            .of(context)
+                            .hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
@@ -377,7 +425,9 @@ class _ProfileState extends State<Profile> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).backgroundColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.blue.withOpacity(0.5),
@@ -392,7 +442,9 @@ class _ProfileState extends State<Profile> {
               child: Icon(
                 Icons.close_rounded,
                 size: 30,
-                color: Theme.of(context).primaryColor,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               ),
             )),
       ),
@@ -414,6 +466,16 @@ class _ProfileState extends State<Profile> {
             LoginModels.name = fullNameController.text;
             LoginModels.phone = int.parse(phoneController.text);
             LoginModels.address = addressController.text;
+
+            var user = FirebaseFirestore.instance.collection('customers').doc(
+                FirebaseAuth.instance.currentUser!.uid).update(
+                {
+                  'name': "${LoginModels.name}",
+                  'number': "${LoginModels.phone}",
+                  'add': "${LoginModels.address}",
+                  'type': "customer",
+                  'image' : "$profile_image_path",
+                });
           }
         },
         child: GlobalText(

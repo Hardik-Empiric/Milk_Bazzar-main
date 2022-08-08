@@ -1,5 +1,8 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:milk_bazzar/models/login_models/loginModels.dart';
 import 'package:milk_bazzar/utils/app_colors.dart';
 
 import '../../../../utils/app_constants.dart';
@@ -15,6 +18,21 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+ 
+  
+  getData() async {
+    var name = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
+   print(name.data()!['name']);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getData();
+
+  }
 
   @override
   Widget build(BuildContext context) {

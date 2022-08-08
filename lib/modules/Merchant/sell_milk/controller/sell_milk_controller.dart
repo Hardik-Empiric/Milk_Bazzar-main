@@ -26,5 +26,37 @@ class SellMilkController extends GetxController {
 
   Rx<Duration> duration = const Duration(hours: 7, minutes: 00).obs;
 
+  RxString customerName = ''.obs;
+
 
 }
+
+class AddMilk {
+
+  String date;
+  String month;
+  String year;
+  String time;
+  String customerName;
+  String session;
+  String liter;
+
+  AddMilk({
+    required this.date,
+    required this.month,
+    required this.year,
+    required this.time,
+    required this.customerName,
+    required this.session,
+    required this.liter,
+
+});
+
+}
+
+
+List<AddMilk> addMilks = <AddMilk>[
+
+
+
+];
