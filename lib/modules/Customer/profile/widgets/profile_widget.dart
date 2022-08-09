@@ -1,11 +1,17 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:external_path/external_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+
+import 'package:path_provider/path_provider.dart';
 import '../../../../models/login_models/loginModels.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
@@ -29,6 +35,9 @@ class _ProfileState extends State<Profile> {
   final ImagePicker _picker = ImagePicker();
   bool imgstatus = false;
   String img_path = "";
+  String urlDownload = "";
+  UploadTask? uploadTask;
+  bool loading = true;
 
   final GlobalKey<FormState> _globalFromKey = GlobalKey<FormState>();
 
@@ -40,14 +49,16 @@ class _ProfileState extends State<Profile> {
   String profile_image_path = '';
 
   getAllData() async {
-    var data = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    var data = await FirebaseFirestore.instance
+        .collection('customers')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
 
     fullNameController.text = data.data()!['name'];
     phoneController.text = data.data()!['number'];
     addressController.text = data.data()!['add'];
-    profile_image_path = data.data()!['image'];
     setState(() {
-
+      urlDownload = data.data()!['image'];
     });
   }
 
@@ -56,7 +67,11 @@ class _ProfileState extends State<Profile> {
     // TODO: implement initState
     super.initState();
     getAllData();
-
+    Timer(Duration(seconds: 2),(){
+    setState(() {
+      loading = false;
+    });
+    });
   }
 
   @override
@@ -84,9 +99,7 @@ class _ProfileState extends State<Profile> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme
-                  .of(context)
-                  .backgroundColor,
+              color: Theme.of(context).backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.shadow,
@@ -98,7 +111,7 @@ class _ProfileState extends State<Profile> {
             ),
             child: Padding(
               padding:
-              const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
+                  const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -111,9 +124,7 @@ class _ProfileState extends State<Profile> {
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
                           text: LocaleString().updateProfile.tr,
-                          color: Theme
-                              .of(context)
-                              .primaryColor,
+                          color: Theme.of(context).primaryColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -122,9 +133,7 @@ class _ProfileState extends State<Profile> {
                       child: GlobalText(
                         text: LocaleString().profileMsg.tr,
                         fontSize: 13,
-                        color: Theme
-                            .of(context)
-                            .hintColor,
+                        color: Theme.of(context).hintColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -159,44 +168,102 @@ class _ProfileState extends State<Profile> {
             ),
             child: Padding(
               padding:
-              const EdgeInsets.only(top: 0, left: 60, right: 60, bottom: 0),
+                  const EdgeInsets.only(top: 0, left: 60, right: 60, bottom: 0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   GestureDetector(
                     onTap: () async {
                       final XFile? photo =
-                      await _picker.pickImage(source: ImageSource.camera);
+                          await _picker.pickImage(source: ImageSource.camera);
 
-                      if (photo != null ) {
-                        img_path = photo.path;
-                        imgstatus = true;
-                      } else {
-                        imgstatus = true;
-                      }
                       setState(() {
-                        profile_image_path = img_path;
+                        img_path = photo!.path;
+                        loading = true;
+                      });
+
+                      File tmpFile = File(img_path);
+
+                      final String downloadPath =
+                          await ExternalPath.getExternalStoragePublicDirectory(
+                              ExternalPath.DIRECTORY_DOWNLOADS);
+                      final String fileName = basename(img_path);
+                      final String fileExtension = extension(img_path);
+
+                      tmpFile = await tmpFile.copy('$downloadPath/$fileName');
+
+                      print(">>>>>>>>>>>>>>>>>>>>>>>>>");
+                      print(tmpFile.path);
+                      print(">>>>>>>>>>>>>>>>>>>>>>>>>");
+
+                      setState(() {
+                        profile_image_path = tmpFile.path;
+                      });
+
+                      final profilePictureName =
+                          FirebaseAuth.instance.currentUser!.uid.toString();
+                      final path = 'file/${profilePictureName}.jpg';
+                      final file = File(photo!.path);
+
+                      final ref = FirebaseStorage.instance.ref().child(path);
+                      setState(() {
+                        uploadTask = ref.putFile(file);
+                      });
+
+                      final snapshot = await uploadTask!.whenComplete(() {});
+
+                      urlDownload = await snapshot.ref.getDownloadURL();
+                      print('Download Link : $urlDownload');
+
+                      var user = FirebaseFirestore.instance
+                          .collection('customers')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .update({
+                        'image': "$urlDownload",
+                      });
+
+                      var data = await FirebaseFirestore.instance
+                          .collection('customers')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .get();
+
+                      setState(() {
+                        urlDownload = data.data()!['image'];
+                        loading = false;
                       });
                     },
-                    child: profile_image_path.isNotEmpty ? Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.blue,
-                          image: DecorationImage(
-                            image: FileImage(File(profile_image_path)),
-                            fit: BoxFit.cover,
-                          )),
-                    ) : Container(
-                      height: 100,
-                      width: 100,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.blue,
-                      ),
-                      child: const Icon(Icons.camera),
-                    ),
+                    child: urlDownload.isNotEmpty
+                        ? Container(
+                            height: 100,
+                            width: 100,
+                            alignment: Alignment.center,
+                            child: Visibility(
+                              child: Transform.scale(
+                                scale: 0.7,
+                                child: CircularProgressIndicator(
+                                  color: AppColors.darkBlue,
+                                ),
+                              ),
+                              visible: loading,
+                            ),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.blue,
+                              image: DecorationImage(
+                                image: NetworkImage(urlDownload),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 100,
+                            width: 100,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.blue,
+                            ),
+                            child: const Icon(Icons.camera),
+                          ),
                   ),
                   GlobalText(
                       text: LocaleString().editImage.tr,
@@ -230,9 +297,7 @@ class _ProfileState extends State<Profile> {
                 },
                 controller: fullNameController,
                 style: TextStyle(
-                    color: Theme
-                        .of(context)
-                        .primaryColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w500,
                     fontFamily: "Graphik"),
                 decoration: InputDecoration(
@@ -240,22 +305,19 @@ class _ProfileState extends State<Profile> {
                         horizontal: 12, vertical: 10),
                     labelText: LocaleString().fullName.tr,
                     labelStyle: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .hintColor,
+                        color: Theme.of(context).hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
                       borderSide: const BorderSide(
-                          color: AppColors.pendingAmountColor,
-                          width: 2),
+                          color: AppColors.pendingAmountColor, width: 2),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(
-                          color: AppColors.blue, width: 2),
+                      borderSide:
+                          const BorderSide(color: AppColors.blue, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -277,19 +339,18 @@ class _ProfileState extends State<Profile> {
                     Expanded(
                       flex: 5,
                       child: Container(
-
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Theme
-                                .of(context)
-                                .backgroundColor,
+                            color: Theme.of(context).backgroundColor,
                             border: Border.all(
-                                color: AppColors.borderColor,
-                                width: 2)),
+                                color: AppColors.borderColor, width: 2)),
                         child: countryCodePicker(context),
                       ),
                     ),
-                    Expanded(flex: 1, child: Container(),),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
                     Expanded(
                       flex: 12,
                       child: TextFormField(
@@ -305,14 +366,10 @@ class _ProfileState extends State<Profile> {
                           LoginModels.phone = int.parse(val!);
                         },
                         enableInteractiveSelection: false,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(10)
-                        ],
+                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
                         controller: phoneController,
                         style: TextStyle(
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w500,
                             fontFamily: "Graphik"),
                         decoration: InputDecoration(
@@ -322,28 +379,23 @@ class _ProfileState extends State<Profile> {
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: const BorderSide(
-                                  color: AppColors
-                                      .pendingAmountColor,
+                                  color: AppColors.pendingAmountColor,
                                   width: 2),
                             ),
                             labelStyle: TextStyle(
-                                color: Theme
-                                    .of(context)
-                                    .hintColor,
+                                color: Theme.of(context).hintColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: "Graphik"),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: const BorderSide(
-                                  color: AppColors.blue,
-                                  width: 2),
+                                  color: AppColors.blue, width: 2),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                               borderSide: const BorderSide(
-                                  color: AppColors.borderColor,
-                                  width: 2),
+                                  color: AppColors.borderColor, width: 2),
                             ),
                             hintText: LocaleString().phoneNumber.tr,
                             hintStyle: const TextStyle(
@@ -351,7 +403,7 @@ class _ProfileState extends State<Profile> {
                               fontSize: 13,
                             ),
                             floatingLabelBehavior:
-                            FloatingLabelBehavior.always),
+                                FloatingLabelBehavior.always),
                       ),
                     ),
                   ],
@@ -370,9 +422,7 @@ class _ProfileState extends State<Profile> {
                 maxLines: 5,
                 controller: addressController,
                 style: TextStyle(
-                    color: Theme
-                        .of(context)
-                        .primaryColor,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w500,
                     fontFamily: "Graphik"),
                 decoration: InputDecoration(
@@ -382,20 +432,17 @@ class _ProfileState extends State<Profile> {
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
                       borderSide: const BorderSide(
-                          color: AppColors.pendingAmountColor,
-                          width: 2),
+                          color: AppColors.pendingAmountColor, width: 2),
                     ),
                     labelStyle: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .hintColor,
+                        color: Theme.of(context).hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(
-                          color: AppColors.blue, width: 2),
+                      borderSide:
+                          const BorderSide(color: AppColors.blue, width: 2),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -425,9 +472,7 @@ class _ProfileState extends State<Profile> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Theme
-                  .of(context)
-                  .backgroundColor,
+              color: Theme.of(context).backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.blue.withOpacity(0.5),
@@ -442,14 +487,40 @@ class _ProfileState extends State<Profile> {
               child: Icon(
                 Icons.close_rounded,
                 size: 30,
-                color: Theme
-                    .of(context)
-                    .primaryColor,
+                color: Theme.of(context).primaryColor,
               ),
             )),
       ),
     );
   }
+
+  Widget buildProcess() => StreamBuilder<TaskSnapshot>(
+        stream: uploadTask?.snapshotEvents,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data;
+            double progress = data.bytesTransferred / data.totalBytes;
+            return Container(
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.blue,
+                image: DecorationImage(
+                  image: NetworkImage(urlDownload),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          } else {
+            return Container(
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(color: AppColors.white),
+            );
+          }
+        },
+      );
 
   doneButton() {
     return Padding(
@@ -467,15 +538,16 @@ class _ProfileState extends State<Profile> {
             LoginModels.phone = int.parse(phoneController.text);
             LoginModels.address = addressController.text;
 
-            var user = FirebaseFirestore.instance.collection('customers').doc(
-                FirebaseAuth.instance.currentUser!.uid).update(
-                {
-                  'name': "${LoginModels.name}",
-                  'number': "${LoginModels.phone}",
-                  'add': "${LoginModels.address}",
-                  'type': "customer",
-                  'image' : "$profile_image_path",
-                });
+            var user = FirebaseFirestore.instance
+                .collection('customers')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .update({
+              'name': "${LoginModels.name}",
+              'number': "${LoginModels.phone}",
+              'add': "${LoginModels.address}",
+              'type': "customer",
+              'image': "$urlDownload",
+            });
           }
         },
         child: GlobalText(

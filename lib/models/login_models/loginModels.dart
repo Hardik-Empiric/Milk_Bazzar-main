@@ -7,6 +7,7 @@ class LoginModels {
   static String? address;
   static String imagePath = '';
   static bool? isChecked;
+  static bool? isMerchant;
   static bool? yearChecked;
   static int? otp;
   static String? vid;

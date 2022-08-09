@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -19,6 +21,23 @@ class Welcome extends StatefulWidget {
 
 class _WelcomeState extends State<Welcome> {
   final WelcomeController welcomeController = Get.put(WelcomeController());
+
+  getData() async {
+    var name = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
+
+    setState(() {
+      LoginModels.name = name.data()?['name'];
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getData();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +86,7 @@ class _WelcomeState extends State<Welcome> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
-                          text: "${LocaleString().goodMorning.tr} ",
+                          text: "${LocaleString().goodMorning.tr} ${ LoginModels.name.split(" ")[0]}",
                           color: Theme.of(context).primaryColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),

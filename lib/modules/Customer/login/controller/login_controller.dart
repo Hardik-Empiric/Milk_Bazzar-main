@@ -5,6 +5,8 @@ import '../../../../models/login_models/loginModels.dart';
 
 class LoginController extends GetxController {
   RxBool isChecked = false.obs;
+  RxBool isMerchant = false.obs;
+
 
   sendOtp({required String phone}) async {
 

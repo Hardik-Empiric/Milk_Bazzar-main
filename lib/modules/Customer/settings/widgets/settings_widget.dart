@@ -165,7 +165,10 @@ class _SettingsState extends State<Settings> {
 
             await FirebaseAuth.instance.signOut();
 
+            prefs.setBool("isMerchant", false);
+
             Get.offAllNamed(navigatorPageName);
+
           }
         else
           {

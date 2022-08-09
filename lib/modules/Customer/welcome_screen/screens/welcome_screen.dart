@@ -20,19 +20,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
  
   
-  getData() async {
-    var name = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
-   print(name.data()!['name']);
-  }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    getData();
-
-  }
 
   @override
   Widget build(BuildContext context) {

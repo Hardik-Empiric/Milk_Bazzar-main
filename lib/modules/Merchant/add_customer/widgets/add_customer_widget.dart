@@ -1,5 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -113,75 +116,6 @@ class _AddCustomerState extends State<AddCustomer> {
           ),
           closeButton(),
         ],
-      ),
-    );
-  }
-
-  Widget get editImage {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10, top: 10, left: 50, right: 50),
-      child: DottedBorder(
-        color: AppColors.blue,
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(5),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-          child: Container(
-            height: SizeData.height * 0.16,
-            decoration: BoxDecoration(
-              color: AppColors.suffixContainerColor,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(top: 0, left: 60, right: 60, bottom: 0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final XFile? photo =
-                          await _picker.pickImage(source: ImageSource.camera);
-
-                      if (photo != null) {
-                        img_path = photo.path;
-                        imgstatus = true;
-                      } else {
-                        imgstatus = false;
-                      }
-                      setState(() {});
-                    },
-                    child: imgstatus
-                        ? Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.blue,
-                                image: DecorationImage(
-                                  image: FileImage(File(img_path)),
-                                  fit: BoxFit.cover,
-                                )),
-                          )
-                        : Container(
-                            height: 100,
-                            width: 100,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.blue,
-                            ),
-                            child: const Icon(Icons.camera),
-                          ),
-                  ),
-                  GlobalText(
-                      text: LocaleString().editImage.tr,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -418,9 +352,29 @@ class _AddCustomerState extends State<AddCustomer> {
               ),
             );
 
-            homeController.index.value = 0;
+            var cus = await FirebaseFirestore.instance.collection('customers').get();
 
-            Get.offAllNamed(AppRoutes.home);
+            List customer = [];
+
+            for(var docs in cus.docs)
+              {
+                customer.add(docs["number"]);
+              }
+
+            if(customer.contains(phoneController.text))
+              {
+                var data = await FirebaseFirestore.instance.collection('customers').where("number",isEqualTo: phoneController.text).get();
+                var aa =  data.docs;
+                aa.forEach((element) {log(">>>>>>>>>>>>>>>>${element.id}");});
+
+                homeController.index.value = 0;
+
+                // Get.offAllNamed(AppRoutes.home);
+              }
+            else
+              {
+                Get.snackbar("Customer", "No Found");
+              }
 
           }
         },

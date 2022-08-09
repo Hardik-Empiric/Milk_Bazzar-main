@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../models/login_models/loginModels.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
@@ -32,12 +33,20 @@ class _LoginFormState extends State<LoginForm> {
   List numbers = [];
 
   getList() async {
-    var len = await FirebaseFirestore.instance
+    var customers = await FirebaseFirestore.instance
         .collection('customers')
         .get();
 
-    print(len.docs.length);
-    for (var docs in len.docs) {
+    var merchants = await FirebaseFirestore.instance
+        .collection('merchants')
+        .get();
+
+    for (var docs in customers.docs) {
+      Map<String, dynamic> data = docs.data();
+      numbers.add(data["number"]);
+    }
+
+    for (var docs in merchants.docs) {
       Map<String, dynamic> data = docs.data();
       numbers.add(data["number"]);
     }
@@ -362,6 +371,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
 
+
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(
@@ -398,7 +408,44 @@ class _LoginFormState extends State<LoginForm> {
                       fontSize: 15,
                     ),
                   ),
-                )
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Obx(
+                          () => Transform.scale(
+                        scale: 1.3,
+                        child: Checkbox(
+                          side: const BorderSide(
+                              width: 1, color: AppColors.borderColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          activeColor: AppColors.blue,
+                          checkColor: AppColors.background,
+                          value: loginController.isMerchant.value,
+                          onChanged: (value) async {
+                            loginController.isMerchant.value = value!;
+                            LoginModels.isMerchant = value;
+
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                            prefs.setBool("isMerchant", loginController.isMerchant.value);
+
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        child: GlobalText(
+                          text: LocaleString().signUpAsMerchant.tr,
+                          color: AppColors.darkBlue,
+                          fontWeight: FontWeight.w600,
+                        ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

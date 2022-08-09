@@ -164,6 +164,8 @@ class LocaleString extends Translations {
   String totalCustomer = "Total 50 Customer";
   String amount = "Total 50 Customer";
 
+  String signUpAsMerchant = "SignUp as Merchant";
+
   String termsAndConditions =
       "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de Finibus Bonorum et Malorum' (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, 'Lorem ipsum dolor sit amet..', comes from a line in section 1.10.32.The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from 'de Finibus Bonorum et Malorum' by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.";
 
@@ -310,6 +312,8 @@ class LocaleString extends Translations {
           allCustomerBill : "All Customer Bill",
           totalPending : "Total 5 Customer",
           totalCustomer : "Total 50 Customer",
+
+          signUpAsMerchant : "SignUp as Merchant",
         },
         'gu_IN': {
           changeLan: 'ભાષા બદલો',
@@ -447,6 +451,8 @@ class LocaleString extends Translations {
           allCustomerBill : "બધા ગ્રાહક બિલ",
           totalPending : "કુલ 5 ગ્રાહક",
           totalCustomer : "કુલ 50 ગ્રાહક",
+
+          signUpAsMerchant : "વેપારી તરીકે સાઇન અપ કરો",
         },
         'hi_IN': {
           changeLan: 'भाषा बदलो',
@@ -584,6 +590,8 @@ class LocaleString extends Translations {
           totalPending : "कुल 5 ग्राहक",
           totalCustomer : "कुल 50 ग्राहक",
           totalText : "कुल",
+
+          signUpAsMerchant : "व्यापारी के रूप में साइन अप करें",
         },
       };
 }

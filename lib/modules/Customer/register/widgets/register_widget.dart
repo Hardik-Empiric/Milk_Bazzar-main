@@ -31,12 +31,20 @@ class _RegisterState extends State<Register> {
   List numbers = [];
 
   getList() async {
-    var len = await FirebaseFirestore.instance
+    var customers = await FirebaseFirestore.instance
         .collection('customers')
         .get();
 
-    print(len.docs.length);
-    for (var docs in len.docs) {
+    var merchants = await FirebaseFirestore.instance
+        .collection('merchants')
+        .get();
+
+    for (var docs in customers.docs) {
+      Map<String, dynamic> data = docs.data();
+      numbers.add(data["number"]);
+    }
+
+    for (var docs in merchants.docs) {
       Map<String, dynamic> data = docs.data();
       numbers.add(data["number"]);
     }
@@ -218,7 +226,9 @@ class _RegisterState extends State<Register> {
                       if (_globalFromKey.currentState!.validate()) {
                         _globalFromKey.currentState!.save();
 
-                        LoginModels.phone = int.parse(phoneController.text);
+                        setState(() {
+                          LoginModels.phone = int.parse(phoneController.text);
+                        });
 
                         Get.toNamed(AppRoutes.otpVerification);
 

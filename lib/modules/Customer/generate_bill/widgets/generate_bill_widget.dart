@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:milk_bazzar/utils/common_widget/global_text.dart';
@@ -28,7 +30,9 @@ class _BillState extends State<Bill> {
       child: Container(
         padding: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).primaryColor),
+          border: Border.all(color: Theme
+              .of(context)
+              .primaryColor),
         ),
         child: Column(
           children: [
@@ -49,7 +53,9 @@ class _BillState extends State<Bill> {
             Container(
               decoration: BoxDecoration(
                 border: Border.all(width: 0.5, color: AppColors.blue),
-                color: Theme.of(context).backgroundColor,
+                color: Theme
+                    .of(context)
+                    .backgroundColor,
               ),
               height: SizeData.height * 0.04,
               // width: SizeData.width,
@@ -57,7 +63,9 @@ class _BillState extends State<Bill> {
               child: GlobalText(
                 text: LocaleString().billOf.tr,
                 fontWeight: FontWeight.w500,
-                color: Theme.of(context).primaryColor,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               ),
             ),
             Row(
@@ -70,7 +78,9 @@ class _BillState extends State<Bill> {
                       2: FlexColumnWidth(2),
                     },
                     border: TableBorder.all(
-                        color: Theme.of(context).primaryColor,
+                        color: Theme
+                            .of(context)
+                            .primaryColor,
                         style: BorderStyle.solid,
                         width: 1),
                     children: billDetails1.map((e) {
@@ -80,18 +90,18 @@ class _BillState extends State<Bill> {
                           (e.date == "DATE")
                               ? tableHeader(e.date)
                               : (int.parse(e.date) % 2 == 1)
-                                  ? whiteDate(e.date)
-                                  : tableColorDate(e.date),
+                              ? whiteDate(e.date)
+                              : tableColorDate(e.date),
                           (e.morning == "MORNING")
                               ? tableHeader(e.morning)
                               : (int.parse(e.date) % 2 == 1)
-                                  ? whiteDate(e.morning)
-                                  : tableColorDate(e.morning),
+                              ? whiteDate(e.morning)
+                              : tableColorDate(e.morning),
                           (e.evening == "EVENING")
                               ? tableHeader(e.evening)
                               : (int.parse(e.date) % 2 == 1)
-                                  ? whiteDate(e.evening)
-                                  : tableColorDate(e.evening),
+                              ? whiteDate(e.evening)
+                              : tableColorDate(e.evening),
                         ],
                       );
                     }).toList(),
@@ -105,46 +115,52 @@ class _BillState extends State<Bill> {
                       2: FlexColumnWidth(2),
                     },
                     border: TableBorder.all(
-                        color: Theme.of(context).primaryColor,
+                        color: Theme
+                            .of(context)
+                            .primaryColor,
                         style: BorderStyle.solid,
                         width: 1),
                     children: billDetails2.map((e) {
                       int index = billDetails2.indexOf(e);
                       return (e.date != '-')
                           ? TableRow(
-                              children: [
-                                (e.date == "DATE")
-                                    ? tableHeader(e.date)
-                                    : (int.parse(e.date) % 2 == 1)
-                                        ? whiteDate(e.date)
-                                        : tableColorDate(e.date),
-                                (e.morning == "MORNING")
-                                    ? tableHeader(e.morning)
-                                    : (int.parse(e.date) % 2 == 1)
-                                        ? whiteDate(e.morning)
-                                        : tableColorDate(e.morning),
-                                (e.evening == "EVENING")
-                                    ? tableHeader(e.evening)
-                                    : (int.parse(e.date) % 2 == 1)
-                                        ? whiteDate(e.evening)
-                                        : tableColorDate(e.evening),
-                              ],
-                            )
+                        children: [
+                          (e.date == "DATE")
+                              ? tableHeader(e.date)
+                              : (int.parse(e.date) % 2 == 1)
+                              ? whiteDate(e.date)
+                              : tableColorDate(e.date),
+                          (e.morning == "MORNING")
+                              ? tableHeader(e.morning)
+                              : (int.parse(e.date) % 2 == 1)
+                              ? whiteDate(e.morning)
+                              : tableColorDate(e.morning),
+                          (e.evening == "EVENING")
+                              ? tableHeader(e.evening)
+                              : (int.parse(e.date) % 2 == 1)
+                              ? whiteDate(e.evening)
+                              : tableColorDate(e.evening),
+                        ],
+                      )
                           : TableRow(
-                              children: [
-                                tableColorDate(e.date),
-                                tableColorDate(e.morning),
-                                tableColorDate(e.evening),
-                              ],
-                            );
+                        children: [
+                          tableColorDate(e.date),
+                          tableColorDate(e.morning),
+                          tableColorDate(e.evening),
+                        ],
+                      );
                     }).toList(),
                   ),
                 ),
               ],
             ),
             commonField(
-              color: Theme.of(context).backgroundColor,
-              textColor: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
+              textColor: Theme
+                  .of(context)
+                  .primaryColor,
               title: LocaleString().cowMilk.tr,
               amount: LocaleString().cowMilkAmount.tr,
             ),
@@ -155,8 +171,12 @@ class _BillState extends State<Bill> {
               amount: LocaleString().totalLiterAmount.tr,
             ),
             commonField(
-              color: Theme.of(context).backgroundColor,
-              textColor: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
+              textColor: Theme
+                  .of(context)
+                  .primaryColor,
               title: LocaleString().pMonth.tr,
               amount: LocaleString().pMonthAmount.tr,
             ),
@@ -167,8 +187,12 @@ class _BillState extends State<Bill> {
               amount: LocaleString().cMonthAmount.tr,
             ),
             commonField(
-              color: Theme.of(context).backgroundColor,
-              textColor: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
+              textColor: Theme
+                  .of(context)
+                  .primaryColor,
               title: LocaleString().received.tr,
               amount: LocaleString().receivedAmount.tr,
             ),
@@ -184,11 +208,10 @@ class _BillState extends State<Bill> {
     );
   }
 
-  commonField(
-      {required Color color,
-      required Color textColor,
-      required String title,
-      required String amount}) {
+  commonField({required Color color,
+    required Color textColor,
+    required String title,
+    required String amount}) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 0.5),
@@ -261,7 +284,9 @@ class _BillState extends State<Bill> {
 
   whiteDate(String val) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme
+          .of(context)
+          .backgroundColor,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 5, bottom: 5, left: 2, right: 2),
       child: Text(
@@ -269,7 +294,9 @@ class _BillState extends State<Bill> {
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w700,
-          color: Theme.of(context).primaryColor,
+          color: Theme
+              .of(context)
+              .primaryColor,
         ),
       ),
     );
@@ -277,7 +304,9 @@ class _BillState extends State<Bill> {
 
   whiteRowElements(String val) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme
+          .of(context)
+          .backgroundColor,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 5, bottom: 5, left: 2, right: 2),
       child: Text(
@@ -285,7 +314,9 @@ class _BillState extends State<Bill> {
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: Theme.of(context).primaryColor,
+          color: Theme
+              .of(context)
+              .primaryColor,
         ),
       ),
     );
@@ -332,17 +363,36 @@ class SendBillButton extends StatefulWidget {
 class _SendBillButtonState extends State<SendBillButton> {
   final pdf = pw.Document();
 
+  List merchants = [];
+
+
+  get() async {
+    var name = await FirebaseFirestore.instance.collection('merchants').get();
+
+    name.docs.forEach((element) {
+      merchants.add(element.id);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    get();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return (merchants.contains(FirebaseAuth.instance.currentUser!.uid.toString())) ? Padding(
       padding: const EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 50),
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
           primary: AppColors.blue,
           padding:
-              const EdgeInsets.only(right: 15, left: 15, top: 7, bottom: 7),
+          const EdgeInsets.only(right: 15, left: 15, top: 7, bottom: 7),
         ),
-        onPressed: () {
+        onPressed: () async {
           sendPDF();
         },
         icon: Padding(
@@ -350,6 +400,25 @@ class _SendBillButtonState extends State<SendBillButton> {
             child: Image.asset('assets/images/WhatssApp.png', scale: 15)),
         label: GlobalText(
           text: LocaleString().sendToJaiminPatel.tr,
+          fontSize: 18,
+        ),
+      ),
+    ) : Padding(
+      padding: const EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 50),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          primary: AppColors.blue,
+          padding:
+          const EdgeInsets.only(right: 15, left: 15, top: 7, bottom: 7),
+        ),
+        onPressed: () async {
+          downloadPDF();
+        },
+        icon: Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: Image.asset('assets/icons/download.png', scale: 15)),
+        label: GlobalText(
+          text: "Download April Bill",
           fontSize: 18,
         ),
       ),
@@ -373,179 +442,196 @@ class _SendBillButtonState extends State<SendBillButton> {
     Share.shareFiles(pdfPath);
   }
 
+  downloadPDF() async {
+    buildPDF();
+
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+
+    final file = File('$tempPath/${DateTime.now()}.pdf');
+    print(file.path);
+    await file.writeAsBytes(await pdf.save());
+
+    List<String> pdfPath = [file.path];
+
+    OpenFile.open(file.path);
+  }
+
   buildPDF() {
     pdf.addPage(
       pw.Page(
-        build: (pw.Context context) => pw.Center(
-          child: pw.Container(
-            padding: const pw.EdgeInsets.only(bottom: 10),
-            decoration: pw.BoxDecoration(
-              border: pw.Border.all(color: PdfColors.black),
-            ),
-            child: pw.Column(
-              children: [
-                pw.Container(
-                  decoration: pw.BoxDecoration(
-                    border: pw.Border.all(width: 0.5, color: PdfColors.grey900),
-                    color: PdfColors.lightBlue50,
-                  ),
-                  margin: const pw.EdgeInsets.only(top: 7),
-                  height: SizeData.height * 0.03,
-                  width: SizeData.width,
-                  alignment: pw.Alignment.center,
-                  child: pw.Text(
-                    LocaleString().jaiminPatelVarachha,
-                    style: pw.TextStyle(),
-                  ),
+        build: (pw.Context context) =>
+            pw.Center(
+              child: pw.Container(
+                padding: const pw.EdgeInsets.only(bottom: 10),
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(color: PdfColors.black),
                 ),
-                pw.Container(
-                  decoration: pw.BoxDecoration(
-                    border: pw.Border.all(width: 0.5, color: PdfColors.grey900),
-                    color: PdfColors.white,
-                  ),
-                  height: SizeData.height * 0.03,
-                  width: SizeData.width,
-                  alignment: pw.Alignment.center,
-                  child: pw.Text(
-                    LocaleString().billOf,
-                    style: pw.TextStyle(),
-                  ),
-                ),
-                pw.SizedBox(
-                  width: SizeData.width,
-                  child: pw.Row(
-                    children: [
-                      pw.Expanded(
-                        child: pw.Table(
-                          columnWidths: const {
-                            0: pw.FlexColumnWidth(1),
-                            1: pw.FlexColumnWidth(2),
-                            2: pw.FlexColumnWidth(2),
-                          },
-                          border: pw.TableBorder.all(
-                              color: PdfColors.black,
-                              style: pw.BorderStyle.solid,
-                              width: 1),
-                          children: billDetails1.map((e) {
-                            int index = billDetails1.indexOf(e);
-                            return pw.TableRow(
-                              children: [
-                                (e.date == "DATE")
-                                    ? pwTableHeader(e.date)
-                                    : (int.parse(e.date) % 2 == 1)
+                child: pw.Column(
+                  children: [
+                    pw.Container(
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(
+                            width: 0.5, color: PdfColors.grey900),
+                        color: PdfColors.lightBlue50,
+                      ),
+                      margin: const pw.EdgeInsets.only(top: 7),
+                      height: SizeData.height * 0.03,
+                      width: SizeData.width,
+                      alignment: pw.Alignment.center,
+                      child: pw.Text(
+                        LocaleString().jaiminPatelVarachha,
+                        style: pw.TextStyle(),
+                      ),
+                    ),
+                    pw.Container(
+                      decoration: pw.BoxDecoration(
+                        border: pw.Border.all(
+                            width: 0.5, color: PdfColors.grey900),
+                        color: PdfColors.white,
+                      ),
+                      height: SizeData.height * 0.03,
+                      width: SizeData.width,
+                      alignment: pw.Alignment.center,
+                      child: pw.Text(
+                        LocaleString().billOf,
+                        style: pw.TextStyle(),
+                      ),
+                    ),
+                    pw.SizedBox(
+                      width: SizeData.width,
+                      child: pw.Row(
+                        children: [
+                          pw.Expanded(
+                            child: pw.Table(
+                              columnWidths: const {
+                                0: pw.FlexColumnWidth(1),
+                                1: pw.FlexColumnWidth(2),
+                                2: pw.FlexColumnWidth(2),
+                              },
+                              border: pw.TableBorder.all(
+                                  color: PdfColors.black,
+                                  style: pw.BorderStyle.solid,
+                                  width: 1),
+                              children: billDetails1.map((e) {
+                                int index = billDetails1.indexOf(e);
+                                return pw.TableRow(
+                                  children: [
+                                    (e.date == "DATE")
+                                        ? pwTableHeader(e.date)
+                                        : (int.parse(e.date) % 2 == 1)
                                         ? pwWhiteDate(e.date)
                                         : pwTableColorDate(e.date),
-                                (e.morning == "MORNING")
-                                    ? pwTableHeader(e.morning)
-                                    : (int.parse(e.date) % 2 == 1)
+                                    (e.morning == "MORNING")
+                                        ? pwTableHeader(e.morning)
+                                        : (int.parse(e.date) % 2 == 1)
                                         ? pwWhiteDate(e.morning)
                                         : pwTableColorDate(e.morning),
-                                (e.evening == "EVENING")
-                                    ? pwTableHeader(e.evening)
-                                    : (int.parse(e.date) % 2 == 1)
+                                    (e.evening == "EVENING")
+                                        ? pwTableHeader(e.evening)
+                                        : (int.parse(e.date) % 2 == 1)
                                         ? pwWhiteDate(e.evening)
                                         : pwTableColorDate(e.evening),
-                              ],
-                            );
-                          }).toList(),
-                        ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          pw.Expanded(
+                            child: pw.Table(
+                              columnWidths: const {
+                                0: pw.FlexColumnWidth(1),
+                                1: pw.FlexColumnWidth(2),
+                                2: pw.FlexColumnWidth(2),
+                              },
+                              border: pw.TableBorder.all(
+                                  color: PdfColors.black,
+                                  style: pw.BorderStyle.solid,
+                                  width: 1),
+                              children: billDetails2.map((e) {
+                                int index = billDetails2.indexOf(e);
+                                return (e.date != '-')
+                                    ? pw.TableRow(
+                                  children: [
+                                    (e.date == "DATE")
+                                        ? pwTableHeader(e.date)
+                                        : (int.parse(e.date) % 2 == 1)
+                                        ? pwWhiteDate(e.date)
+                                        : pwTableColorDate(e.date),
+                                    (e.morning == "MORNING")
+                                        ? pwTableHeader(e.morning)
+                                        : (int.parse(e.date) % 2 == 1)
+                                        ? pwWhiteDate(e.morning)
+                                        : pwTableColorDate(e.morning),
+                                    (e.evening == "EVENING")
+                                        ? pwTableHeader(e.evening)
+                                        : (int.parse(e.date) % 2 == 1)
+                                        ? pwWhiteDate(e.evening)
+                                        : pwTableColorDate(e.evening),
+                                  ],
+                                )
+                                    : pw.TableRow(
+                                  children: [
+                                    pwTableColorDate(e.date),
+                                    pwTableColorDate(e.morning),
+                                    pwTableColorDate(e.evening),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       ),
-                      pw.Expanded(
-                        child: pw.Table(
-                          columnWidths: const {
-                            0: pw.FlexColumnWidth(1),
-                            1: pw.FlexColumnWidth(2),
-                            2: pw.FlexColumnWidth(2),
-                          },
-                          border: pw.TableBorder.all(
-                              color: PdfColors.black,
-                              style: pw.BorderStyle.solid,
-                              width: 1),
-                          children: billDetails2.map((e) {
-                            int index = billDetails2.indexOf(e);
-                            return (e.date != '-')
-                                ? pw.TableRow(
-                                    children: [
-                                      (e.date == "DATE")
-                                          ? pwTableHeader(e.date)
-                                          : (int.parse(e.date) % 2 == 1)
-                                              ? pwWhiteDate(e.date)
-                                              : pwTableColorDate(e.date),
-                                      (e.morning == "MORNING")
-                                          ? pwTableHeader(e.morning)
-                                          : (int.parse(e.date) % 2 == 1)
-                                              ? pwWhiteDate(e.morning)
-                                              : pwTableColorDate(e.morning),
-                                      (e.evening == "EVENING")
-                                          ? pwTableHeader(e.evening)
-                                          : (int.parse(e.date) % 2 == 1)
-                                              ? pwWhiteDate(e.evening)
-                                              : pwTableColorDate(e.evening),
-                                    ],
-                                  )
-                                : pw.TableRow(
-                                    children: [
-                                      pwTableColorDate(e.date),
-                                      pwTableColorDate(e.morning),
-                                      pwTableColorDate(e.evening),
-                                    ],
-                                  );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    pwCommonField(
+                      color: PdfColors.white,
+                      textColor: PdfColors.black,
+                      title: LocaleString().cowMilk,
+                      amount: "79L * Rs. 58 = Rs. 458",
+                    ),
+                    pwCommonField(
+                      color: PdfColors.blue50,
+                      textColor: PdfColors.black,
+                      title: LocaleString().totalLiter,
+                      amount: LocaleString().totalLiterAmount,
+                    ),
+                    pwCommonField(
+                      color: PdfColors.white,
+                      textColor: PdfColors.black,
+                      title: LocaleString().pMonth,
+                      amount: "Rs. 582",
+                    ),
+                    pwCommonField(
+                      color: PdfColors.blue50,
+                      textColor: PdfColors.black,
+                      title: LocaleString().cMonth,
+                      amount: "Rs. 0",
+                    ),
+                    pwCommonField(
+                      color: PdfColors.white,
+                      textColor: PdfColors.black,
+                      title: LocaleString().received,
+                      amount: "Rs. 582",
+                    ),
+                    pwCommonField(
+                      color: PdfColors.blue50,
+                      textColor: PdfColors.black,
+                      title: LocaleString().total,
+                      amount: "Rs. 4582",
+                    ),
+                  ],
                 ),
-                pwCommonField(
-                  color: PdfColors.white,
-                  textColor: PdfColors.black,
-                  title: LocaleString().cowMilk,
-                  amount: "79L * Rs. 58 = Rs. 458",
-                ),
-                pwCommonField(
-                  color: PdfColors.blue50,
-                  textColor: PdfColors.black,
-                  title: LocaleString().totalLiter,
-                  amount: LocaleString().totalLiterAmount,
-                ),
-                pwCommonField(
-                  color: PdfColors.white,
-                  textColor: PdfColors.black,
-                  title: LocaleString().pMonth,
-                  amount: "Rs. 582",
-                ),
-                pwCommonField(
-                  color: PdfColors.blue50,
-                  textColor: PdfColors.black,
-                  title: LocaleString().cMonth,
-                  amount: "Rs. 0",
-                ),
-                pwCommonField(
-                  color: PdfColors.white,
-                  textColor: PdfColors.black,
-                  title: LocaleString().received,
-                  amount: "Rs. 582",
-                ),
-                pwCommonField(
-                  color: PdfColors.blue50,
-                  textColor: PdfColors.black,
-                  title: LocaleString().total,
-                  amount: "Rs. 4582",
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
       ),
     );
   }
 }
 
-pwCommonField(
-    {required PdfColor color,
-    required PdfColor textColor,
-    required String title,
-    required String amount}) {
+pwCommonField({required PdfColor color,
+  required PdfColor textColor,
+  required String title,
+  required String amount}) {
   return pw.Container(
     decoration: pw.BoxDecoration(
       border: pw.Border.all(width: 0.5),
