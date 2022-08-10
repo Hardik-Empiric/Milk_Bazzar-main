@@ -13,6 +13,7 @@ class AppRoutes {
   static const profile = '/profile';
   static const customerList = '/customerList';
   static const generateBill = '/generateBill';
+  static const generateBillMerchant = '/generateBillMerchant';
   static const home = '/home';
   static const sellMilk = '/sellMilk';
   static const selectCustomer = '/selectCustomer';

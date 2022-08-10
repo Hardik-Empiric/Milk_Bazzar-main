@@ -5,6 +5,8 @@ class CustomerListController extends GetxController {
 
   RxBool isRemoveOn = false.obs;
 
+  RxBool isDataLoading = true.obs;
+
 
 }
 
@@ -23,13 +25,4 @@ class ContactList {
 
 }
 
-List<ContactList> contactLists = <ContactList>[
-
-
-  ContactList(fullName: "Hardik Gediya", mobileNumber: "8460711716", address: "Surat"),
-  ContactList(fullName: "Abhi Savaliya", mobileNumber: "8460711716", address: "Surat"),
-  ContactList(fullName: "Jenil Savavni", mobileNumber: "8460711716", address: "Surat"),
-  ContactList(fullName: "Vishal Thummar", mobileNumber: "8460711716", address: "Surat"),
-  ContactList(fullName: "Parth Sutariya", mobileNumber: "8460711716", address: "Surat")
-
-];
+List<ContactList> contactLists = <ContactList>[];

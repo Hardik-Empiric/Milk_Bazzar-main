@@ -31,8 +31,7 @@ class AddCustomer extends StatefulWidget {
 class _AddCustomerState extends State<AddCustomer> {
   final AddCustomerController addCustomerController =
       Get.put(AddCustomerController());
-  final HomeController homeController =
-      Get.put(HomeController());
+  final HomeController homeController = Get.put(HomeController());
 
   final ImagePicker _picker = ImagePicker();
   bool imgstatus = false;
@@ -344,38 +343,51 @@ class _AddCustomerState extends State<AddCustomer> {
             _globalFromKey.currentState!.save();
 
 
-            contactLists.add(
-              ContactList(
-                fullName: fullNameController.text,
-                mobileNumber: phoneController.text,
-                address: addressController.text,
-              ),
-            );
 
-            var cus = await FirebaseFirestore.instance.collection('customers').get();
+            var cus =
+                await FirebaseFirestore.instance.collection('customers').get();
 
             List customer = [];
 
-            for(var docs in cus.docs)
-              {
-                customer.add(docs["number"]);
-              }
+            for (var docs in cus.docs) {
+              customer.add(docs["number"]);
+            }
 
-            if(customer.contains(phoneController.text))
-              {
-                var data = await FirebaseFirestore.instance.collection('customers').where("number",isEqualTo: phoneController.text).get();
-                var aa =  data.docs;
-                aa.forEach((element) {log(">>>>>>>>>>>>>>>>${element.id}");});
+            if (customer.contains(phoneController.text)) {
+              var data = await FirebaseFirestore.instance
+                  .collection('customers')
+                  .where("number", isEqualTo: phoneController.text)
+                  .get();
+              var add = data.docs;
+              add.forEach((element) async {
+                var check = await FirebaseFirestore.instance.collection('customers').doc(element.id.toString()).get();
+                if(check.data()!["merchant"].toString().isEmpty)
+                  {
+                    var data = await FirebaseFirestore.instance
+                        .collection('customers').doc("${element.id}").update({
+                      'merchant': FirebaseAuth.instance.currentUser!.uid.toString(),
+                    });
 
-                homeController.index.value = 0;
+                    contactLists.add(
+                      ContactList(
+                        fullName: fullNameController.text,
+                        mobileNumber: phoneController.text,
+                        address: addressController.text,
+                      ),
+                    );
 
-                // Get.offAllNamed(AppRoutes.home);
-              }
-            else
-              {
-                Get.snackbar("Customer", "No Found");
-              }
+                    homeController.index.value = 0;
 
+                    Get.offAllNamed(AppRoutes.home);
+                  }
+                else
+                  {
+                    Get.snackbar("Customer", "customer has Already have an other Merchant...",backgroundColor: AppColors.darkBlue,colorText: AppColors.white);
+                  }
+              });
+            } else {
+              Get.snackbar("Customer", "No Found",backgroundColor: AppColors.darkBlue,colorText: AppColors.white);
+            }
           }
         },
         child: GlobalText(

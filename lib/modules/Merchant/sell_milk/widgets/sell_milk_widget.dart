@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,9 +31,32 @@ class _SellMilkState extends State<SellMilk> {
 
   String _selectedMenu = DateTime.now().year.toString();
 
-
-
   final _formKey = GlobalKey<FormState>();
+
+  var customerList = [];
+
+  getData() async {
+    print("Hello");
+    await FirebaseFirestore.instance
+        .collection("customers")
+        .where("merchant",
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+        .get().then((value) {
+          value.docs.map((e) {
+            print(e["name"]);
+            customerList.add(e["name"].toString());
+          });
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+    print(customerList);
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +184,7 @@ class _SellMilkState extends State<SellMilk> {
                 month: DateTime.now().month.toString(),
                 year: DateTime.now().year.toString(),
                 time: sellMilkController.duration.value.toString(),
-                customerName:  sellMilkController.customerName.value,
+                customerName: sellMilkController.customerName.value,
                 session: _selectedMenu.toString(),
                 liter: sellMilkController.liter.value.toString()),
           );
@@ -251,17 +276,18 @@ class _SellMilkState extends State<SellMilk> {
                   ),
                   iconSize: 30,
                   buttonHeight: 50,
-                  items: contactLists
-                      .map((item) => DropdownMenuItem<String>(
-                            value: item.fullName,
-                            child: Text(
-                              item.fullName,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ))
-                      .toList(),
+                  items: customerList.map((item) {
+                    print(item["name"].toString());
+                    return DropdownMenuItem<String>(
+                      value: item["name"].toString(),
+                      child: Text(
+                        item["name"].toString(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    );
+                  }).toList(),
                   validator: (value) {
                     if (value == null) {
                       return 'Please select customer.';

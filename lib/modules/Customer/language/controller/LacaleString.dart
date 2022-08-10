@@ -116,7 +116,7 @@ class LocaleString extends Translations {
   String ronaldAmount = "2,500";
 
   String jaiminPatelVarachha = "Jaimin Patel / Varachha";
-  String billOf = "Bill Of: April / 2022";
+  String billOf = "Bill Of:";
   String date = "DATE";
   String morning = "MORNING";
   String evening = "EVENING";
@@ -166,8 +166,15 @@ class LocaleString extends Translations {
 
   String signUpAsMerchant = "SignUp as Merchant";
 
+  String noCustomer = "No Any Customer\nClick + Button to Add Customer";
+
   String termsAndConditions =
       "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de Finibus Bonorum et Malorum' (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, 'Lorem ipsum dolor sit amet..', comes from a line in section 1.10.32.The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from 'de Finibus Bonorum et Malorum' by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.";
+
+  String areYouSure = "Are You Sure?";
+  String yes = "Yes";
+  String no = "No";
+  String wantToDelete = "You want to delete this customer?";
 
   Map<String, Map<String, String>> get keys => {
         'en_US': {
@@ -302,18 +309,19 @@ class LocaleString extends Translations {
           selectLiter: "Select Your Liter",
           addMilkButtonText: "Add Milk",
           cancelButtonText: "Cancel",
-
-
           addCustomer: "Add Customer",
           addCustomerMsg: "Please fill the details And Create Customer",
-
-          customerCategory : "Select Customer's Bill Category",
-          pendingAmount : "Pending Amount Monthly",
-          allCustomerBill : "All Customer Bill",
-          totalPending : "Total 5 Customer",
-          totalCustomer : "Total 50 Customer",
-
-          signUpAsMerchant : "SignUp as Merchant",
+          customerCategory: "Select Customer's Bill Category",
+          pendingAmount: "Pending Amount Monthly",
+          allCustomerBill: "All Customer Bill",
+          totalPending: "Total 5 Customer",
+          totalCustomer: "Total 50 Customer",
+          signUpAsMerchant: "SignUp as Merchant",
+          noCustomer: "No Any Customer\nClick + Button to Add Customer",
+          areYouSure: "Are You Sure?",
+          yes: "Yes",
+          no: "No",
+          wantToDelete: "You want to delete this customer?",
         },
         'gu_IN': {
           changeLan: 'ભાષા બદલો',
@@ -353,7 +361,7 @@ class LocaleString extends Translations {
           mobileNumberText: "મોબાઇલ નંબર",
           continueText: "ચાલુ રાખો",
           settingText: "સેટિંગ્સ",
-          totalText : "કુલ",
+          totalText: "કુલ",
           sellMilText: "દૂધ વેચો",
           updateProfileText: "પ્રોફાઇલ અપડેટ કરો",
           editProfileText: "છબી સંપાદિત કરો",
@@ -411,7 +419,7 @@ class LocaleString extends Translations {
           ronaldMonth: "માર્ચની કુલ રકમ છે ",
           ronaldAmount: "૨,૫૦૦",
           jaiminPatelVarachha: "જૈમિન પટેલ/વરાછા",
-          billOf: "બિલ ઓફ: એપ્રિલ / ૨૦૨૨",
+          billOf: "બિલ ઓફ:",
           date: "તારીખ",
           morning: "સવાર",
           evening: "સાંજ",
@@ -442,17 +450,19 @@ class LocaleString extends Translations {
           selectLiter: "તમારું લિટર પસંદ કરો",
           addMilkButtonText: "દૂધ ઉમેરો",
           cancelButtonText: "રદ કરો",
-
           addCustomer: "ગ્રાહક ઉમેરો",
           addCustomerMsg: "કૃપા કરીને વિગતો ભરો અને ગ્રાહક બનાવો",
-
-          customerCategory : "ગ્રાહકની બિલ કેટેગરી પસંદ કરો",
-          pendingAmount : "માસિક બાકી રકમ",
-          allCustomerBill : "બધા ગ્રાહક બિલ",
-          totalPending : "કુલ 5 ગ્રાહક",
-          totalCustomer : "કુલ 50 ગ્રાહક",
-
-          signUpAsMerchant : "વેપારી તરીકે સાઇન અપ કરો",
+          customerCategory: "ગ્રાહકની બિલ કેટેગરી પસંદ કરો",
+          pendingAmount: "માસિક બાકી રકમ",
+          allCustomerBill: "બધા ગ્રાહક બિલ",
+          totalPending: "કુલ 5 ગ્રાહક",
+          totalCustomer: "કુલ 50 ગ્રાહક",
+          signUpAsMerchant: "વેપારી તરીકે સાઇન અપ કરો",
+          noCustomer: "કોઈ ગ્રાહક નથી\nગ્રાહક ઉમેરવા માટે + બટન પર ક્લિક કરો",
+          areYouSure: "શું તમને ખાતરી છે?",
+          yes: "હા",
+          no: "ના",
+          wantToDelete: "તમે આ ગ્રાહકને કાઢી નાખવા માંગો છો?",
         },
         'hi_IN': {
           changeLan: 'भाषा बदलो',
@@ -549,7 +559,7 @@ class LocaleString extends Translations {
           ronaldMonth: "मार्च की कुल राशि है",
           ronaldAmount: "2,500",
           jaiminPatelVarachha: "जैमिन पटेल / वराछा",
-          billOf: "का बिल: अप्रैल / 2022",
+          billOf: "का बिल:",
           date: "दिनांक",
           morning: "प्रभात",
           evening: "शाम",
@@ -580,18 +590,20 @@ class LocaleString extends Translations {
           selectLiter: "अपने लीटर का चयन करें",
           addMilkButtonText: "दूध डालें",
           cancelButtonText: "रद्द करना",
-
           addCustomer: "ग्राहक जोड़ें",
           addCustomerMsg: "कृपया विवरण भरें और ग्राहक बनाएं",
-
-          customerCategory : "ग्राहक की बिल श्रेणी चुनें",
-          pendingAmount : "लंबित राशि मासिक",
-          allCustomerBill : "सभी ग्राहक बिल",
-          totalPending : "कुल 5 ग्राहक",
-          totalCustomer : "कुल 50 ग्राहक",
-          totalText : "कुल",
-
-          signUpAsMerchant : "व्यापारी के रूप में साइन अप करें",
+          customerCategory: "ग्राहक की बिल श्रेणी चुनें",
+          pendingAmount: "लंबित राशि मासिक",
+          allCustomerBill: "सभी ग्राहक बिल",
+          totalPending: "कुल 5 ग्राहक",
+          totalCustomer: "कुल 50 ग्राहक",
+          totalText: "कुल",
+          signUpAsMerchant: "व्यापारी के रूप में साइन अप करें",
+          noCustomer: "कोई ग्राहक नहीं\nग्राहक जोड़ने के लिए + बटन पर क्लिक करें",
+          areYouSure: "क्या आपको यकीन है?",
+          yes: "हाँ",
+          no: "नहीं",
+          wantToDelete: "आप इस ग्राहक को हटाना चाहते हैं?",
         },
       };
 }

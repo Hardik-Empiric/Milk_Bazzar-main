@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -19,16 +21,24 @@ class CustomerListScreen extends StatefulWidget {
 }
 
 class _CustomerListScreenState extends State<CustomerListScreen> {
+  CustomerListController customerListController =
+      Get.put(CustomerListController());
+
+  final HomeController homeController = Get.put(HomeController());
+
+  var newData = [];
+  var customerData = [];
+
+  String searchResult = "";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
 
-  final HomeController homeController = Get.put(HomeController());
-
   @override
-  Widget build(BuildContext context) {
+  build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.blue,
       body: SafeArea(
@@ -39,9 +49,46 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               color: Theme.of(context).backgroundColor,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Expanded(
-                    child: Searching(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            searchResult = value;
+                          });
+                        },
+                        textAlign: TextAlign.center,
+                        cursorHeight: 20,
+                        cursorColor: Theme.of(context).primaryColor,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.only(top: 5),
+                          suffixIcon: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.mic,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                          hintText: LocaleString().searchCus.tr,
+                          hintStyle: const TextStyle(
+                            color: AppColors.darkGrey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
+                          prefixIcon: Icon(Icons.search_rounded,
+                              color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
                     flex: 11,
                   ),
                   Expanded(
@@ -54,85 +101,130 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             Expanded(
               child: Container(
                 color: Theme.of(context).backgroundColor,
-                child: (contactLists.isNotEmpty)
-                    ? ListView.builder(
-                        itemCount: contactLists.length,
-                        itemBuilder: (context, i) {
-                          print(contactLists.length);
-                          return Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(AppRoutes.generateBill);
-                                },
-                                child: ListTile(
-                                  trailing: Obx(
-                                    () => Visibility(
-                                      visible: customerListController
-                                          .isRemoveOn.value,
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.cancel,
-                                          color: AppColors.red,
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("customers")
+                      .where("merchant",
+                          isEqualTo:
+                              FirebaseAuth.instance.currentUser!.uid.toString())
+                      .snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
+                    if (snapshots.hasData) {
+                      customerData = snapshots.data!.docs;
+
+                      newData = customerData;
+
+                      if (newData.length == 0) {
+                        return Center(
+                          child: GlobalText(
+                            text: LocaleString().noCustomer.tr,
+                            textAlign: TextAlign.center,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17,
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          itemCount: newData.length,
+                          itemBuilder: (context, i) {
+                            final singleData = newData[i];
+                            return (singleData["name"].toString().toLowerCase().contains(searchResult.toLowerCase())) ? Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(AppRoutes.generateBillMerchant,arguments: singleData);
+                                  },
+                                  child: ListTile(
+                                    trailing: Obx(
+                                      () => Visibility(
+                                        visible: customerListController
+                                            .isRemoveOn.value,
+                                        child: IconButton(
+                                          icon: Icon(
+                                            Icons.cancel,
+                                            color: AppColors.red,
+                                          ),
+                                          onPressed: () {
+                                            Get.defaultDialog(
+                                              onCancel: () {
+                                                Get.back();
+                                              },
+                                              onConfirm: () async {
+                                                await FirebaseFirestore.instance
+                                                    .collection('customers')
+                                                    .doc(singleData["uid"]
+                                                        .toString())
+                                                    .delete();
+                                                Get.back();
+                                              },
+                                              title: LocaleString().areYouSure.tr,
+                                              backgroundColor: AppColors.white,
+                                              titleStyle: TextStyle(
+                                                  color: AppColors.darkBlue),
+                                              middleTextStyle: TextStyle(
+                                                  color: Colors.white),
+                                              textConfirm: LocaleString().yes.tr,
+                                              textCancel: LocaleString().no.tr,
+                                              cancelTextColor: Colors.black,
+                                              confirmTextColor: Colors.white,
+                                              buttonColor: AppColors.blue,
+                                              barrierDismissible: false,
+                                              radius: 50,
+                                              content: Text(
+                                                  LocaleString().wantToDelete.tr),
+                                            );
+                                          },
                                         ),
-                                        onPressed: () {
-                                          setState(() {
-                                            contactLists
-                                                .remove(contactLists[i]);
-                                          });
-                                        },
                                       ),
                                     ),
-                                  ),
-                                  leading: const CircleAvatar(
-                                    radius: 22,
-                                    backgroundImage: NetworkImage(
-                                        "https://images.unsplash.com/photo-1603384699007-50799748fc45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fG1lbnN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"),
-                                  ),
-                                  title: GlobalText(
-                                    text: contactLists[i].fullName,
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 18,
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      GlobalText(
-                                        text: LocaleString().ronaldMonth.tr,
-                                        color: AppColors.textColor3,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      GlobalText(
-                                        text: LocaleString().ronaldAmount.tr,
-                                        color: AppColors.orange,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
+                                    leading: const CircleAvatar(
+                                      radius: 22,
+                                      backgroundImage: NetworkImage(
+                                          "https://images.unsplash.com/photo-1603384699007-50799748fc45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fG1lbnN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"),
+                                    ),
+                                    title: GlobalText(
+                                      text: singleData["name"],
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 18,
+                                    ),
+                                    subtitle: Row(
+                                      children: [
+                                        GlobalText(
+                                          text: LocaleString().ronaldMonth.tr,
+                                          color: AppColors.textColor3,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        GlobalText(
+                                          text: LocaleString().ronaldAmount.tr,
+                                          color: AppColors.orange,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Divider(
-                                thickness: 0.5,
-                                indent: 25,
-                                endIndent: 25,
-                                color: AppColors.borderColor,
-                              ),
-                            ],
-                          );
-                        },
-                      )
-                    : Center(
-                        child: GlobalText(
-                          text:
-                              "No Any Customer\nClick + Button to Add Customer",
-                          textAlign: TextAlign.center,
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17,
-                        ),
-                      ),
+                                Divider(
+                                  thickness: 0.5,
+                                  indent: 25,
+                                  endIndent: 25,
+                                  color: AppColors.borderColor,
+                                ),
+                              ],
+                            ) : Visibility(child: Container(),visible: false,);
+                          },
+                        );
+                      }
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
