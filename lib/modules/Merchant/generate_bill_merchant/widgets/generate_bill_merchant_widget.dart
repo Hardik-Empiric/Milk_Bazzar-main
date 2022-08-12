@@ -13,190 +13,253 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
-import '../controller/generate_bill_controller.dart';
+import '../controller/generate_bill_merchant_controller.dart';
 
 class Bill extends StatefulWidget {
   var data;
   var currentMonth;
   var currentYear;
 
-  Bill({this.data,this.currentMonth,this.currentYear});
+  Bill({this.data, this.currentMonth, this.currentYear});
 
   @override
   State<Bill> createState() => _BillState();
 }
 
 class _BillState extends State<Bill> {
+  List months = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Container(
-        padding: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).primaryColor),
-        ),
-        child: Column(
-          children: [
-            Container(
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("customers")
+          .doc("${widget.data["uid"]}")
+          .collection("milk_data")
+          .doc("${DateTime.now().year}")
+          .collection("${months[DateTime.now().month - 1]}")
+          .snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
+        if (snapshots.hasData) {
+          var MilkData = snapshots.data!;
+
+          var data = MilkData.docs;
+
+
+
+          // for (int i = 0; i < 16; i++) {
+          //   if(data[i]["date"] == i)
+          //     {
+          //       billDetails1.add(
+          //         BillDetails(date: data[i]["date"], morning: data[i]["liter"].toString(), evening: data[i]["liter"].toString()),
+          //       );
+          //     }
+          //   else
+          //     {
+          //       billDetails1.add(BillDetails(date: "$i", morning: "-", evening: "-"));
+          //     }
+          // }
+
+          print("Data : ${data.length}");
+
+          print(data[0]["liter"].toString());
+
+          return Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Container(
+              padding: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: AppColors.darkGrey),
-                color: AppColors.tableColor,
+                border: Border.all(color: Theme.of(context).primaryColor),
               ),
-              margin: const EdgeInsets.only(top: 7),
-              height: SizeData.height * 0.04,
-              // width: SizeData.width,
-              alignment: Alignment.center,
-              child: GlobalText(
-                text: "${widget.data["name"]}",
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: AppColors.blue),
-                color: Theme.of(context).backgroundColor,
-              ),
-              height: SizeData.height * 0.04,
-              // width: SizeData.width,
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  GlobalText(
-                    text: LocaleString().billOf.tr,
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).primaryColor,
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0.5, color: AppColors.darkGrey),
+                      color: AppColors.tableColor,
+                    ),
+                    margin: const EdgeInsets.only(top: 7),
+                    height: SizeData.height * 0.04,
+                    // width: SizeData.width,
+                    alignment: Alignment.center,
+                    child: GlobalText(
+                      text: "${widget.data["name"]}",
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  GlobalText(
-                    text: " ${widget.currentMonth} / ${widget.currentYear}",
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).primaryColor,
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0.5, color: AppColors.blue),
+                      color: Theme.of(context).backgroundColor,
+                    ),
+                    height: SizeData.height * 0.04,
+                    // width: SizeData.width,
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GlobalText(
+                          text: LocaleString().billOf.tr,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        GlobalText(
+                          text:
+                              " ${widget.currentMonth} / ${widget.currentYear}",
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(1),
+                            1: FlexColumnWidth(2),
+                            2: FlexColumnWidth(2),
+                          },
+                          border: TableBorder.all(
+                              color: Theme.of(context).primaryColor,
+                              style: BorderStyle.solid,
+                              width: 1),
+                          children: data.map((e) {
+                            int index = data.indexOf(e);
+                            return TableRow(
+                              children: [
+                                // (e.date == "DATE")
+                                //     ? tableHeader(e.date)
+                                //     : (int.parse(e.date) % 2 == 1)
+                                //         ? whiteDate(e.date)
+                                //         : tableColorDate(e.date),
+                                // (e.morning == "MORNING")
+                                //     ? tableHeader(e.morning)
+                                //     : (int.parse(e.date) % 2 == 1)
+                                //         ? whiteDate(e.morning)
+                                //         : tableColorDate(e.morning),
+                                // (e.evening == "EVENING")
+                                //     ? tableHeader(e.evening)
+                                //     : (int.parse(e.date) % 2 == 1)
+                                //         ? whiteDate(e.evening)
+                                //         : tableColorDate(e.evening),
+                                tableHeader("${e["date"]}"),
+                                () ? whiteDate("${e["liter"]}"),
+                                tableColorDate("${e["liter"]}"),
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Expanded(
+                        child: Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(1),
+                            1: FlexColumnWidth(2),
+                            2: FlexColumnWidth(2),
+                          },
+                          border: TableBorder.all(
+                              color: Theme.of(context).primaryColor,
+                              style: BorderStyle.solid,
+                              width: 1),
+                          children: billDetails2.map((e) {
+                            int index = billDetails2.indexOf(e);
+                            return (e.date != '-')
+                                ? TableRow(
+                                    children: [
+                                      (e.date == "DATE")
+                                          ? tableHeader(e.date)
+                                          : (int.parse(e.date) % 2 == 1)
+                                              ? whiteDate(e.date)
+                                              : tableColorDate(e.date),
+                                      (e.morning == "MORNING")
+                                          ? tableHeader(e.morning)
+                                          : (int.parse(e.date) % 2 == 1)
+                                              ? whiteDate(e.morning)
+                                              : tableColorDate(e.morning),
+                                      (e.evening == "EVENING")
+                                          ? tableHeader(e.evening)
+                                          : (int.parse(e.date) % 2 == 1)
+                                              ? whiteDate(e.evening)
+                                              : tableColorDate(e.evening),
+                                    ],
+                                  )
+                                : TableRow(
+                                    children: [
+                                      tableColorDate(e.date),
+                                      tableColorDate(e.morning),
+                                      tableColorDate(e.evening),
+                                    ],
+                                  );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  commonField(
+                    color: Theme.of(context).backgroundColor,
+                    textColor: Theme.of(context).primaryColor,
+                    title: LocaleString().cowMilk.tr,
+                    amount: LocaleString().cowMilkAmount.tr,
+                  ),
+                  commonField(
+                    color: AppColors.tableColor,
+                    textColor: AppColors.black,
+                    title: LocaleString().totalLiter.tr,
+                    amount: LocaleString().totalLiterAmount.tr,
+                  ),
+                  commonField(
+                    color: Theme.of(context).backgroundColor,
+                    textColor: Theme.of(context).primaryColor,
+                    title: LocaleString().pMonth.tr,
+                    amount: LocaleString().pMonthAmount.tr,
+                  ),
+                  commonField(
+                    color: AppColors.tableColor,
+                    textColor: AppColors.black,
+                    title: LocaleString().cMonth.tr,
+                    amount: LocaleString().cMonthAmount.tr,
+                  ),
+                  commonField(
+                    color: Theme.of(context).backgroundColor,
+                    textColor: Theme.of(context).primaryColor,
+                    title: LocaleString().received.tr,
+                    amount: LocaleString().receivedAmount.tr,
+                  ),
+                  commonField(
+                    color: AppColors.tableColor,
+                    textColor: AppColors.black,
+                    title: LocaleString().total.tr,
+                    amount: LocaleString().totalAmount.tr,
                   ),
                 ],
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Table(
-                    columnWidths: const {
-                      0: FlexColumnWidth(1),
-                      1: FlexColumnWidth(2),
-                      2: FlexColumnWidth(2),
-                    },
-                    border: TableBorder.all(
-                        color: Theme.of(context).primaryColor,
-                        style: BorderStyle.solid,
-                        width: 1),
-                    children: billDetails1.map((e) {
-                      int index = billDetails1.indexOf(e);
-                      return TableRow(
-                        children: [
-                          (e.date == "DATE")
-                              ? tableHeader(e.date)
-                              : (int.parse(e.date) % 2 == 1)
-                                  ? whiteDate(e.date)
-                                  : tableColorDate(e.date),
-                          (e.morning == "MORNING")
-                              ? tableHeader(e.morning)
-                              : (int.parse(e.date) % 2 == 1)
-                                  ? whiteDate(e.morning)
-                                  : tableColorDate(e.morning),
-                          (e.evening == "EVENING")
-                              ? tableHeader(e.evening)
-                              : (int.parse(e.date) % 2 == 1)
-                                  ? whiteDate(e.evening)
-                                  : tableColorDate(e.evening),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                ),
-                Expanded(
-                  child: Table(
-                    columnWidths: const {
-                      0: FlexColumnWidth(1),
-                      1: FlexColumnWidth(2),
-                      2: FlexColumnWidth(2),
-                    },
-                    border: TableBorder.all(
-                        color: Theme.of(context).primaryColor,
-                        style: BorderStyle.solid,
-                        width: 1),
-                    children: billDetails2.map((e) {
-                      int index = billDetails2.indexOf(e);
-                      return (e.date != '-')
-                          ? TableRow(
-                              children: [
-                                (e.date == "DATE")
-                                    ? tableHeader(e.date)
-                                    : (int.parse(e.date) % 2 == 1)
-                                        ? whiteDate(e.date)
-                                        : tableColorDate(e.date),
-                                (e.morning == "MORNING")
-                                    ? tableHeader(e.morning)
-                                    : (int.parse(e.date) % 2 == 1)
-                                        ? whiteDate(e.morning)
-                                        : tableColorDate(e.morning),
-                                (e.evening == "EVENING")
-                                    ? tableHeader(e.evening)
-                                    : (int.parse(e.date) % 2 == 1)
-                                        ? whiteDate(e.evening)
-                                        : tableColorDate(e.evening),
-                              ],
-                            )
-                          : TableRow(
-                              children: [
-                                tableColorDate(e.date),
-                                tableColorDate(e.morning),
-                                tableColorDate(e.evening),
-                              ],
-                            );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-            commonField(
-              color: Theme.of(context).backgroundColor,
-              textColor: Theme.of(context).primaryColor,
-              title: LocaleString().cowMilk.tr,
-              amount: LocaleString().cowMilkAmount.tr,
-            ),
-            commonField(
-              color: AppColors.tableColor,
-              textColor: AppColors.black,
-              title: LocaleString().totalLiter.tr,
-              amount: LocaleString().totalLiterAmount.tr,
-            ),
-            commonField(
-              color: Theme.of(context).backgroundColor,
-              textColor: Theme.of(context).primaryColor,
-              title: LocaleString().pMonth.tr,
-              amount: LocaleString().pMonthAmount.tr,
-            ),
-            commonField(
-              color: AppColors.tableColor,
-              textColor: AppColors.black,
-              title: LocaleString().cMonth.tr,
-              amount: LocaleString().cMonthAmount.tr,
-            ),
-            commonField(
-              color: Theme.of(context).backgroundColor,
-              textColor: Theme.of(context).primaryColor,
-              title: LocaleString().received.tr,
-              amount: LocaleString().receivedAmount.tr,
-            ),
-            commonField(
-              color: AppColors.tableColor,
-              textColor: AppColors.black,
-              title: LocaleString().total.tr,
-              amount: LocaleString().totalAmount.tr,
-            ),
-          ],
-        ),
-      ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 

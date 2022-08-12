@@ -278,7 +278,7 @@ class LocaleString extends Translations {
           ronaldMonth: "March's Total Amount is ",
           ronaldAmount: "2,500",
           jaiminPatelVarachha: "Jaimin Patel / Varachha",
-          billOf: "Bill Of: April / 2022",
+          billOf: "Bill Of:",
           date: "DATE",
           morning: "MORNING",
           evening: "EVENING",

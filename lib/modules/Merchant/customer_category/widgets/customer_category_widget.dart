@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +29,10 @@ class CustomerCategory extends StatefulWidget {
 class _CustomerCategoryState extends State<CustomerCategory> {
   final CustomerCategoryController customerCategoryController = Get.put(CustomerCategoryController());
   final HomeController homeController = Get.put(HomeController());
+
+  var totalCustomer = [];
+
+  var paddingBillCustomer = [];
 
   @override
   Widget build(BuildContext context) {
@@ -91,16 +97,12 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    advanceFields(
+                    paddingBilCus(
                         alignment: const Alignment(-0.55, -0.8),
-                        name: LocaleString().pendingAmount.tr,
-                        msg: "${LocaleString().totalText.tr} ${contactLists.length} ${LocaleString().customer.tr}",
-                        navigatorPageName: AppRoutes.customerList),
-                    advanceFields(
+                        icon: Icons.keyboard_arrow_down_rounded),
+                    totalCus(
                         alignment: const Alignment(-0.65, -0.8),
-                        name: LocaleString().allCustomerBill.tr,
-                        msg: "${LocaleString().totalText.tr} ${contactLists.length} ${LocaleString().customer.tr}",
-                        navigatorPageName: AppRoutes.customerList),
+                        icon: Icons.keyboard_arrow_down_rounded),
                   ],
                 ),
               ),
@@ -145,48 +147,95 @@ class _CustomerCategoryState extends State<CustomerCategory> {
     );
   }
 
-  advanceFields(
-      {required String name,
-      required Alignment alignment,
-      required String msg,
-      required String navigatorPageName}) {
-    return GestureDetector(
-      onTap: () {
-        Get.toNamed(navigatorPageName);
-      },
+  paddingBilCus(
+      {required Alignment alignment,
+        required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20, left: 20),
       child: Stack(
-        alignment: alignment,
+        alignment: Alignment(-0.9, -0.95),
         children: [
           Container(
             height: SizeData.height * 0.06,
+            width: SizeData.width * 0.8,
             margin:
-                const EdgeInsets.only(left: 20, right: 20, bottom: 15, top: 15),
+            const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                    color: AppColors.borderColor, width: 2)),
+                border: Border.all(color: AppColors.borderColor, width: 2)),
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.only(right: 10, left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GlobalText(
-                    text: msg,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  const CircleAvatar(
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("customers")
+                      .where("merchant",
+                      isEqualTo:
+                      FirebaseAuth.instance.currentUser!.uid.toString())
+                      .snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
+                    if (snapshots.hasData) {
+                      totalCustomer = snapshots.data!.docs;
+
+                      return DropdownButtonFormField2(
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Theme
+                              .of(context)
+                              .primaryColor,
+                        ),
+                        dropdownDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        isExpanded: true,
+                        hint: GlobalText(
+                          text: "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          color: AppColors.darkGrey,
+                        ),
+                        icon: CircleAvatar(
                           radius: 10,
                           backgroundColor: AppColors.borderColor,
                           child: Icon(
-                            Icons.keyboard_arrow_down_rounded,
+                            icon,
                             color: AppColors.blue,
                             size: 20,
                           ),
                         ),
-                ],
+                        iconSize: 30,
+                        buttonHeight: 50,
+                        items: totalCustomer.map((item) {
+                          return DropdownMenuItem<String>(
+                            value: item["name"].toString(),
+                            child: Text(
+                              item["name"].toString(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select customer.';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          //Do something when changing the item if you want.
+                        },
+                      );
+                    }
+                    else
+                    {
+                      return CircularProgressIndicator();
+                    }
+                  }
               ),
             ),
           ),
@@ -194,7 +243,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
             color: Theme.of(context).backgroundColor,
             padding: EdgeInsets.all(4),
             child: GlobalText(
-              text: name,
+              text: LocaleString().pendingAmount.tr,
               fontWeight: FontWeight.w500,
               fontSize: 14,
               color: Theme.of(context).hintColor,
@@ -204,6 +253,115 @@ class _CustomerCategoryState extends State<CustomerCategory> {
       ),
     );
   }
+
+
+  totalCus(
+      {required Alignment alignment,
+        required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 20, left: 20),
+      child: Stack(
+        alignment: Alignment(-0.9, -0.95),
+        children: [
+          Container(
+            height: SizeData.height * 0.06,
+            width: SizeData.width * 0.8,
+            margin:
+            const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: AppColors.borderColor, width: 2)),
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, left: 10),
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("customers")
+                      .where("merchant",
+                      isEqualTo:
+                      FirebaseAuth.instance.currentUser!.uid.toString())
+                      .snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
+                    if (snapshots.hasData) {
+                      totalCustomer = snapshots.data!.docs;
+
+                      return DropdownButtonFormField2(
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Theme
+                              .of(context)
+                              .primaryColor,
+                        ),
+                        dropdownDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        isExpanded: true,
+                        hint: GlobalText(
+                          text: "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          color: AppColors.darkGrey,
+                        ),
+                        icon: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: AppColors.borderColor,
+                          child: Icon(
+                            icon,
+                            color: AppColors.blue,
+                            size: 20,
+                          ),
+                        ),
+                        iconSize: 30,
+                        buttonHeight: 50,
+                        items: totalCustomer.map((item) {
+                          return DropdownMenuItem<String>(
+                            value: item["name"].toString(),
+                            child: Text(
+                              item["name"].toString(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select customer.';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          //Do something when changing the item if you want.
+                        },
+                      );
+                    }
+                    else
+                    {
+                      return CircularProgressIndicator();
+                    }
+                  }
+              ),
+            ),
+          ),
+          Container(
+            color: Theme.of(context).backgroundColor,
+            padding: EdgeInsets.all(4),
+            child: GlobalText(
+              text: LocaleString().allCustomerBill.tr,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: Theme.of(context).hintColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   doneButton() {
     return Padding(

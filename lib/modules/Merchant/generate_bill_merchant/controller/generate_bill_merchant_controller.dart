@@ -1,3 +1,19 @@
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+var date = DateTime.now();
+
+var firstDayThisMonth = new DateTime(date.year, date.month, date.day);
+var firstDayNextMonth = new DateTime(firstDayThisMonth.year, firstDayThisMonth.month + 1, firstDayThisMonth.day);
+var CMTD = firstDayNextMonth.difference(firstDayThisMonth).inDays;
+
+class GenerateBillController extends GetxController {
+
+  RxInt currentMonthsTotalDays = CMTD.obs;
+
+
+}
+
 class BillDetails {
   String date;
   String morning;
@@ -11,24 +27,9 @@ class BillDetails {
 }
 
 
+
 List<BillDetails> billDetails1 = <BillDetails>[
-  BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING"),
-  BillDetails(date: '01', morning: '-', evening: '-'),
-  BillDetails(date: '02', morning: '-', evening: '-'),
-  BillDetails(date: '03', morning: '-', evening: '-'),
-  BillDetails(date: '04', morning: '-', evening: '-'),
-  BillDetails(date: '05', morning: '-', evening: '-'),
-  BillDetails(date: '06', morning: '-', evening: '-'),
-  BillDetails(date: '07', morning: '-', evening: '-'),
-  BillDetails(date: '08', morning: '-', evening: '-'),
-  BillDetails(date: '09', morning: '-', evening: '-'),
-  BillDetails(date: '10', morning: '-', evening: '-'),
-  BillDetails(date: '11', morning: '-', evening: '-'),
-  BillDetails(date: '12', morning: '-', evening: '-'),
-  BillDetails(date: '13', morning: '-', evening: '-'),
-  BillDetails(date: '14', morning: '-', evening: '-'),
-  BillDetails(date: '15', morning: '-', evening: '-'),
-  BillDetails(date: '16', morning: '-', evening: '-'),
+  // BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING"),
 
 ];
 
@@ -51,3 +52,5 @@ List<BillDetails> billDetails2 = <BillDetails>[
   BillDetails(date: '31', morning: '-', evening: '-'),
   BillDetails(date: '-', morning: '-', evening: '-'),
 ];
+
+

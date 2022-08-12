@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
-import '../widgets/generate_bill_widget.dart';
+import '../widgets/generate_bill_merchant_widget.dart';
 
 class GenerateBillMerchantScreen extends StatefulWidget {
   const GenerateBillMerchantScreen({Key? key}) : super(key: key);
@@ -17,20 +17,20 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
 
   var data = Get.arguments;
 
-  List months = [
-    LocaleString().jan.tr,
-    LocaleString().feb.tr,
-    LocaleString().mar.tr,
-    LocaleString().apr.tr,
-    LocaleString().may.tr,
-    LocaleString().jun.tr,
-    LocaleString().jul.tr,
-    LocaleString().aug.tr,
-    LocaleString().sep.tr,
-    LocaleString().oct.tr,
-    LocaleString().nov.tr,
-    LocaleString().dec.tr
-  ];
+List months = [
+  LocaleString().jan.tr,
+  LocaleString().feb.tr,
+  LocaleString().mar.tr,
+  LocaleString().apr.tr,
+  LocaleString().may.tr,
+  LocaleString().jun.tr,
+  LocaleString().jul.tr,
+  LocaleString().aug.tr,
+  LocaleString().sep.tr,
+  LocaleString().oct.tr,
+  LocaleString().nov.tr,
+  LocaleString().dec.tr,
+];
 
   var currentYear = DateTime.now().year.toString();
   var currentMonth;

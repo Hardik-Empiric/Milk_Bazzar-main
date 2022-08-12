@@ -4,16 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:milk_bazzar/modules/Merchant/customer_list/controller/customer_list_controller.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
+import '../../../../models/login_models/loginModels.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
-import '../../../../utils/app_text.dart';
 import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
 import '../controller/sell_milk_controller.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
 class SellMilk extends StatefulWidget {
   const SellMilk({Key? key}) : super(key: key);
@@ -29,33 +27,18 @@ class _SellMilkState extends State<SellMilk> {
 
   bool isCheck = false;
 
-  String _selectedMenu = DateTime.now().year.toString();
+  String _selectedMenu = DateTime
+      .now()
+      .year
+      .toString();
 
   final _formKey = GlobalKey<FormState>();
 
   var customerList = [];
 
-  getData() async {
-    print("Hello");
-    await FirebaseFirestore.instance
-        .collection("customers")
-        .where("merchant",
-            isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
-        .get().then((value) {
-          value.docs.map((e) {
-            print(e["name"]);
-            customerList.add(e["name"].toString());
-          });
-    });
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getData();
-    print(customerList);
-
   }
 
   @override
@@ -83,7 +66,9 @@ class _SellMilkState extends State<SellMilk> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).backgroundColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.shadow,
@@ -95,7 +80,7 @@ class _SellMilkState extends State<SellMilk> {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
+              const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -107,7 +92,9 @@ class _SellMilkState extends State<SellMilk> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme
+                              .of(context)
+                              .primaryColor,
                           text: LocaleString().sellMilk.tr,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
@@ -117,7 +104,9 @@ class _SellMilkState extends State<SellMilk> {
                       child: GlobalText(
                         text: LocaleString().milkDataAdd.tr,
                         fontSize: 14,
-                        color: Theme.of(context).hintColor,
+                        color: Theme
+                            .of(context)
+                            .hintColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -128,10 +117,12 @@ class _SellMilkState extends State<SellMilk> {
                           _showDialog(
                             CupertinoTimerPicker(
                               backgroundColor:
-                                  Theme.of(context).backgroundColor,
+                              Theme
+                                  .of(context)
+                                  .backgroundColor,
                               mode: CupertinoTimerPickerMode.hm,
                               initialTimerDuration:
-                                  sellMilkController.duration.value,
+                              sellMilkController.duration.value,
                               // This is called when the user changes the timer duration.
                               onTimerDurationChanged: (Duration newDuration) {
                                 sellMilkController.duration.value = newDuration;
@@ -177,12 +168,61 @@ class _SellMilkState extends State<SellMilk> {
 
   addMilkButton() {
     return ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          // var user = FirebaseFirestore.instance
+          //     .collection('customers')
+          //     .doc(FirebaseAuth.instance.currentUser!.uid)
+          //     .set({
+          //   'name': "${LoginModels.name}",
+          //   'number': "${LoginModels.phone}",
+          //   'add': "${LoginModels.address}",
+          //   'type': "customer",
+          //   'image': "",
+          //   'merchant':"",
+          //   'uid':"${FirebaseAuth.instance.currentUser!.uid}",
+          // });
+
+          List months = [
+            "january",
+            "february",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+            "october",
+            "november",
+            "december",
+          ];
+
+          var data = await FirebaseFirestore.instance
+              .collection("customers").where(
+              "name", isEqualTo: sellMilkController.customerName.value.toString()).get();
+
+          await FirebaseFirestore.instance.collection(
+              "customers").doc(data.docs[0]["uid"].toString())
+              .collection("milk_data").doc("${DateTime.now().year}").collection("${months[DateTime.now().month - 1]}").doc("${DateTime.now().day}").set({
+            "time" : sellMilkController.duration.value.toString().split(".")[0],
+            "session" : _selectedMenu.toString(),
+            "liter" : sellMilkController.liter.value,
+          });
+
           addMilks.add(
             AddMilk(
-                date: DateTime.now().day.toString(),
-                month: DateTime.now().month.toString(),
-                year: DateTime.now().year.toString(),
+                date: DateTime
+                    .now()
+                    .day
+                    .toString(),
+                month: DateTime
+                    .now()
+                    .month
+                    .toString(),
+                year: DateTime
+                    .now()
+                    .year
+                    .toString(),
                 time: sellMilkController.duration.value.toString(),
                 customerName: sellMilkController.customerName.value,
                 session: _selectedMenu.toString(),
@@ -209,7 +249,7 @@ class _SellMilkState extends State<SellMilk> {
         onPressed: () {
           sellMilkController.liter.value = 0.0;
           sellMilkController.duration.value =
-              const Duration(hours: 7, minutes: 00);
+          const Duration(hours: 7, minutes: 00);
           sellMilkController.isMorningSelected.value = true;
         },
         style: ElevatedButton.styleFrom(
@@ -239,76 +279,97 @@ class _SellMilkState extends State<SellMilk> {
               height: SizeData.height * 0.06,
               width: SizeData.width * 0.8,
               margin:
-                  const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+              const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: AppColors.borderColor, width: 2)),
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                child: DropdownButtonFormField2(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  dropdownDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  isExpanded: true,
-                  hint: GlobalText(
-                    text: msg,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                    color: AppColors.darkGrey,
-                  ),
-                  icon: CircleAvatar(
-                    radius: 10,
-                    backgroundColor: AppColors.borderColor,
-                    child: Icon(
-                      icon,
-                      color: AppColors.blue,
-                      size: 20,
-                    ),
-                  ),
-                  iconSize: 30,
-                  buttonHeight: 50,
-                  items: customerList.map((item) {
-                    print(item["name"].toString());
-                    return DropdownMenuItem<String>(
-                      value: item["name"].toString(),
-                      child: Text(
-                        item["name"].toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select customer.';
+                child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("customers")
+                        .where("merchant",
+                        isEqualTo: FirebaseAuth.instance.currentUser!.uid
+                            .toString()).snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
+                      if (snapshots.hasData) {
+                        customerList = snapshots.data!.docs;
+
+                        return DropdownButtonFormField2(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
+                          ),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          isExpanded: true,
+                          hint: GlobalText(
+                            text: msg,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: AppColors.darkGrey,
+                          ),
+                          icon: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: AppColors.borderColor,
+                            child: Icon(
+                              icon,
+                              color: AppColors.blue,
+                              size: 20,
+                            ),
+                          ),
+                          iconSize: 30,
+                          buttonHeight: 50,
+                          items: customerList.map((item) {
+                            return DropdownMenuItem<String>(
+                              value: item["name"].toString(),
+                              child: Text(
+                                item["name"].toString(),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select customer.';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) async {
+                            //Do something when changing the item if you want.
+                            sellMilkController.customerName.value = value.toString();
+                          },
+                        );
+                      }
+                      else {
+                        return CircularProgressIndicator();
+                      }
                     }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    //Do something when changing the item if you want.
-                    sellMilkController.customerName.value = value.toString();
-                  },
                 ),
               ),
             ),
             Container(
-              color: Theme.of(context).backgroundColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
               padding: EdgeInsets.all(4),
               child: GlobalText(
                 text: name,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color: Theme.of(context).hintColor,
+                color: Theme
+                    .of(context)
+                    .hintColor,
               ),
             ),
           ],
@@ -334,7 +395,7 @@ class _SellMilkState extends State<SellMilk> {
               height: SizeData.height * 0.06,
               width: SizeData.width * 0.8,
               margin:
-                  const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+              const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: AppColors.borderColor, width: 2)),
@@ -347,13 +408,19 @@ class _SellMilkState extends State<SellMilk> {
                     Padding(
                       padding: const EdgeInsets.only(left: 2),
                       child: Obx(
-                        () => GlobalText(
-                          text:
-                              "${sellMilkController.duration.value.toString().split(".")[0].split(":")[0]} : ${sellMilkController.duration.value.toString().split(".")[0].split(":")[1]}",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                            () =>
+                            GlobalText(
+                              text:
+                              "${sellMilkController.duration.value.toString()
+                                  .split(".")[0].split(
+                                  ":")[0]} : ${sellMilkController.duration.value
+                                  .toString().split(".")[0].split(":")[1]}",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Theme
+                                  .of(context)
+                                  .primaryColor,
+                            ),
                       ),
                     ),
                     Icon(
@@ -366,13 +433,17 @@ class _SellMilkState extends State<SellMilk> {
               ),
             ),
             Container(
-              color: Theme.of(context).backgroundColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
               padding: EdgeInsets.all(4),
               child: GlobalText(
                 text: name,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color: Theme.of(context).hintColor,
+                color: Theme
+                    .of(context)
+                    .hintColor,
               ),
             ),
           ],
@@ -394,7 +465,7 @@ class _SellMilkState extends State<SellMilk> {
             height: SizeData.height * 0.06,
             width: SizeData.width * 0.8,
             margin:
-                const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+            const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: AppColors.borderColor, width: 2)),
@@ -407,12 +478,15 @@ class _SellMilkState extends State<SellMilk> {
                   Padding(
                     padding: const EdgeInsets.only(left: 2),
                     child: Obx(
-                      () => GlobalText(
-                        text: sellMilkController.liter.value.toString(),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                          () =>
+                          GlobalText(
+                            text: sellMilkController.liter.value.toString(),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
+                          ),
                     ),
                   ),
                   Row(
@@ -455,13 +529,17 @@ class _SellMilkState extends State<SellMilk> {
             ),
           ),
           Container(
-            color: Theme.of(context).backgroundColor,
+            color: Theme
+                .of(context)
+                .backgroundColor,
             padding: EdgeInsets.all(4),
             child: GlobalText(
               text: name,
               fontWeight: FontWeight.w500,
               fontSize: 14,
-              color: Theme.of(context).hintColor,
+              color: Theme
+                  .of(context)
+                  .hintColor,
             ),
           ),
         ],
@@ -508,7 +586,9 @@ class _SellMilkState extends State<SellMilk> {
                               : LocaleString().eveningSession.tr,
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme
+                              .of(context)
+                              .primaryColor,
                         ),
                       ),
                       CircleAvatar(
@@ -525,13 +605,17 @@ class _SellMilkState extends State<SellMilk> {
                 ),
               ),
               Container(
-                color: Theme.of(context).backgroundColor,
+                color: Theme
+                    .of(context)
+                    .backgroundColor,
                 padding: EdgeInsets.all(4),
                 child: GlobalText(
                   text: name,
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: Theme.of(context).hintColor,
+                  color: Theme
+                      .of(context)
+                      .hintColor,
                 ),
               ),
             ],
@@ -557,17 +641,19 @@ class _SellMilkState extends State<SellMilk> {
               }
             });
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-                PopupMenuItem<Menu>(
-                  value: Menu.morning,
-                  child: SizedBox(
-                    width: SizeData.width * 0.7,
-                    child: Row(
-                      children: [
-                        Transform.scale(
-                          scale: 1.3,
-                          child: Obx(
-                            () => Checkbox(
+          itemBuilder: (BuildContext context) =>
+          <PopupMenuEntry<Menu>>[
+            PopupMenuItem<Menu>(
+              value: Menu.morning,
+              child: SizedBox(
+                width: SizeData.width * 0.7,
+                child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.3,
+                      child: Obx(
+                            () =>
+                            Checkbox(
                               side: const BorderSide(
                                   width: 1.5, color: AppColors.borderColor),
                               shape: RoundedRectangleBorder(
@@ -581,37 +667,40 @@ class _SellMilkState extends State<SellMilk> {
                                   _selectedMenu = Menu.morning.name;
                                 });
                                 sellMilkController.isEveningSelected.value =
-                                    value!;
+                                value!;
                                 if (sellMilkController
                                     .isEveningSelected.value) {
                                   sellMilkController.isMorningSelected.value =
-                                      false;
+                                  false;
                                 }
                                 Get.back();
                               },
                             ),
-                          ),
-                        ),
-                        GlobalText(
-                          text: LocaleString().morningSession.tr,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 14,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    GlobalText(
+                      text: LocaleString().morningSession.tr,
+                      fontWeight: FontWeight.w600,
+                      color: Theme
+                          .of(context)
+                          .primaryColor,
+                      fontSize: 14,
+                    ),
+                  ],
                 ),
-                PopupMenuItem<Menu>(
-                  value: Menu.evening,
-                  child: SizedBox(
-                    width: SizeData.width * 0.7,
-                    child: Row(
-                      children: [
-                        Transform.scale(
-                          scale: 1.3,
-                          child: Obx(
-                            () => Checkbox(
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.evening,
+              child: SizedBox(
+                width: SizeData.width * 0.7,
+                child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.3,
+                      child: Obx(
+                            () =>
+                            Checkbox(
                               side: const BorderSide(
                                   width: 1.5, color: AppColors.borderColor),
                               shape: RoundedRectangleBorder(
@@ -625,28 +714,30 @@ class _SellMilkState extends State<SellMilk> {
                                   _selectedMenu = Menu.evening.name;
                                 });
                                 sellMilkController.isMorningSelected.value =
-                                    value!;
+                                value!;
                                 if (sellMilkController
                                     .isMorningSelected.value) {
                                   sellMilkController.isEveningSelected.value =
-                                      false;
+                                  false;
                                 }
                                 Get.back();
                               },
                             ),
-                          ),
-                        ),
-                        GlobalText(
-                          text: LocaleString().eveningSession.tr,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 14,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    GlobalText(
+                      text: LocaleString().eveningSession.tr,
+                      fontWeight: FontWeight.w600,
+                      color: Theme
+                          .of(context)
+                          .primaryColor,
+                      fontSize: 14,
+                    ),
+                  ],
                 ),
-              ]),
+              ),
+            ),
+          ]),
     );
   }
 
@@ -654,15 +745,21 @@ class _SellMilkState extends State<SellMilk> {
     print("");
     showCupertinoModalPopup<void>(
         context: context,
-        builder: (BuildContext context) => Container(
+        builder: (BuildContext context) =>
+            Container(
               height: 216,
               padding: const EdgeInsets.only(top: 6.0),
               // The Bottom margin is provided to align the popup above the system navigation bar.
               margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+                bottom: MediaQuery
+                    .of(context)
+                    .viewInsets
+                    .bottom,
               ),
               // Provide a background color for the popup.
-              color: Theme.of(context).backgroundColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
               // Use a SafeArea widget to avoid system overlaps.
               child: SafeArea(
                 top: false,
@@ -682,7 +779,9 @@ class _SellMilkState extends State<SellMilk> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).backgroundColor,
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.blue.withOpacity(0.5),
@@ -695,7 +794,9 @@ class _SellMilkState extends State<SellMilk> {
             child: Icon(
               Icons.close_rounded,
               size: 30,
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             )),
       ),
     );
