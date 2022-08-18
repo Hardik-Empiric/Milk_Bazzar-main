@@ -164,7 +164,7 @@ class _BillState extends State<Bill> {
                                 //         ? whiteDate(e.evening)
                                 //         : tableColorDate(e.evening),
                                 tableHeader("${e["date"]}"),
-                                () ? whiteDate("${e["liter"]}"),
+                                 whiteDate("${e["liter"]}"),
                                 tableColorDate("${e["liter"]}"),
                               ],
                             );

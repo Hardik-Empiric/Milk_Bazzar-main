@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../models/login_models/loginModels.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
@@ -49,17 +50,37 @@ class _ProfileState extends State<Profile> {
   String profile_image_path = '';
 
   getAllData() async {
-    var data = await FirebaseFirestore.instance
-        .collection('customers')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    fullNameController.text = data.data()!['name'];
-    phoneController.text = data.data()!['number'];
-    addressController.text = data.data()!['add'];
-    setState(() {
-      urlDownload = data.data()!['image'];
-    });
+    print(prefs.getBool("isMerchant"));
+
+    if (prefs.getBool("isMerchant") ?? false) {
+      var data = await FirebaseFirestore.instance
+          .collection('merchants')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+       fullNameController.text = data.data()!['name'];
+       phoneController.text = data.data()!['number'];
+       addressController.text = data.data()!['add'];
+       setState(() {
+         urlDownload = data.data()!['image'];
+       });
+    }
+    else
+      {
+        var data = await FirebaseFirestore.instance
+            .collection('customers')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .get();
+         fullNameController.text = data.data()!['name'];
+         phoneController.text = data.data()!['number'];
+         addressController.text = data.data()!['add'];
+         setState(() {
+           urlDownload = data.data()!['image'];
+         });
+      }
+
+
   }
 
   @override

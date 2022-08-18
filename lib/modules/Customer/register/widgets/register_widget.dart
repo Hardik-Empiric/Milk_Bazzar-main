@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../models/login_models/loginModels.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
@@ -30,6 +31,8 @@ class _RegisterState extends State<Register> {
 
   List numbers = [];
 
+  List mer = [];
+
   getList() async {
     var customers = await FirebaseFirestore.instance
         .collection('customers')
@@ -47,6 +50,7 @@ class _RegisterState extends State<Register> {
     for (var docs in merchants.docs) {
       Map<String, dynamic> data = docs.data();
       numbers.add(data["number"]);
+      mer.add(data["number"]);
     }
   }
 
@@ -226,9 +230,20 @@ class _RegisterState extends State<Register> {
                       if (_globalFromKey.currentState!.validate()) {
                         _globalFromKey.currentState!.save();
 
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+
                         setState(() {
                           LoginModels.phone = int.parse(phoneController.text);
                         });
+
+                        if(mer.contains(phoneController.text.toString()))
+                          {
+                            prefs.setBool("isMerchant", true);
+                          }
+                        else
+                          {
+                            prefs.setBool("isMerchant", false);
+                          }
 
                         Get.toNamed(AppRoutes.otpVerification);
 

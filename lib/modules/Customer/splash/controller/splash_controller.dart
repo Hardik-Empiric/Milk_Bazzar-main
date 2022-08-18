@@ -15,6 +15,12 @@ class SplashController extends GetxController {
   Future<void> changePage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    // var name = await FirebaseFirestore.instance
+    //     .collection('customers')
+    //     .doc(FirebaseAuth.instance.currentUser!.uid)
+    //     .get();
+
+
     (prefs.getBool("Gujarati") == true)
         ? Get.updateLocale(const Locale('gu', 'IN'))
         : (prefs.getBool("Hindi") == true)
