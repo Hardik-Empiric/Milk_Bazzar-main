@@ -8,6 +8,7 @@ import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
 import '../../language/controller/LacaleString.dart';
 import '../controller/invoive_controller.dart';
+import 'package:quiver/time.dart';
 
 class Invoice extends StatefulWidget {
   const Invoice({Key? key}) : super(key: key);
@@ -24,6 +25,8 @@ class _InvoiceState extends State<Invoice> {
   bool isCheck = false;
 
   String _selectedMenu = DateTime.now().year.toString();
+
+  int index =0;
 
   @override
   Widget build(BuildContext context) {
@@ -178,21 +181,36 @@ class _InvoiceState extends State<Invoice> {
             borderRadius: BorderRadius.circular(15),
           ),
           items: monthItems
-              .map((item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
+              .map((item) {
+
+                return DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: const TextStyle(
+                      fontSize: 14,
                     ),
-                  ))
+                  ),
+                );
+          })
               .toList(),
           onChanged: (value) {
+            invoiceController.selectedValue.value = value.toString();
+
+            setState(() {
+              index = monthItems.indexOf(value.toString());
+            });
+
+            print(index);
+
+            print(monthItemsInENGLISH[index]);
+
+            invoiceController.month.value = monthItemsInENGLISH[index];
             //Do something when changing the item if you want.
           },
           onSaved: (value) {
-            invoiceController.selectedValue.value = value.toString();
+
+
           },
         ),
       ),
@@ -392,7 +410,13 @@ class _InvoiceState extends State<Invoice> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () {
-          Get.toNamed(AppRoutes.generateBill);
+          Get.toNamed(
+            AppRoutes.generateBill,
+            arguments: YearMonth(
+              year: (_selectedMenu.toString() == 'current') ? "${DateTime.now().year}" : "${DateTime.now().year - 1}",
+              month: invoiceController.month.value,
+            ),
+          );
         },
         child: GlobalText(
           text: LocaleString().done.tr,

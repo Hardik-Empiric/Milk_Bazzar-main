@@ -22,7 +22,7 @@ class SellMilkController extends GetxController {
   RxBool isMorningSelected = true.obs;
   RxBool isEveningSelected = false.obs;
 
-  RxDouble liter = 0.0.obs;
+  RxDouble liter = 0.5.obs;
 
   Rx<Duration> duration = const Duration(hours: 7, minutes: 00).obs;
 

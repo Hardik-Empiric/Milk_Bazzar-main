@@ -136,6 +136,7 @@ class LocaleString extends Translations {
   String sendToJaiminPatel = "Send To Jaimin Patel";
 
   String sellMilk = "Sell Milk";
+  String sell = "Sell";
   String milkDataAdd = "Please Add Milk's Data Carefully";
   String time = "Time";
   String selectTime = "Select your Time";
@@ -175,6 +176,9 @@ class LocaleString extends Translations {
   String yes = "Yes";
   String no = "No";
   String wantToDelete = "You want to delete this customer?";
+
+  String opps = "Oopps!";
+  String oppsMsg = "Please Select Customer First...";
 
   Map<String, Map<String, String>> get keys => {
         'en_US': {
@@ -322,6 +326,9 @@ class LocaleString extends Translations {
           yes: "Yes",
           no: "No",
           wantToDelete: "You want to delete this customer?",
+
+          opps: "Oopps!",
+          oppsMsg: "Please Select Customer First...",
         },
         'gu_IN': {
           changeLan: 'ભાષા બદલો',
@@ -437,6 +444,7 @@ class LocaleString extends Translations {
           totalAmount: "₹ 4582",
           sendToJaiminPatel: "જૈમીન પટેલને મોકલો",
           sellMilk: "દૂધ વેચો",
+          sell: "વેચો",
           milkDataAdd: "કૃપા કરીને દૂધનો ડેટા કાળજીપૂર્વક ઉમેરો",
           time: "સમય",
           selectTime: "તમારો સમય પસંદ કરો",
@@ -463,6 +471,9 @@ class LocaleString extends Translations {
           yes: "હા",
           no: "ના",
           wantToDelete: "તમે આ ગ્રાહકને કાઢી નાખવા માંગો છો?",
+
+          opps: "અરે!",
+          oppsMsg: "કૃપા કરીને પહેલા ગ્રાહક પસંદ કરો...",
         },
         'hi_IN': {
           changeLan: 'भाषा बदलो',
@@ -577,6 +588,7 @@ class LocaleString extends Translations {
           totalAmount: "₹ 4582",
           sendToJaiminPatel: "जैमिन पटेल को भेजें",
           sellMilk: "दूध बेचें",
+          sell: "बेचें",
           milkDataAdd: "कृपया दूध का डेटा सावधानी से जोड़ें",
           time: "समय",
           selectTime: "अपना समय चुनें",
@@ -599,11 +611,15 @@ class LocaleString extends Translations {
           totalCustomer: "कुल 50 ग्राहक",
           totalText: "कुल",
           signUpAsMerchant: "व्यापारी के रूप में साइन अप करें",
-          noCustomer: "कोई ग्राहक नहीं\nग्राहक जोड़ने के लिए + बटन पर क्लिक करें",
+          noCustomer:
+              "कोई ग्राहक नहीं\nग्राहक जोड़ने के लिए + बटन पर क्लिक करें",
           areYouSure: "क्या आपको यकीन है?",
           yes: "हाँ",
           no: "नहीं",
           wantToDelete: "आप इस ग्राहक को हटाना चाहते हैं?",
+
+          opps: "उफ़!",
+          oppsMsg: "कृपया पहले ग्राहक चुनें...",
         },
       };
 }

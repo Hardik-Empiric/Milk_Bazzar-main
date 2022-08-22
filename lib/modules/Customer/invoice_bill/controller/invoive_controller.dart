@@ -8,20 +8,17 @@ int currentY = DateTime.now().year;
 int previousY = DateTime.now().year - 1;
 
 class InvoiceController extends GetxController {
-
   RxString selectedValue = LocaleString().jan.tr.obs;
 
   RxBool isChecked = false.obs;
 
-  RxString month = 'January'.obs;
+  RxString month = 'january'.obs;
   RxInt currentYear = currentY.obs;
   RxInt previousYear = previousY.obs;
 
   RxBool isCurrentSelected = true.obs;
   RxBool isPreviousSelected = false.obs;
-
 }
-
 
 final List<String> monthItems = [
   LocaleString().jan.tr,
@@ -38,7 +35,29 @@ final List<String> monthItems = [
   LocaleString().dec.tr,
 ];
 
-
-
+final List<String> monthItemsInENGLISH = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];
 
 final List<String> yearItems = [];
+
+class YearMonth {
+  String year;
+  String month;
+
+  YearMonth({
+    required this.year,
+    required this.month,
+  });
+}

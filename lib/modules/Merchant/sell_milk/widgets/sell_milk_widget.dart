@@ -30,7 +30,7 @@ class _SellMilkState extends State<SellMilk> {
   bool isCheck = false;
 
   // String sessionMenu = DateTime.now().year.toString();
-  
+
   String sessionMenu = "morning";
 
   final _formKey = GlobalKey<FormState>();
@@ -40,10 +40,12 @@ class _SellMilkState extends State<SellMilk> {
   @override
   void initState() {
     super.initState();
-    sellMilkController.liter.value = 0.0;
+    sessionMenu = "morning";
+    sellMilkController.liter.value = 0.5;
     sellMilkController.duration.value = const Duration(hours: 7, minutes: 00);
     sellMilkController.isMorningSelected.value = true;
-
+    sellMilkController.isEveningSelected.value = false;
+    sellMilkController.customerName.value = "";
   }
 
   @override
@@ -166,6 +168,11 @@ class _SellMilkState extends State<SellMilk> {
   addMilkButton() {
     return ElevatedButton(
         onPressed: () async {
+          var data = await FirebaseFirestore.instance
+              .collection('customers')
+              .where("name",
+                  isEqualTo: sellMilkController.customerName.value.toString())
+              .get();
 
           List months = [
             "january",
@@ -182,106 +189,215 @@ class _SellMilkState extends State<SellMilk> {
             "december",
           ];
 
-          print(sellMilkController.customerName.value);
-
-
           if (sellMilkController.customerName.value != "" &&
               sellMilkController.liter.value >= 0.5) {
-            var data = await FirebaseFirestore.instance
-                .collection("customers")
-                .where("name",
-                    isEqualTo: sellMilkController.customerName.value.toString())
-                .get();
-
-
-
-            var DATA =  await FirebaseFirestore.instance
-                .collection("customers")
-                .doc(data.docs[0]["uid"].toString())
-                .collection("milk_data")
-                .doc("${DateTime.now().year}")
-                .collection("${months[DateTime.now().month - 1]}")
-                .doc("${DateTime.now().day}")
-                .get();
-
-            List sessionLiter = [];
-            double sum = 0.0;
-
-
-          if( DATA.exists)
-            {
-              sessionLiter = DATA.data()!["${sessionMenu.toString()}"];
-
-              for(int i=0; i<sessionLiter.length; i++)
-              {
-                print(sessionLiter);
-
-                sessionLiter.add(
-                  {
-                    "liter" : sellMilkController.liter.value,
-                    "time": sellMilkController.duration.value.toString().split(".")[0],
-                  },
-                );
-
-                print(sessionLiter.length);
-                print(sessionLiter[i]["liter"]);
-                setState(() {
-                  sum = sum +  double.parse(sessionLiter[i]["liter"].toString());
-                });
-              }
-              await FirebaseFirestore.instance
-                  .collection("customers")
-                  .doc(data.docs[0]["uid"].toString())
-                  .collection("milk_data")
-                  .doc("${DateTime.now().year}")
-                  .collection("${months[DateTime.now().month - 1]}")
-                  .doc("${DateTime.now().day}")
-                  .update({
-                "${sessionMenu.toString()}" : sessionLiter,
-                "total ${sessionMenu.toString()} liter" : sum,
-              });
-            }
-          else
-            {
-              await FirebaseFirestore.instance
-                  .collection("customers")
-                  .doc(data.docs[0]["uid"].toString())
-                  .collection("milk_data")
-                  .doc("${DateTime.now().year}")
-                  .collection("${months[DateTime.now().month - 1]}")
-                  .doc("${DateTime.now().day}")
-                  .set({
-                "${sessionMenu.toString()}" : [
-                  {
-                    "liter" : sellMilkController.liter.value,
-                    "time": sellMilkController.duration.value.toString().split(".")[0],
-                  },
+            Get.defaultDialog(
+              barrierDismissible: false,
+              title: "${LocaleString().sellMilk.tr}",
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GlobalText(
+                      text:
+                          "${LocaleString().date.tr} : ${DateTime.now().day}"),
+                  GlobalText(
+                      text:
+                          "${LocaleString().time.tr} : ${sellMilkController.duration.value.toString().split(".")[0].split(":")[0]} : ${sellMilkController.duration.value.toString().split(".")[0].split(":")[1]}"),
+                  (sessionMenu.toString() == 'morning')
+                      ? GlobalText(
+                          text:
+                              "${LocaleString().session.tr} : ${LocaleString().morningSession.tr}")
+                      : GlobalText(
+                          text:
+                              "${LocaleString().session.tr} : ${LocaleString().eveningSession.tr}"),
+                  GlobalText(
+                      text:
+                          "${LocaleString().liter.tr} : ${sellMilkController.liter.value}"),
+                  GlobalText(
+                      text:
+                          "${LocaleString().customer.tr} : ${sellMilkController.customerName.value}"),
+                  GlobalText(
+                      text:
+                          "${LocaleString().address.tr} : ${data.docs[0]["add"]}"),
                 ],
-                "total ${sessionMenu.toString()} liter" : sellMilkController.liter.value,
-              });
-            }
+              ),
+              confirm: ElevatedButton(
+                onPressed: () async {
+                  if (sellMilkController.customerName.value != "" &&
+                      sellMilkController.liter.value >= 0.5) {
+                    var data = await FirebaseFirestore.instance
+                        .collection("customers")
+                        .where("name",
+                            isEqualTo: sellMilkController.customerName.value
+                                .toString())
+                        .get();
 
-            addMilks.add(
-              AddMilk(
-                  date: DateTime.now().day.toString(),
-                  month: DateTime.now().month.toString(),
-                  year: DateTime.now().year.toString(),
-                  time: sellMilkController.duration.value.toString(),
-                  customerName: sellMilkController.customerName.value,
-                  session: sessionMenu.toString(),
-                  liter: sellMilkController.liter.value.toString()),
+                    var DATA = await FirebaseFirestore.instance
+                        .collection("customers")
+                        .doc(data.docs[0]["uid"].toString())
+                        .collection("milk_data")
+                        .doc("${DateTime.now().year}")
+                        .collection("${months[DateTime.now().month - 1]}")
+                        .doc("${DateTime.now().day}")
+                        .get();
+
+                    List MorningSessionLiter = [];
+                    List EveningSessionLiter = [];
+                    double MorningSum = 0.0;
+                    double EveningSum = 0.0;
+
+
+                    if (DATA.exists) {
+                      if (sessionMenu.toString() == "morning") {
+                        MorningSessionLiter =
+                            DATA.data()!["${sessionMenu.toString()}"];
+
+                        MorningSessionLiter.add(
+                          {
+                            "liter": sellMilkController.liter.value,
+                            "time": sellMilkController.duration.value
+                                .toString()
+                                .split(".")[0],
+                          },
+                        );
+
+                        for (int i = 0; i < MorningSessionLiter.length; i++) {
+                          print(MorningSessionLiter);
+                          print(MorningSessionLiter.length);
+                          print(MorningSessionLiter[i]["liter"]);
+                          setState(() {
+                            MorningSum = MorningSum +
+                                double.parse(
+                                    MorningSessionLiter[i]["liter"].toString());
+                          });
+                        }
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("${DateTime.now().day}")
+                            .update({
+                          "${sessionMenu.toString()}": MorningSessionLiter,
+                          "total ${sessionMenu.toString()} liter": MorningSum,
+                        });
+                      } else {
+                        EveningSessionLiter =
+                            DATA.data()!["${sessionMenu.toString()}"];
+
+                        EveningSessionLiter.add(
+                          {
+                            "liter": sellMilkController.liter.value,
+                            "time": sellMilkController.duration.value
+                                .toString()
+                                .split(".")[0],
+                          },
+                        );
+
+                        for (int i = 0; i < EveningSessionLiter.length; i++) {
+                          print(EveningSessionLiter);
+                          print(EveningSessionLiter.length);
+                          print(EveningSessionLiter[i]["liter"]);
+                          setState(() {
+                            EveningSum = EveningSum +
+                                double.parse(
+                                    EveningSessionLiter[i]["liter"].toString());
+                          });
+                        }
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("${DateTime.now().day}")
+                            .update({
+                          "${sessionMenu.toString()}": EveningSessionLiter,
+                          "total ${sessionMenu.toString()} liter": EveningSum,
+                        });
+                      }
+                    } else {
+                      if (sessionMenu.toString() == "morning") {
+
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("${DateTime.now().day}")
+                            .set({
+                          "${sessionMenu.toString()}": [
+                            {
+                              "liter": sellMilkController.liter.value,
+                              "time": sellMilkController.duration.value
+                                  .toString()
+                                  .split(".")[0],
+                            },
+                          ],
+                          "total ${sessionMenu.toString()} liter":
+                              sellMilkController.liter.value,
+                          "evening": [],
+                          "total evening liter": 0,
+                        });
+                      } else {
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("${DateTime.now().day}")
+                            .set({
+                          "${sessionMenu.toString()}": [
+                            {
+                              "liter": sellMilkController.liter.value,
+                              "time": sellMilkController.duration.value
+                                  .toString()
+                                  .split(".")[0],
+                            },
+                          ],
+                          "total ${sessionMenu.toString()} liter":
+                              sellMilkController.liter.value,
+                          "morning": [],
+                          "total morning liter": 0,
+                        });
+                      }
+                    }
+
+                    addMilks.add(
+                      AddMilk(
+                          date: DateTime.now().day.toString(),
+                          month: DateTime.now().month.toString(),
+                          year: DateTime.now().year.toString(),
+                          time: sellMilkController.duration.value.toString(),
+                          customerName: sellMilkController.customerName.value,
+                          session: sessionMenu.toString(),
+                          liter: sellMilkController.liter.value.toString()),
+                    );
+
+
+
+                    Get.back();
+                  } else {
+                    print("no thay");
+                  }
+                },
+                child: GlobalText(text: "${LocaleString().sell.tr}"),
+              ),
+              cancel: OutlinedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: GlobalText(text: "${LocaleString().cancelText.tr}"),
+              ),
             );
-
-            // print(addMilks[0].date);
-            // print(addMilks[0].month);
-            // print(addMilks[0].year);
-            // print(addMilks[0].time);
-            // print(addMilks[0].customerName);
-            // print(addMilks[0].session);
-            // print(addMilks[0].liter);
           } else {
-            // Get.showSnackbar(GetSnackBar(title: "Fill all Fields Properly!!",));
-            print("no thay");
+            Get.snackbar(LocaleString().opps.tr, LocaleString().oppsMsg.tr,
+                backgroundColor: AppColors.darkBlue,
+                colorText: AppColors.white);
           }
         },
         style: ElevatedButton.styleFrom(
@@ -298,6 +414,10 @@ class _SellMilkState extends State<SellMilk> {
           sellMilkController.duration.value =
               const Duration(hours: 7, minutes: 00);
           sellMilkController.isMorningSelected.value = true;
+          sellMilkController.isEveningSelected.value = false;
+          sellMilkController.customerName.value = "";
+          sellMilkController.liter.value = 0.5;
+          sessionMenu = "morning";
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.only(right: 35, left: 35),
@@ -537,7 +657,7 @@ class _SellMilkState extends State<SellMilk> {
                       SizedBox(width: 15),
                       GestureDetector(
                         onTap: () {
-                          if (sellMilkController.liter.value > 0)
+                          if (sellMilkController.liter.value > 0.5)
                             sellMilkController.liter.value -= 0.5;
                         },
                         child: CircleAvatar(
