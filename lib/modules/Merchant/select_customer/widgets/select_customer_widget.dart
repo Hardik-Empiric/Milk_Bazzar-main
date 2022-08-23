@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
@@ -19,11 +22,22 @@ class SelectCustomer extends StatefulWidget {
 enum Menu { current, previous }
 
 class _SelectCustomerState extends State<SelectCustomer> {
-  final SelectCustomerController selectCustomerController = Get.put(SelectCustomerController());
+  final SelectCustomerController selectCustomerController =
+      Get.put(SelectCustomerController());
 
   bool isCheck = false;
 
   String _selectedMenu = DateTime.now().year.toString();
+
+  var customerList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selectCustomerController.customerName.value = "";
+    selectCustomerController.isCurrentSelected.value = true;
+    selectCustomerController.isPreviousSelected.value = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +108,11 @@ class _SelectCustomerState extends State<SelectCustomer> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    selectCustomer(
+                      name: LocaleString().customer.tr,
+                      msg: LocaleString().selectCustomer.tr,
+                      icon: Icons.keyboard_arrow_down_rounded,
+                    ),
                     monthPicker(),
                     yearPicker(),
                     doneButton(),
@@ -102,8 +121,128 @@ class _SelectCustomerState extends State<SelectCustomer> {
               ),
             ),
           ),
-          closeButton(),
         ],
+      ),
+    );
+  }
+
+  selectCustomer({
+    required String name,
+    required String msg,
+    required IconData icon,
+  }) {
+    return GestureDetector(
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.only(right: 20, left: 20),
+        child: Stack(
+          alignment: Alignment(-0.9, -0.95),
+          children: [
+            Container(
+              height: SizeData.height * 0.06,
+              width: SizeData.width * 0.8,
+              margin:
+                  const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: AppColors.borderColor, width: 2)),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("customers")
+                        .where("merchant",
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid
+                                .toString())
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
+                      if (snapshots.hasData) {
+                        customerList = snapshots.data!.docs;
+
+                        return DropdownButtonFormField2(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          dropdownDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          isExpanded: true,
+                          hint: GlobalText(
+                            text: msg,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: AppColors.darkGrey,
+                          ),
+                          icon: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: AppColors.borderColor,
+                            child: Icon(
+                              icon,
+                              color: AppColors.blue,
+                              size: 20,
+                            ),
+                          ),
+                          iconSize: 30,
+                          buttonHeight: 50,
+                          items: customerList.map((item) {
+                            return DropdownMenuItem<String>(
+                              value: item["name"].toString(),
+                              child: Text(
+                                item["name"].toString(),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select customer.';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) async {
+                            //Do something when changing the item if you want.
+                            selectCustomerController.customerName.value =
+                                value.toString();
+
+                            var uid = await FirebaseFirestore.instance
+                                .collection("customers")
+                                .where("name",
+                                    isEqualTo:
+                                        "${selectCustomerController.customerName.value}")
+                                .get();
+
+                            print("UID : ${uid.docs[0].id}");
+
+                            selectCustomerController.customerUID.value =
+                                "${uid.docs[0].id}";
+                          },
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ),
+            ),
+            Container(
+              color: Theme.of(context).backgroundColor,
+              padding: EdgeInsets.all(4),
+              child: GlobalText(
+                text: name,
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -177,7 +316,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
           dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
-          items: monthItems
+          items: monthItemsInENGLISH
               .map((item) => DropdownMenuItem<String>(
                     value: item,
                     child: Text(
@@ -192,7 +331,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
             //Do something when changing the item if you want.
           },
           onSaved: (value) {
-            selectCustomerController.selectedValue.value = value.toString();
+            selectCustomerController.month.value = value.toString();
           },
         ),
       ),
@@ -220,7 +359,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GlobalText(
-                  text: (_selectedMenu.toString() == 'current')
+                  text: (selectCustomerController.isCurrentSelected.value)
                       ? DateTime.now().year.toString()
                       : (DateTime.now().year - 1).toString(),
                   color: Theme.of(context).primaryColor,
@@ -278,16 +417,18 @@ class _SelectCustomerState extends State<SelectCustomer> {
                               ),
                               activeColor: AppColors.checkYearColor,
                               checkColor: AppColors.background,
-                              value: selectCustomerController.isCurrentSelected.value,
+                              value: selectCustomerController
+                                  .isCurrentSelected.value,
                               onChanged: (value) {
                                 setState(() {
                                   _selectedMenu = Menu.current.name;
                                 });
-                                selectCustomerController.isCurrentSelected.value =
-                                    value!;
-                                if (selectCustomerController.isCurrentSelected.value) {
-                                  selectCustomerController.isPreviousSelected.value =
-                                      false;
+                                selectCustomerController
+                                    .isCurrentSelected.value = value!;
+                                if (selectCustomerController
+                                    .isCurrentSelected.value) {
+                                  selectCustomerController
+                                      .isPreviousSelected.value = false;
                                 }
                                 Get.back();
                               },
@@ -321,26 +462,27 @@ class _SelectCustomerState extends State<SelectCustomer> {
                               ),
                               activeColor: AppColors.checkYearColor,
                               checkColor: AppColors.background,
-                              value: selectCustomerController.isPreviousSelected.value,
+                              value: selectCustomerController
+                                  .isPreviousSelected.value,
                               onChanged: (value) {
                                 setState(() {
                                   _selectedMenu = Menu.previous.name;
                                 });
-                                selectCustomerController.isPreviousSelected.value =
-                                    value!;
+                                selectCustomerController
+                                    .isPreviousSelected.value = value!;
                                 if (selectCustomerController
                                     .isPreviousSelected.value) {
-                                  selectCustomerController.isCurrentSelected.value =
-                                      false;
+                                  selectCustomerController
+                                      .isCurrentSelected.value = false;
                                 }
                                 Get.back();
-
                               },
                             ),
                           ),
                         ),
                         GlobalText(
-                          text: selectCustomerController.previousYear.toString(),
+                          text:
+                              selectCustomerController.previousYear.toString(),
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).primaryColor,
                           fontSize: 14,
@@ -357,9 +499,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
     return Padding(
       padding: const EdgeInsets.all(15),
       child: GestureDetector(
-        onTap: () {
-
-        },
+        onTap: () {},
         child: Container(
             height: SizeData.height * 0.04,
             width: SizeData.width * 0.085,
@@ -394,7 +534,23 @@ class _SelectCustomerState extends State<SelectCustomer> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () {
-              Get.toNamed(AppRoutes.generateBill);
+          if(selectCustomerController.customerName != "")
+            {
+              Get.toNamed(AppRoutes.generateBillMerchant,
+                  arguments: DATA(
+                    year: (_selectedMenu.toString() == 'current')
+                        ? DateTime.now().year.toString()
+                        : (DateTime.now().year - 1).toString(),
+                    month: selectCustomerController.month.value,
+                    uid: selectCustomerController.customerUID.value,
+                  ));
+            }
+          else
+            {
+              Get.snackbar(LocaleString().opps.tr, LocaleString().oppsMsg.tr,
+                  backgroundColor: AppColors.darkBlue,
+                  colorText: AppColors.white);
+            }
         },
         child: GlobalText(
           text: LocaleString().done.tr,

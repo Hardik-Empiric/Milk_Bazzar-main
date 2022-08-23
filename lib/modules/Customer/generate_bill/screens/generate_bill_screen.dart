@@ -24,8 +24,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
             child: ListView(
               physics: const BouncingScrollPhysics(),
               children: const [
-                Bill(),
-                SendBillButton(),
+                Bill()
               ],
             ),
           ),

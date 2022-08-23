@@ -11,12 +11,15 @@ class SelectCustomerController extends GetxController {
 
   RxBool isChecked = false.obs;
 
-  RxString month = 'January'.obs;
+  RxString month = 'january'.obs;
   RxInt currentYear = currentY.obs;
   RxInt previousYear = previousY.obs;
 
   RxBool isCurrentSelected = true.obs;
   RxBool isPreviousSelected = false.obs;
+
+  RxString customerName = ''.obs;
+  RxString customerUID = ''.obs;
 
 }
 
@@ -40,3 +43,32 @@ final List<String> monthItems = [
 
 
 final List<String> yearItems = [];
+
+class DATA {
+
+  String year;
+  String month;
+  String uid;
+
+  DATA({
+    required this.month,
+    required this.year,
+    required this.uid,
+});
+
+}
+
+final List<String> monthItemsInENGLISH = [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december",
+];

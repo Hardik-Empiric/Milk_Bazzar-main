@@ -10,6 +10,7 @@ import '../../../../routes/app_routes.dart';
 import '../../../../utils/common_widget/global_text.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
 import '../../home/controller/home_controller.dart';
+import '../../select_customer/controller/select_customer_controller.dart';
 import '../controller/customer_list_controller.dart';
 import '../widgets/customer_list_widget.dart';
 
@@ -31,10 +32,57 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
   String searchResult = "";
 
+  // calculateData() async {
+  //   var totalLiter = await FirebaseFirestore.instance
+  //       .collection("customers")
+  //       .doc("${widget.data["uid"]}")
+  //       .collection("milk_data")
+  //       .doc("${widget.currentYear}")
+  //       .collection("${widget.currentMonth}").doc("total_liter").get();
+  //
+  //   setState(() {
+  //     totalLiterOfMonth = totalLiter.data()!["liter"];
+  //   });
+  //
+  //   var d = await FirebaseFirestore.instance
+  //       .collection("customers")
+  //       .doc("${widget.data["uid"]}").get();
+  //
+  //   var ppl = await FirebaseFirestore.instance
+  //       .collection("merchants")
+  //       .doc("${d.data()!["merchant"]}").get();
+  //
+  //   setState(() {
+  //     prizePerLiter = double.parse("${ppl.data()!["prize_per_liter"]}");
+  //   });
+  //
+  //   print("Total Liter of Month ${totalLiterOfMonth}");
+  //   print("Prize Per liter ${prizePerLiter}");
+  // }
+
+  final List<String> monthItemsInENGLISH = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ];
+
+  var currentYear = DateTime.now().year.toString();
+  var currentMonth;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    currentMonth = monthItemsInENGLISH[DateTime.now().month - 1];
   }
 
   @override
@@ -59,6 +107,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                             searchResult = value;
                           });
                         },
+                        style: TextStyle(color: Theme.of(context).primaryColor),
                         textAlign: TextAlign.center,
                         cursorHeight: 20,
                         cursorColor: Theme.of(context).primaryColor,
@@ -129,90 +178,120 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                           itemCount: newData.length,
                           itemBuilder: (context, i) {
                             final singleData = newData[i];
-                            return (singleData["name"].toString().toLowerCase().contains(searchResult.toLowerCase())) ? Column(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Get.toNamed(AppRoutes.generateBillMerchant,arguments: singleData);
-                                  },
-                                  child: ListTile(
-                                    trailing: Obx(
-                                      () => Visibility(
-                                        visible: customerListController
-                                            .isRemoveOn.value,
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.cancel,
-                                            color: AppColors.red,
+                            return (singleData["name"]
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(searchResult.toLowerCase()))
+                                ? Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(
+                                              AppRoutes.generateBillMerchant,
+                                              arguments: DATA(
+                                                uid: singleData["uid"],
+                                                month: currentMonth,
+                                                year: currentYear,
+                                              ));
+                                        },
+                                        child: ListTile(
+                                          trailing: Obx(
+                                            () => Visibility(
+                                              visible: customerListController
+                                                  .isRemoveOn.value,
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.cancel,
+                                                  color: AppColors.red,
+                                                ),
+                                                onPressed: () {
+                                                  Get.defaultDialog(
+                                                    onCancel: () {
+                                                      Get.back();
+                                                    },
+                                                    onConfirm: () async {
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              'customers')
+                                                          .doc(singleData["uid"]
+                                                              .toString())
+                                                          .delete();
+                                                      Get.back();
+                                                    },
+                                                    title: LocaleString()
+                                                        .areYouSure
+                                                        .tr,
+                                                    backgroundColor:
+                                                        AppColors.white,
+                                                    titleStyle: TextStyle(
+                                                        color:
+                                                            AppColors.darkBlue),
+                                                    middleTextStyle: TextStyle(
+                                                        color: Colors.white),
+                                                    textConfirm:
+                                                        LocaleString().yes.tr,
+                                                    textCancel:
+                                                        LocaleString().no.tr,
+                                                    cancelTextColor:
+                                                        Colors.black,
+                                                    confirmTextColor:
+                                                        Colors.white,
+                                                    buttonColor: AppColors.blue,
+                                                    barrierDismissible: false,
+                                                    radius: 50,
+                                                    content: Text(LocaleString()
+                                                        .wantToDelete
+                                                        .tr),
+                                                  );
+                                                },
+                                              ),
+                                            ),
                                           ),
-                                          onPressed: () {
-                                            Get.defaultDialog(
-                                              onCancel: () {
-                                                Get.back();
-                                              },
-                                              onConfirm: () async {
-                                                await FirebaseFirestore.instance
-                                                    .collection('customers')
-                                                    .doc(singleData["uid"]
-                                                        .toString())
-                                                    .delete();
-                                                Get.back();
-                                              },
-                                              title: LocaleString().areYouSure.tr,
-                                              backgroundColor: AppColors.white,
-                                              titleStyle: TextStyle(
-                                                  color: AppColors.darkBlue),
-                                              middleTextStyle: TextStyle(
-                                                  color: Colors.white),
-                                              textConfirm: LocaleString().yes.tr,
-                                              textCancel: LocaleString().no.tr,
-                                              cancelTextColor: Colors.black,
-                                              confirmTextColor: Colors.white,
-                                              buttonColor: AppColors.blue,
-                                              barrierDismissible: false,
-                                              radius: 50,
-                                              content: Text(
-                                                  LocaleString().wantToDelete.tr),
-                                            );
-                                          },
+                                          leading: const CircleAvatar(
+                                            radius: 22,
+                                            backgroundImage: NetworkImage(
+                                                "https://images.unsplash.com/photo-1603384699007-50799748fc45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fG1lbnN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"),
+                                          ),
+                                          title: GlobalText(
+                                            text: singleData["name"],
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 18,
+                                          ),
+                                          subtitle: Row(
+                                            children: [
+                                              GlobalText(
+                                                text: LocaleString()
+                                                    .ronaldMonth
+                                                    .tr,
+                                                color: AppColors.textColor3,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              GlobalText(
+                                                text: LocaleString()
+                                                    .ronaldAmount
+                                                    .tr,
+                                                color: AppColors.orange,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    leading: const CircleAvatar(
-                                      radius: 22,
-                                      backgroundImage: NetworkImage(
-                                          "https://images.unsplash.com/photo-1603384699007-50799748fc45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fG1lbnN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"),
-                                    ),
-                                    title: GlobalText(
-                                      text: singleData["name"],
-                                      color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18,
-                                    ),
-                                    subtitle: Row(
-                                      children: [
-                                        GlobalText(
-                                          text: LocaleString().ronaldMonth.tr,
-                                          color: AppColors.textColor3,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        GlobalText(
-                                          text: LocaleString().ronaldAmount.tr,
-                                          color: AppColors.orange,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  thickness: 0.5,
-                                  indent: 25,
-                                  endIndent: 25,
-                                  color: AppColors.borderColor,
-                                ),
-                              ],
-                            ) : Visibility(child: Container(),visible: false,);
+                                      Divider(
+                                        thickness: 0.5,
+                                        indent: 25,
+                                        endIndent: 25,
+                                        color: AppColors.borderColor,
+                                      ),
+                                    ],
+                                  )
+                                : Visibility(
+                                    child: Container(),
+                                    visible: false,
+                                  );
                           },
                         );
                       }

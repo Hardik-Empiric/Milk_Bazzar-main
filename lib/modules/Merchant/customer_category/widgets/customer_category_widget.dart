@@ -2,13 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:milk_bazzar/modules/Merchant/customer_list/controller/customer_list_controller.dart';
 import 'package:milk_bazzar/modules/Merchant/home/controller/home_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import '../../../../utils/app_text.dart';
@@ -16,8 +11,6 @@ import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
 import '../controller/customer_category_controller.dart';
-import '../controller/customer_category_controller.dart';
-import 'customer_category_widget.dart';
 
 class CustomerCategory extends StatefulWidget {
   const CustomerCategory({Key? key}) : super(key: key);
@@ -27,7 +20,8 @@ class CustomerCategory extends StatefulWidget {
 }
 
 class _CustomerCategoryState extends State<CustomerCategory> {
-  final CustomerCategoryController customerCategoryController = Get.put(CustomerCategoryController());
+  final CustomerCategoryController customerCategoryController =
+      Get.put(CustomerCategoryController());
   final HomeController homeController = Get.put(HomeController());
 
   var totalCustomer = [];
@@ -60,7 +54,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Theme.of(context).backgroundColor,
-              boxShadow:  [
+              boxShadow: [
                 BoxShadow(
                   color: AppColors.shadow,
                   offset: Offset(0, 0),
@@ -97,18 +91,131 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    paddingBilCus(
-                        alignment: const Alignment(-0.55, -0.8),
-                        icon: Icons.keyboard_arrow_down_rounded),
-                    totalCus(
-                        alignment: const Alignment(-0.65, -0.8),
-                        icon: Icons.keyboard_arrow_down_rounded),
+                    GestureDetector(
+                      onTap: (){
+
+
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20, left: 20),
+                        child: Stack(
+                          alignment: Alignment(-0.9, -0.95),
+                          children: [
+                            Container(
+                              height: SizeData.height * 0.06,
+                              width: SizeData.width * 0.8,
+                              margin: const EdgeInsets.only(
+                                  left: 0, right: 0, bottom: 15, top: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                      color: AppColors.borderColor, width: 2)),
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GlobalText(
+                                      text:
+                                      "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: AppColors.darkGrey,
+                                    ),
+                                    CircleAvatar(
+                                      radius: 10,
+                                      backgroundColor: AppColors.borderColor,
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: AppColors.blue,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Theme.of(context).backgroundColor,
+                              padding: EdgeInsets.all(4),
+                              child: GlobalText(
+                                text: LocaleString().pendingAmount.tr,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        homeController.index.value = 0;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20, left: 20),
+                        child: Stack(
+                          alignment: Alignment(-0.9, -0.95),
+                          children: [
+                            Container(
+                              height: SizeData.height * 0.06,
+                              width: SizeData.width * 0.8,
+                              margin: const EdgeInsets.only(
+                                  left: 0, right: 0, bottom: 15, top: 15),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                      color: AppColors.borderColor, width: 2)),
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GlobalText(
+                                      text:
+                                          "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: AppColors.darkGrey,
+                                    ),
+                                    CircleAvatar(
+                                      radius: 10,
+                                      backgroundColor: AppColors.borderColor,
+                                      child: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: AppColors.blue,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              color: Theme.of(context).backgroundColor,
+                              padding: EdgeInsets.all(4),
+                              child: GlobalText(
+                                text: LocaleString().allCustomerBill.tr,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-          closeButton(),
         ],
       ),
     );
@@ -147,9 +254,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
     );
   }
 
-  paddingBilCus(
-      {required Alignment alignment,
-        required IconData icon}) {
+  paddingBilCus({required Alignment alignment, required IconData icon}) {
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: Stack(
@@ -159,7 +264,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
             height: SizeData.height * 0.06,
             width: SizeData.width * 0.8,
             margin:
-            const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+                const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: AppColors.borderColor, width: 2)),
@@ -170,8 +275,8 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                   stream: FirebaseFirestore.instance
                       .collection("customers")
                       .where("merchant",
-                      isEqualTo:
-                      FirebaseAuth.instance.currentUser!.uid.toString())
+                          isEqualTo:
+                              FirebaseAuth.instance.currentUser!.uid.toString())
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                     if (snapshots.hasData) {
@@ -184,16 +289,15 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: Theme
-                              .of(context)
-                              .primaryColor,
+                          color: Theme.of(context).primaryColor,
                         ),
                         dropdownDecoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
                         isExpanded: true,
                         hint: GlobalText(
-                          text: "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
+                          text:
+                              "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
                           color: AppColors.darkGrey,
@@ -230,13 +334,10 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                           //Do something when changing the item if you want.
                         },
                       );
-                    }
-                    else
-                    {
+                    } else {
                       return CircularProgressIndicator();
                     }
-                  }
-              ),
+                  }),
             ),
           ),
           Container(
@@ -254,10 +355,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
     );
   }
 
-
-  totalCus(
-      {required Alignment alignment,
-        required IconData icon}) {
+  totalCus({required Alignment alignment, required IconData icon}) {
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: Stack(
@@ -267,7 +365,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
             height: SizeData.height * 0.06,
             width: SizeData.width * 0.8,
             margin:
-            const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+                const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: AppColors.borderColor, width: 2)),
@@ -278,8 +376,8 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                   stream: FirebaseFirestore.instance
                       .collection("customers")
                       .where("merchant",
-                      isEqualTo:
-                      FirebaseAuth.instance.currentUser!.uid.toString())
+                          isEqualTo:
+                              FirebaseAuth.instance.currentUser!.uid.toString())
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                     if (snapshots.hasData) {
@@ -292,16 +390,15 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: Theme
-                              .of(context)
-                              .primaryColor,
+                          color: Theme.of(context).primaryColor,
                         ),
                         dropdownDecoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
                         isExpanded: true,
                         hint: GlobalText(
-                          text: "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
+                          text:
+                              "${LocaleString().totalText.tr} ${totalCustomer.length} ${LocaleString().customer.tr}",
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
                           color: AppColors.darkGrey,
@@ -338,13 +435,10 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                           //Do something when changing the item if you want.
                         },
                       );
-                    }
-                    else
-                    {
+                    } else {
                       return CircularProgressIndicator();
                     }
-                  }
-              ),
+                  }),
             ),
           ),
           Container(
@@ -361,7 +455,6 @@ class _CustomerCategoryState extends State<CustomerCategory> {
       ),
     );
   }
-
 
   doneButton() {
     return Padding(

@@ -159,7 +159,6 @@ class _SellMilkState extends State<SellMilk> {
               ),
             ),
           ),
-          closeButton(),
         ],
       ),
     );
@@ -247,11 +246,12 @@ class _SellMilkState extends State<SellMilk> {
                     double MorningSum = 0.0;
                     double EveningSum = 0.0;
 
-
                     if (DATA.exists) {
+
+                      print("data exist");
+
                       if (sessionMenu.toString() == "morning") {
-                        MorningSessionLiter =
-                            DATA.data()!["${sessionMenu.toString()}"];
+                        MorningSessionLiter = DATA.data()!["${sessionMenu.toString()}"];
 
                         MorningSessionLiter.add(
                           {
@@ -272,6 +272,10 @@ class _SellMilkState extends State<SellMilk> {
                                     MorningSessionLiter[i]["liter"].toString());
                           });
                         }
+
+                        List dates = [];
+
+
                         await FirebaseFirestore.instance
                             .collection("customers")
                             .doc(data.docs[0]["uid"].toString())
@@ -283,7 +287,65 @@ class _SellMilkState extends State<SellMilk> {
                           "${sessionMenu.toString()}": MorningSessionLiter,
                           "total ${sessionMenu.toString()} liter": MorningSum,
                         });
+
+                        var sum =  await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}").get();
+
+                        sum.docs.forEach((e) {
+                          setState(() {
+                            if(e.id != "total_liter")
+                              dates.add(int.parse(e.id));
+                          });
+                        });
+                        print("________");
+                        print("Dates length : ${dates.length}");
+                        print("________");
+
+                        double totalMonthLiter = 0.0;
+
+                        for(int i=0; i<dates.length; i++)
+                          {
+
+                            var monthSum = await FirebaseFirestore.instance
+                                .collection("customers")
+                                .doc(data.docs[0]["uid"].toString())
+                                .collection("milk_data")
+                                .doc("${DateTime.now().year}")
+                                .collection("${months[DateTime.now().month - 1]}")
+                                .doc("${dates[i]}").get();
+
+                            print("=================================");
+                            print(monthSum.data()!["total morning liter"]);
+                            print(monthSum.data()!["total evening liter"]);
+                            print("=================================");
+
+                            setState(() {
+                              totalMonthLiter = totalMonthLiter + monthSum.data()!["total morning liter"] + monthSum.data()!["total evening liter"];
+                            });
+
+                          }
+
+                        print("+++++++++++++");
+                        print(totalMonthLiter);
+
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("total_liter")
+                            .update({
+                          "liter" : totalMonthLiter,
+                        });
+
                       } else {
+                        print("date not exist");
+
                         EveningSessionLiter =
                             DATA.data()!["${sessionMenu.toString()}"];
 
@@ -306,6 +368,7 @@ class _SellMilkState extends State<SellMilk> {
                                     EveningSessionLiter[i]["liter"].toString());
                           });
                         }
+
                         await FirebaseFirestore.instance
                             .collection("customers")
                             .doc(data.docs[0]["uid"].toString())
@@ -317,9 +380,77 @@ class _SellMilkState extends State<SellMilk> {
                           "${sessionMenu.toString()}": EveningSessionLiter,
                           "total ${sessionMenu.toString()} liter": EveningSum,
                         });
+
+                        List dates = [];
+
+                        var sum =  await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}").get();
+
+                        sum.docs.forEach((e) {
+                          setState(() {
+                            if(e.id != "total_liter")
+                              dates.add(int.parse(e.id));
+                          });
+                        });
+                        print("________");
+                        print("Dates length : ${dates.length}");
+                        print("________");
+
+                        double totalMonthLiter = 0.0;
+
+                        for(int i=0; i<dates.length; i++)
+                        {
+
+                          var monthSum = await FirebaseFirestore.instance
+                              .collection("customers")
+                              .doc(data.docs[0]["uid"].toString())
+                              .collection("milk_data")
+                              .doc("${DateTime.now().year}")
+                              .collection("${months[DateTime.now().month - 1]}")
+                              .doc("${dates[i]}").get();
+
+                          print("=================================");
+                          print(monthSum.data()!["total morning liter"]);
+                          print(monthSum.data()!["total evening liter"]);
+                          print("=================================");
+
+                          setState(() {
+                            totalMonthLiter = totalMonthLiter + monthSum.data()!["total morning liter"] + monthSum.data()!["total evening liter"];
+                          });
+
+                        }
+
+                        print("+++++++++++++");
+                        print(totalMonthLiter);
+
+
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("total_liter")
+                            .update({
+                          "liter" : totalMonthLiter,
+                        });
                       }
                     } else {
                       if (sessionMenu.toString() == "morning") {
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("total_liter")
+                            .set({
+                          "liter": sellMilkController.liter.value,
+                        });
 
                         await FirebaseFirestore.instance
                             .collection("customers")
@@ -343,6 +474,17 @@ class _SellMilkState extends State<SellMilk> {
                           "total evening liter": 0,
                         });
                       } else {
+                        await FirebaseFirestore.instance
+                            .collection("customers")
+                            .doc(data.docs[0]["uid"].toString())
+                            .collection("milk_data")
+                            .doc("${DateTime.now().year}")
+                            .collection("${months[DateTime.now().month - 1]}")
+                            .doc("total_liter")
+                            .set({
+                          "liter": sellMilkController.liter.value,
+                        });
+
                         await FirebaseFirestore.instance
                             .collection("customers")
                             .doc(data.docs[0]["uid"].toString())
@@ -377,8 +519,6 @@ class _SellMilkState extends State<SellMilk> {
                           session: sessionMenu.toString(),
                           liter: sellMilkController.liter.value.toString()),
                     );
-
-
 
                     Get.back();
                   } else {
@@ -763,18 +903,18 @@ class _SellMilkState extends State<SellMilk> {
             setState(() {
               sessionMenu = item.name.toString();
               if (sessionMenu == 'morning') {
-                sellMilkController.isMorningSelected.value = false;
+                sellMilkController.isMorningSelected.value = true;
 
-                sellMilkController.isEveningSelected.value = true;
+                sellMilkController.isEveningSelected.value = false;
                 if (sellMilkController.isEveningSelected.value) {
-                  sellMilkController.isMorningSelected.value = false;
+                  sellMilkController.isMorningSelected.value = true;
                 }
               } else {
-                sellMilkController.isEveningSelected.value = false;
+                sellMilkController.isEveningSelected.value = true;
 
-                sellMilkController.isMorningSelected.value = true;
+                sellMilkController.isMorningSelected.value = false;
                 if (sellMilkController.isMorningSelected.value) {
-                  sellMilkController.isEveningSelected.value = false;
+                  sellMilkController.isEveningSelected.value = true;
                 }
               }
             });
@@ -797,16 +937,16 @@ class _SellMilkState extends State<SellMilk> {
                               ),
                               activeColor: AppColors.checkYearColor,
                               checkColor: AppColors.background,
-                              value: sellMilkController.isEveningSelected.value,
+                              value: sellMilkController.isMorningSelected.value,
                               onChanged: (value) {
                                 setState(() {
                                   sessionMenu = Menu.morning.name;
                                 });
-                                sellMilkController.isEveningSelected.value =
+                                sellMilkController.isMorningSelected.value =
                                     value!;
                                 if (sellMilkController
-                                    .isEveningSelected.value) {
-                                  sellMilkController.isMorningSelected.value =
+                                    .isMorningSelected.value) {
+                                  sellMilkController.isEveningSelected.value =
                                       false;
                                 }
                                 Get.back();
@@ -841,16 +981,16 @@ class _SellMilkState extends State<SellMilk> {
                               ),
                               activeColor: AppColors.checkYearColor,
                               checkColor: AppColors.background,
-                              value: sellMilkController.isMorningSelected.value,
+                              value: sellMilkController.isEveningSelected.value,
                               onChanged: (value) {
                                 setState(() {
                                   sessionMenu = Menu.evening.name;
                                 });
-                                sellMilkController.isMorningSelected.value =
+                                sellMilkController.isEveningSelected.value =
                                     value!;
                                 if (sellMilkController
-                                    .isMorningSelected.value) {
-                                  sellMilkController.isEveningSelected.value =
+                                    .isEveningSelected.value) {
+                                  sellMilkController.isMorningSelected.value =
                                       false;
                                 }
                                 Get.back();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:milk_bazzar/modules/Merchant/select_customer/controller/select_customer_controller.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
@@ -15,7 +16,7 @@ class GenerateBillMerchantScreen extends StatefulWidget {
 
 class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen> {
 
-  var data = Get.arguments;
+  DATA data = Get.arguments;
 
 List months = [
   LocaleString().jan.tr,
@@ -32,13 +33,28 @@ List months = [
   LocaleString().dec.tr,
 ];
 
+  final List<String> monthItemsInENGLISH = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ];
+
   var currentYear = DateTime.now().year.toString();
   var currentMonth;
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentMonth = months[DateTime.now().month - 1];
+    currentMonth = monthItemsInENGLISH[DateTime.now().month - 1];
   }
   @override
   Widget build(BuildContext context) {
@@ -54,8 +70,7 @@ List months = [
             child: ListView(
               physics: const BouncingScrollPhysics(),
               children:  [
-                Bill(data :data,currentYear: currentYear,currentMonth: currentMonth),
-                SendBillButton(),
+                Bill(data :data.uid,currentYear: data.year,currentMonth: data.month),
               ],
             ),
           ),
