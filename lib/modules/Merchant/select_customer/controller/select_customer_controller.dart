@@ -9,6 +9,8 @@ class SelectCustomerController extends GetxController {
 
   RxString selectedValue = LocaleString().jan.tr.obs;
 
+  RxInt index = 0.obs;
+
   RxBool isChecked = false.obs;
 
   RxString month = 'january'.obs;
@@ -48,7 +50,7 @@ class DATA {
 
   String year;
   String month;
-  String uid;
+  var uid;
 
   DATA({
     required this.month,

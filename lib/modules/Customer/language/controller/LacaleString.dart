@@ -15,6 +15,7 @@ class LocaleString extends Translations {
   String profile = "Profile";
   String editImage = "Edit Image";
   String errorName = "enter full name first...";
+  String errorPrizePerLiter = "enter Prize of one Liter...";
   String errorPhone = "enter phone first...";
   String errorAddress = "enter address first...";
   String mode = "Mode";
@@ -71,9 +72,11 @@ class LocaleString extends Translations {
   String singIn = " Sign In";
   String singUp = " Sign Up";
   String fullName = "Full Name";
+  String rupeesPerLiter = "Rupees Per Liter";
   String phone = "Phone";
   String address = "Address";
   String enterYourFullName = "Enter your full name";
+  String enterYourRupees = "Enter Rupees ₹";
   String phoneNumber = "Phone Number";
   String mobileNumber = "Mobile Number";
   String conCode = "We will send you confirmation code";
@@ -112,7 +115,7 @@ class LocaleString extends Translations {
 
   String searchCus = "Search Customer";
   String ronald = "Ronald Richards";
-  String ronaldMonth = "March's Total Amount is ";
+  String ronaldMonth = "Total Amount is ";
   String ronaldAmount = "2,500";
 
   String jaiminPatelVarachha = "Jaimin Patel / Varachha";
@@ -176,16 +179,22 @@ class LocaleString extends Translations {
   String yes = "Yes";
   String no = "No";
   String wantToDelete = "You want to delete this customer?";
+  String wantToLogout = "You want to Log Out?";
 
   String opps = "Oopps!";
   String oppsMsg = "Please Select Customer First...";
 
+  String sendTo = "Send to ";
+
   Map<String, Map<String, String>> get keys => {
         'en_US': {
+          sendTo: "Send to ",
+          enterYourRupees: "Enter Rupees",
           changeLan: 'Change Language',
           milkBazzar: "Milk Bazzar",
           getStartedText: "Get Started",
           errorName: "enter full name first...",
+          errorPrizePerLiter: "enter rupees of one Liter...",
           errorPhone: "enter phone first...",
           errorAddress: "enter address first...",
           errorCheck: "fill CheckBox!', 'Please! Agree With Our Policy",
@@ -243,6 +252,7 @@ class LocaleString extends Translations {
           singIn: "Sign In",
           singUp: "Sign Up",
           fullName: "Full Name",
+          rupeesPerLiter: "Rupees Per Liter",
           phone: "Phone",
           address: "Address",
           enterYourFullName: "Enter your full name",
@@ -279,7 +289,7 @@ class LocaleString extends Translations {
           dec: "December",
           searchCus: "Search Customer",
           ronald: "Ronald Richards",
-          ronaldMonth: "March's Total Amount is ",
+          ronaldMonth: " Total Amount is ",
           ronaldAmount: "2,500",
           jaiminPatelVarachha: "Jaimin Patel / Varachha",
           billOf: "Bill Of:",
@@ -326,16 +336,20 @@ class LocaleString extends Translations {
           yes: "Yes",
           no: "No",
           wantToDelete: "You want to delete this customer?",
-
           opps: "Oopps!",
           oppsMsg: "Please Select Customer First...",
+          wantToLogout: "You want to Log Out?",
         },
         'gu_IN': {
+          sendTo: " ને મોકલો",
+          enterYourRupees: "રૂપિયા દાખલ કરો",
+          rupeesPerLiter: "રૂપિયા પ્રતિ લિટર",
           changeLan: 'ભાષા બદલો',
           milkBazzar: "દૂધ બજાર",
           getStartedText: "શરૂ કરો",
           updateProfile: "પ્રોફાઇલ અપડેટ કરો",
           profileMsg: "નામ, મોબાઈલ નંબર, સરનામું, લોગો",
+          errorPrizePerLiter: "એક લિટરના રૂપિયા દાખલ કરો...",
           selectCustomerText: "ગ્રાહક પસંદ કરો",
           selectMode: "તમારો એપ્લિકેશન મોડ પસંદ કરો",
           profile: "પ્રોફાઇલ",
@@ -423,7 +437,7 @@ class LocaleString extends Translations {
           dec: "ડિસેમ્બર",
           searchCus: "ગ્રાહક શોધો",
           ronald: "રોનાલ્ડ રિચાર્ડ્સ",
-          ronaldMonth: "માર્ચની કુલ રકમ છે ",
+          ronaldMonth: " ની કુલ રકમ છે ",
           ronaldAmount: "૨,૫૦૦",
           jaiminPatelVarachha: "જૈમિન પટેલ/વરાછા",
           billOf: "બિલ ઓફ:",
@@ -471,14 +485,18 @@ class LocaleString extends Translations {
           yes: "હા",
           no: "ના",
           wantToDelete: "તમે આ ગ્રાહકને કાઢી નાખવા માંગો છો?",
-
           opps: "અરે!",
           oppsMsg: "કૃપા કરીને પહેલા ગ્રાહક પસંદ કરો...",
+          wantToLogout: "તમે લોગ આઉટ કરવા માંગો છો?",
         },
         'hi_IN': {
+          sendTo: " को भेजो",
+          enterYourRupees: "रुपये दर्ज करें",
+          rupeesPerLiter: "रुपये प्रति लीटर",
           changeLan: 'भाषा बदलो',
           milkBazzar: "दूध बाजार",
           getStartedText: "शुरू हो जाओ",
+          errorPrizePerLiter: "एक लीटर का रुपया डालें...",
           updateProfile: "प्रोफ़ाइल को नवीनतम बनाओ",
           profileMsg: "नाम, मोबाइल नंबर, पता, लोगो",
           selectCustomerText: "ग्राहक का चयन करें",
@@ -567,7 +585,7 @@ class LocaleString extends Translations {
           dec: "दिसंबर",
           searchCus: "ग्राहक खोजें",
           ronald: "रोनाल्ड रिचर्ड्स",
-          ronaldMonth: "मार्च की कुल राशि है",
+          ronaldMonth: " की कुल राशि है ",
           ronaldAmount: "2,500",
           jaiminPatelVarachha: "जैमिन पटेल / वराछा",
           billOf: "का बिल:",
@@ -617,9 +635,9 @@ class LocaleString extends Translations {
           yes: "हाँ",
           no: "नहीं",
           wantToDelete: "आप इस ग्राहक को हटाना चाहते हैं?",
-
           opps: "उफ़!",
           oppsMsg: "कृपया पहले ग्राहक चुनें...",
+          wantToLogout: "आप लॉग आउट करना चाहते हैं?",
         },
       };
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:milk_bazzar/modules/Merchant/add_customer/controller/add_custome
 import 'package:milk_bazzar/modules/Merchant/customer_list/controller/customer_list_controller.dart';
 import 'package:milk_bazzar/modules/Merchant/home/controller/home_controller.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../models/login_models/loginModels.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
@@ -42,6 +44,8 @@ class _AddCustomerState extends State<AddCustomer> {
   late TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -339,6 +343,9 @@ class _AddCustomerState extends State<AddCustomer> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () async {
+
+
+
           if (_globalFromKey.currentState!.validate()) {
             _globalFromKey.currentState!.save();
 
@@ -360,12 +367,69 @@ class _AddCustomerState extends State<AddCustomer> {
                   .get();
               var add = data.docs;
               add.forEach((element) async {
-                var check = await FirebaseFirestore.instance.collection('customers').doc(element.id.toString()).get();
-                if(check.data()!["merchant"].toString().isEmpty)
-                  {
+                var check = await FirebaseFirestore.instance
+                    .collection('customers')
+                    .doc(element.id.toString())
+                    .get();
+                if (check.data()!["merchant"].toString().isEmpty) {
+                  var data = await FirebaseFirestore.instance
+                      .collection('customers')
+                      .doc("${element.id}")
+                      .update({
+                    'merchant':
+                        FirebaseAuth.instance.currentUser!.uid.toString(),
+                  });
+
+                  contactLists.add(
+                    ContactList(
+                      fullName: fullNameController.text,
+                      mobileNumber: phoneController.text,
+                      address: addressController.text,
+                    ),
+                  );
+
+
+                  log(Permission.contacts.request().isGranted.toString());
+                  Contact contact = Contact();
+                  contact.familyName = 'VishalBhai Thummar';
+                  contact.phones = [Item(label: "mobile", value: '9974250661')];
+                  contact.emails = [Item(label: "work", value: 'info@34.71.214.132')];
+                  if (await Permission.contacts.request().isGranted) {
+                    await ContactsService.addContact(contact);
+                    log("Contact added successfully");
+                  }
+
+                  homeController.index.value = 0;
+
+                  Get.offAllNamed(AppRoutes.home);
+                } else {
+                  var data = await FirebaseFirestore.instance
+                      .collection("customers")
+                      .where("number", isEqualTo: "${phoneController.text}")
+                      .get();
+
+                  var mer = await FirebaseFirestore.instance
+                      .collection("merchants")
+                      .get();
+
+                  List merId = [];
+
+                  mer.docs.forEach((element) {
+                    merId.add(element.id.toString());
+                  });
+
+                  if (merId.contains("${data.docs[0]["merchant"]}")) {
+                    Get.snackbar("Customer",
+                        "customer has Already have an other Merchant...",
+                        backgroundColor: AppColors.darkBlue,
+                        colorText: AppColors.white);
+                  } else {
                     var data = await FirebaseFirestore.instance
-                        .collection('customers').doc("${element.id}").update({
-                      'merchant': FirebaseAuth.instance.currentUser!.uid.toString(),
+                        .collection('customers')
+                        .doc("${element.id}")
+                        .update({
+                      'merchant':
+                          FirebaseAuth.instance.currentUser!.uid.toString(),
                     });
 
                     contactLists.add(
@@ -376,17 +440,25 @@ class _AddCustomerState extends State<AddCustomer> {
                       ),
                     );
 
+                    log(Permission.contacts.request().isGranted.toString());
+                    Contact contact = Contact();
+                    contact.familyName = '${fullNameController.text}';
+                    contact.phones = [Item(label: "mobile", value: '${phoneController.text}')];
+                    if (await Permission.contacts.request().isGranted) {
+                      await ContactsService.addContact(contact);
+                      log("Contact added successfully");
+                    }
+
                     homeController.index.value = 0;
 
                     Get.offAllNamed(AppRoutes.home);
                   }
-                else
-                  {
-                    Get.snackbar("Customer", "customer has Already have an other Merchant...",backgroundColor: AppColors.darkBlue,colorText: AppColors.white);
-                  }
+                }
               });
             } else {
-              Get.snackbar("Customer", "No Found",backgroundColor: AppColors.darkBlue,colorText: AppColors.white);
+              Get.snackbar("Customer", "No Found",
+                  backgroundColor: AppColors.darkBlue,
+                  colorText: AppColors.white);
             }
           }
         },

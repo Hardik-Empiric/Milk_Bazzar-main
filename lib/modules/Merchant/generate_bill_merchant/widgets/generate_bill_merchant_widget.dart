@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,11 +13,13 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:quiver/time.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:share_whatsapp/share_whatsapp.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
-import '../../../Customer/generate_bill/controller/generate_bill_controller.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
+import '../controller/generate_bill_merchant_controller.dart';
 
 class Bill extends StatefulWidget {
 
@@ -33,7 +36,7 @@ class Bill extends StatefulWidget {
 class _BillState extends State<Bill> {
   final pdf = pw.Document();
 
-  bool isLoading = true;
+  // bool isLoading = true;
 
   // YearMonth yearMonth = Get.arguments;
 
@@ -41,11 +44,17 @@ class _BillState extends State<Bill> {
   double totalLiterOfMonth = 0.0;
   double prizePerLiter = 0.0;
 
+  List dates = [];
+
+  GenerateBillController generateBillController =
+  Get.put(GenerateBillController());
+
+
 
   calculateData() async {
     var totalLiter = await FirebaseFirestore.instance
         .collection("customers")
-        .doc("${widget.data}")
+        .doc("${widget.data["uid"]}")
         .collection("milk_data")
         .doc("${widget.currentYear}")
         .collection("${widget.currentMonth}").doc("total_liter").get();
@@ -56,7 +65,7 @@ class _BillState extends State<Bill> {
 
     var d = await FirebaseFirestore.instance
         .collection("customers")
-        .doc("${widget.data}").get();
+        .doc("${widget.data["uid"]}").get();
 
     var ppl = await FirebaseFirestore.instance
         .collection("merchants")
@@ -72,7 +81,7 @@ class _BillState extends State<Bill> {
 
   getProfile() async {
     var cusName = await FirebaseFirestore.instance.collection("customers").doc(
-        "${widget.data}").get();
+        "${widget.data["uid"]}").get();
 
     customerName = cusName.data()!["name"];
   }
@@ -97,20 +106,21 @@ class _BillState extends State<Bill> {
 
     var untilMonths = await FirebaseFirestore.instance
         .collection("customers")
-        .doc("${widget.data}")
+        .doc("${widget.data["uid"]}")
         .collection("milk_data")
         .doc("${widget.currentYear}")
         .collection("${widget.currentMonth}");
 
     var data = await FirebaseFirestore.instance
         .collection("customers")
-        .doc("${widget.data}")
+        .doc("${widget.data["uid"]}")
         .collection("milk_data")
         .doc("${widget.currentYear}")
         .collection("${widget.currentMonth}")
         .get();
 
-    List dates = [];
+    dates.clear();
+
 
     data.docs.forEach((e) {
       setState(() {
@@ -119,10 +129,12 @@ class _BillState extends State<Bill> {
       });
     });
 
-    print(dates);
+    log(dates.length.toString());
 
-    billDetails2.clear();
-    billDetails1.clear();
+    setState(() {
+      billDetails2.clear();
+      billDetails1.clear();
+    });
 
     billDetails2.add(
       BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING"),
@@ -174,22 +186,50 @@ class _BillState extends State<Bill> {
 
     calculateData();
     setState(() {
-      isLoading = false;
+      generateBillController.isLoading.value = false;
     });
+
+    log("+++++++++++++++++++++++++++++++");
+    log(billDetails1.length.toString());
+    log(billDetails2.length.toString());
+    log("+++++++++++++++++++++++++++++++");
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    billDetails2.clear();
+    billDetails1.clear();
+    dates.clear();
+
+    log("+++++++++++++++++++++++++++++++");
+    log(billDetails1.length.toString());
+    log(billDetails2.length.toString());
+    log("+++++++++++++++++++++++++++++++");
+  }
+
+  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+
+  bool isEng = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    prefs.then((prefs) {
+      isEng = (prefs.getBool("English") ?? false);
+    });
 
-    print("${widget.data}");
+    print("${widget.data["uid"]}");
     print("${widget.currentYear}");
     print("${widget.currentMonth}");
 
     getProfile();
     getData();
+    buildPDF();
+
+
   }
 
   @override
@@ -239,7 +279,7 @@ class _BillState extends State<Bill> {
                         .primaryColor,
                   ),
                 ),
-                (!isLoading)
+                (!generateBillController.isLoading.value)
                     ? Column(
                   children: [
                     Row(
@@ -392,13 +432,14 @@ class _BillState extends State<Bill> {
                 right: 40, left: 40, top: 30, bottom: 50),
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                primary: (!isLoading) ? AppColors.blue : AppColors.lightBlue,
+                primary: (!generateBillController.isLoading.value) ? AppColors.blue : AppColors.lightBlue,
                 padding:
                 const EdgeInsets.only(
                     right: 15, left: 15, top: 10, bottom: 10),
               ),
               onPressed: () async {
-                if(!isLoading)
+
+                if(!generateBillController.isLoading.value)
                 {
                   downloadPDF();
                 }
@@ -406,9 +447,9 @@ class _BillState extends State<Bill> {
               icon: Padding(
                   padding: const EdgeInsets.only(right: 5),
                   child: Image.asset(
-                      'assets/icons/download.png', scale: 15)),
+                      'assets/images/WhatssApp.png', scale: 15)),
               label: GlobalText(
-                text: "Download April Bill",
+                text: (isEng) ? "${LocaleString().sendTo.tr}$customerName" : "$customerName${LocaleString().sendTo.tr}",
                 fontSize: 18,
               ),
             ),
@@ -420,9 +461,6 @@ class _BillState extends State<Bill> {
 
   downloadPDF() async {
 
-    buildPDF();
-
-
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
 
@@ -430,9 +468,11 @@ class _BillState extends State<Bill> {
     print(file.path);
     await file.writeAsBytes(await pdf.save());
 
-    List<String> pdfPath = [file.path];
+    shareWhatsapp.shareFile(
+      XFile(file.path),
+      phone: "+91${widget.data["number"]}",
+    );
 
-    OpenFile.open(file.path);
   }
 
   buildPDF() {

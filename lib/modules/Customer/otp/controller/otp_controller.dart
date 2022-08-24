@@ -84,7 +84,9 @@ class OtpController extends GetxController {
           'add': "${LoginModels.address}",
           'type': "merchant",
           'image': "",
-          'uid':"${FirebaseAuth.instance.currentUser!.uid}"
+          'uid':"${FirebaseAuth.instance.currentUser!.uid}",
+         'prize_per_liter': LoginModels.rupeesPerLiter,
+
         });
       } else {
         var user = FirebaseFirestore.instance

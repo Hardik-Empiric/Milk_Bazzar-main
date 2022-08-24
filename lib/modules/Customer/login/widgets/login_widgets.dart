@@ -29,6 +29,7 @@ class _LoginFormState extends State<LoginForm> {
   late TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController prizePerLiterController = TextEditingController();
 
   List numbers = [];
 
@@ -306,6 +307,62 @@ class _LoginFormState extends State<LoginForm> {
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.always),
                         ),
+                        (loginController.isMerchant.value) ? Padding(
+                            padding: const EdgeInsets.only(top: 30,right: 65,left: 65),
+                            child: TextFormField(
+                              validator: (val) {
+                                    if (val!.isEmpty) {
+                                      return LocaleString().errorPrizePerLiter.tr;
+                                    }
+                                    return null;
+                              },
+                              keyboardType: TextInputType.number,
+                              controller: prizePerLiterController,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Graphik"),
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  labelText: LocaleString().rupeesPerLiter.tr,
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context).hintColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Graphik"),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(
+                                        color: AppColors.pendingAmountColor,
+                                        width: 2),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(
+                                        color: AppColors.blue, width: 2),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(
+                                        color: AppColors.borderColor, width: 2),
+                                  ),
+                                  // prefix: GlobalText(text: "₹",color: AppColors.hintTextColor,fontSize: 25),
+                                  prefixText: "₹",
+                                  prefixStyle: TextStyle(
+                                      color: Theme.of(context).primaryColor,fontSize: 20,
+                                  ),
+                                  hintText: LocaleString().enterYourRupees.tr,
+                                  hintStyle: const TextStyle(
+                                    color: AppColors.hintTextColor,
+                                    fontSize: 13,
+                                  ),
+                                  floatingLabelBehavior:
+                                  FloatingLabelBehavior.always),
+                            ),
+                          ) : Container(),
                         const SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -388,6 +445,7 @@ class _LoginFormState extends State<LoginForm> {
                         LoginModels.phone = int.parse(phoneController.text);
                         LoginModels.address = addressController.text;
                         LoginModels.isChecked = loginController.isChecked.value;
+                        LoginModels.rupeesPerLiter = double.parse(prizePerLiterController.text.isEmpty ? "0" : prizePerLiterController.text);
 
                             if (loginController.isChecked.value) {
                               Get.toNamed(AppRoutes.otpVerification);
@@ -426,7 +484,9 @@ class _LoginFormState extends State<LoginForm> {
                           checkColor: AppColors.background,
                           value: loginController.isMerchant.value,
                           onChanged: (value) async {
-                            loginController.isMerchant.value = value!;
+                            setState(() {
+                              loginController.isMerchant.value = value!;
+                            });
                             LoginModels.isMerchant = value;
 
                             SharedPreferences prefs = await SharedPreferences.getInstance();

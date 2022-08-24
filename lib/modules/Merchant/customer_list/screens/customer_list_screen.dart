@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,35 +32,74 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   var newData = [];
   var customerData = [];
 
+  List amount = [];
+
+
   String searchResult = "";
 
-  // calculateData() async {
-  //   var totalLiter = await FirebaseFirestore.instance
-  //       .collection("customers")
-  //       .doc("${widget.data["uid"]}")
-  //       .collection("milk_data")
-  //       .doc("${widget.currentYear}")
-  //       .collection("${widget.currentMonth}").doc("total_liter").get();
-  //
-  //   setState(() {
-  //     totalLiterOfMonth = totalLiter.data()!["liter"];
-  //   });
-  //
-  //   var d = await FirebaseFirestore.instance
-  //       .collection("customers")
-  //       .doc("${widget.data["uid"]}").get();
-  //
-  //   var ppl = await FirebaseFirestore.instance
-  //       .collection("merchants")
-  //       .doc("${d.data()!["merchant"]}").get();
-  //
-  //   setState(() {
-  //     prizePerLiter = double.parse("${ppl.data()!["prize_per_liter"]}");
-  //   });
-  //
-  //   print("Total Liter of Month ${totalLiterOfMonth}");
-  //   print("Prize Per liter ${prizePerLiter}");
-  // }
+  double totalMonthRupees = 0.0;
+
+  calculateData() async {
+
+    var uid = await FirebaseFirestore.instance
+        .collection("customers")
+        .where("merchant",
+        isEqualTo:
+        FirebaseAuth.instance.currentUser!.uid.toString()).get();
+
+    print(uid.docs[0].id);
+    print(uid.docs[1].id);
+
+
+    uid.docs.forEach((e) async {
+      double totalLiterOfMonth = 0.0;
+      double prizePerLiter = 0.0;
+
+      var totalLiter = await FirebaseFirestore.instance
+          .collection("customers")
+          .doc(e.id)
+          .collection("milk_data")
+          .doc(currentYear)
+          .collection(currentMonth).doc("total_liter").get();
+
+      if(totalLiter.exists)
+        {
+          setState(() {
+            totalLiterOfMonth = totalLiter.data()!["liter"];
+            print(totalLiterOfMonth);
+          });
+
+          var d = await FirebaseFirestore.instance
+              .collection("customers")
+              .doc(e.id).get();
+
+          var ppl = await FirebaseFirestore.instance
+              .collection("merchants")
+              .doc("${d.data()!["merchant"]}").get();
+
+          setState(() {
+            prizePerLiter = double.parse("${ppl.data()!["prize_per_liter"]}");
+            print(prizePerLiter);
+          });
+
+
+          totalMonthRupees = totalLiterOfMonth * prizePerLiter;
+          print(totalMonthRupees);
+
+          setState(() {
+            amount.add(totalMonthRupees);
+            print(amount);
+          });
+        }
+      else
+        {
+          amount.add(0.0);
+        }
+    });
+
+
+  }
+
 
   final List<String> monthItemsInENGLISH = [
     "january",
@@ -75,14 +116,43 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     "december",
   ];
 
+  final List<String> monthItems = [
+    LocaleString().jan.tr,
+    LocaleString().feb.tr,
+    LocaleString().mar.tr,
+    LocaleString().apr.tr,
+    LocaleString().may.tr,
+    LocaleString().jun.tr,
+    LocaleString().jul.tr,
+    LocaleString().aug.tr,
+    LocaleString().sep.tr,
+    LocaleString().oct.tr,
+    LocaleString().nov.tr,
+    LocaleString().dec.tr,
+  ];
+
   var currentYear = DateTime.now().year.toString();
   var currentMonth;
+  var currentMontInAllLanguage;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    amount.clear();
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     currentMonth = monthItemsInENGLISH[DateTime.now().month - 1];
+    currentMontInAllLanguage = monthItems[DateTime.now().month - 1];
+
+    calculateData();
+
+    print("final amount : ${amount}");
+
   }
 
   @override
@@ -163,6 +233,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
                       newData = customerData;
 
+
                       if (newData.length == 0) {
                         return Center(
                           child: GlobalText(
@@ -174,10 +245,12 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                           ),
                         );
                       } else {
-                        return ListView.builder(
+                        return (newData.length == amount.length)? ListView.builder(
                           itemCount: newData.length,
                           itemBuilder: (context, i) {
                             final singleData = newData[i];
+
+
                             return (singleData["name"]
                                     .toString()
                                     .toLowerCase()
@@ -189,7 +262,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                           Get.toNamed(
                                               AppRoutes.generateBillMerchant,
                                               arguments: DATA(
-                                                uid: singleData["uid"],
+                                                uid: singleData,
                                                 month: currentMonth,
                                                 year: currentYear,
                                               ));
@@ -248,10 +321,10 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                               ),
                                             ),
                                           ),
-                                          leading: const CircleAvatar(
+                                          leading: CircleAvatar(
                                             radius: 22,
-                                            backgroundImage: NetworkImage(
-                                                "https://images.unsplash.com/photo-1603384699007-50799748fc45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fG1lbnN8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"),
+                                            backgroundImage: (singleData["image"].toString().isNotEmpty) ? NetworkImage(
+                                                singleData["image"]) : null,
                                           ),
                                           title: GlobalText(
                                             text: singleData["name"],
@@ -263,19 +336,17 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                           subtitle: Row(
                                             children: [
                                               GlobalText(
-                                                text: LocaleString()
+                                                text: "$currentMontInAllLanguage${LocaleString()
                                                     .ronaldMonth
-                                                    .tr,
+                                                    .tr}",
                                                 color: AppColors.textColor3,
                                                 fontWeight: FontWeight.w400,
                                               ),
-                                              GlobalText(
-                                                text: LocaleString()
-                                                    .ronaldAmount
-                                                    .tr,
+                                              (amount.isNotEmpty)? GlobalText(
+                                                text: "${amount[i]}",
                                                 color: AppColors.orange,
                                                 fontWeight: FontWeight.w500,
-                                              ),
+                                              ) : Container(),
                                             ],
                                           ),
                                         ),
@@ -293,6 +364,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                     visible: false,
                                   );
                           },
+                        ) :  Center(
+                          child: CircularProgressIndicator(),
                         );
                       }
                     } else {

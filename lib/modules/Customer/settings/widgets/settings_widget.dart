@@ -10,6 +10,7 @@ import '../../../../utils/app_constants.dart';
 import '../../../../utils/app_text.dart';
 import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
+import '../../../Merchant/home/controller/home_controller.dart';
 import '../../language/controller/LacaleString.dart';
 import '../controller/settings_controller.dart';
 
@@ -22,6 +23,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   final SettingsController settingsController = Get.put(SettingsController());
+  final HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class _SettingsState extends State<Settings> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Theme.of(context).backgroundColor,
-              boxShadow:  [
+              boxShadow: [
                 BoxShadow(
                   color: AppColors.shadow,
                   offset: Offset(0, 0),
@@ -102,7 +104,8 @@ class _SettingsState extends State<Settings> {
                         msg: LocaleString().languageMsg.tr,
                         navigatorPageName: AppRoutes.language),
                     normalFields(
-                        msg: LocaleString().mode.tr, navigatorPageName: AppRoutes.mode),
+                        msg: LocaleString().mode.tr,
+                        navigatorPageName: AppRoutes.mode),
                     normalFields(
                         msg: LocaleString().logout.tr,
                         navigatorPageName: AppRoutes.register),
@@ -155,26 +158,45 @@ class _SettingsState extends State<Settings> {
       onTap: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        if(msg == LocaleString().logout.tr)
-          {
-            prefs.setBool("Login", false);
-          }
 
-        if(msg == LocaleString().logout.tr)
-          {
+        if (msg == LocaleString().logout.tr) {
+          Get.defaultDialog(
+            onCancel: () {
 
-            await FirebaseAuth.instance.signOut();
+                    if(prefs.getBool("isMerchant") == true)
+                      {
+                        homeController.index.value = 4;
+                      }
+                    else
+                      {
+                        Get.toNamed(AppRoutes.settings);
+                      }
+            },
+            onConfirm: () async {
+              await FirebaseAuth.instance.signOut();
 
-            prefs.setBool("isMerchant", false);
+              prefs.setBool("isMerchant", false);
 
-            Get.offAllNamed(navigatorPageName);
+              prefs.setBool("Login", false);
 
-          }
-        else
-          {
-            Get.toNamed(navigatorPageName);
-          }
-
+              Get.offAllNamed(navigatorPageName);
+            },
+            title: LocaleString().areYouSure.tr,
+            backgroundColor: AppColors.white,
+            titleStyle: TextStyle(color: AppColors.darkBlue),
+            middleTextStyle: TextStyle(color: Colors.white),
+            textConfirm: LocaleString().yes.tr,
+            textCancel: LocaleString().no.tr,
+            cancelTextColor: Colors.black,
+            confirmTextColor: Colors.white,
+            buttonColor: AppColors.blue,
+            barrierDismissible: false,
+            radius: 50,
+            content: Text(LocaleString().wantToLogout.tr),
+          );
+        } else {
+          Get.toNamed(navigatorPageName);
+        }
       },
       child: Container(
         height: SizeData.height * 0.06,
@@ -183,8 +205,7 @@ class _SettingsState extends State<Settings> {
             : const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 15),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            border:
-                Border.all(color: AppColors.borderColor, width: 2)),
+            border: Border.all(color: AppColors.borderColor, width: 2)),
         alignment: Alignment.center,
         child: Padding(
           padding: const EdgeInsets.only(right: 10, left: 10),
@@ -195,7 +216,7 @@ class _SettingsState extends State<Settings> {
                 text: msg,
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color:Theme.of(context).primaryColor,
+                color: Theme.of(context).primaryColor,
               ),
               (msg == LocaleString().mode.tr)
                   ? const CircleAvatar(
@@ -237,8 +258,7 @@ class _SettingsState extends State<Settings> {
                 const EdgeInsets.only(left: 20, right: 20, bottom: 15, top: 15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                    color: AppColors.borderColor, width: 2)),
+                border: Border.all(color: AppColors.borderColor, width: 2)),
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.only(right: 10, left: 10),

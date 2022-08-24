@@ -27,7 +27,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
 
   bool isCheck = false;
 
-  String _selectedMenu = DateTime.now().year.toString();
+  String _selectedMenu = "current";
 
   var customerList = [];
 
@@ -316,8 +316,10 @@ class _SelectCustomerState extends State<SelectCustomer> {
           dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
-          items: monthItemsInENGLISH
-              .map((item) => DropdownMenuItem<String>(
+          items: monthItems
+              .map((item) {
+            return DropdownMenuItem<String>(
+
                     value: item,
                     child: Text(
                       item,
@@ -325,13 +327,15 @@ class _SelectCustomerState extends State<SelectCustomer> {
                         fontSize: 14,
                       ),
                     ),
-                  ))
+                  );})
               .toList(),
           onChanged: (value) {
             //Do something when changing the item if you want.
+            selectCustomerController.index.value = monthItems.indexOf(value.toString());
+            selectCustomerController.month.value = monthItemsInENGLISH[selectCustomerController.index.value];
           },
           onSaved: (value) {
-            selectCustomerController.month.value = value.toString();
+
           },
         ),
       ),

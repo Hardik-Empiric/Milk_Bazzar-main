@@ -11,6 +11,7 @@ class GenerateBillController extends GetxController {
 
   RxInt currentMonthsTotalDays = CMTD.obs;
 
+  RxBool isLoading = true.obs;
 
 }
 

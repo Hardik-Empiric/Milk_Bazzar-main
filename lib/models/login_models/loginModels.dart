@@ -11,6 +11,7 @@ class LoginModels {
   static bool? yearChecked;
   static int? otp;
   static String? vid;
+  static double rupeesPerLiter = 0.0;
 
   static TextEditingController pinPutController = TextEditingController();
   static FocusNode pinPutFocusNode = FocusNode();

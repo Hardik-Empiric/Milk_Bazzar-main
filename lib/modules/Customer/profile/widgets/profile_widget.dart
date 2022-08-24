@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -45,9 +46,17 @@ class _ProfileState extends State<Profile> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController prizePerLiterController = TextEditingController();
 
   var allData;
   String profile_image_path = '';
+
+  var data;
+  var user;
+
+  late bool isMerchant;
+
+  List allCusName = [];
 
   getAllData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -55,32 +64,43 @@ class _ProfileState extends State<Profile> {
     print(prefs.getBool("isMerchant"));
 
     if (prefs.getBool("isMerchant") ?? false) {
+      setState(() {
+        isMerchant = prefs.getBool("isMerchant")!;
+      });
+
       var data = await FirebaseFirestore.instance
           .collection('merchants')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
-       fullNameController.text = data.data()!['name'];
-       phoneController.text = data.data()!['number'];
-       addressController.text = data.data()!['add'];
-       setState(() {
-         urlDownload = data.data()!['image'];
-       });
+      fullNameController.text = data.data()!['name'];
+      phoneController.text = data.data()!['number'];
+      addressController.text = data.data()!['add'];
+      prizePerLiterController.text = data.data()!["prize_per_liter"].toString();
+      setState(() {
+        urlDownload = data.data()!['image'];
+      });
+    } else {
+      var data = await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      fullNameController.text = data.data()!['name'];
+      phoneController.text = data.data()!['number'];
+      addressController.text = data.data()!['add'];
+      setState(() {
+        urlDownload = data.data()!['image'];
+      });
     }
-    else
-      {
-        var data = await FirebaseFirestore.instance
-            .collection('customers')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .get();
-         fullNameController.text = data.data()!['name'];
-         phoneController.text = data.data()!['number'];
-         addressController.text = data.data()!['add'];
-         setState(() {
-           urlDownload = data.data()!['image'];
-         });
-      }
+  }
 
+  allCustomerName() async {
+    var data = await FirebaseFirestore.instance
+        .collection('customers')
+        .get();
 
+    data.docs.forEach((element) {
+      allCusName.add(element.data()["name"]);
+    });
   }
 
   @override
@@ -88,10 +108,10 @@ class _ProfileState extends State<Profile> {
     // TODO: implement initState
     super.initState();
     getAllData();
-    Timer(Duration(seconds: 2),(){
-    setState(() {
-      loading = false;
-    });
+    Timer(Duration(seconds: 2), () {
+      setState(() {
+        loading = false;
+      });
     });
   }
 
@@ -196,7 +216,7 @@ class _ProfileState extends State<Profile> {
                   GestureDetector(
                     onTap: () async {
                       final XFile? photo =
-                          await _picker.pickImage(source: ImageSource.camera);
+                          await _picker.pickImage(source: ImageSource.gallery);
 
                       setState(() {
                         img_path = photo!.path;
@@ -236,17 +256,34 @@ class _ProfileState extends State<Profile> {
                       urlDownload = await snapshot.ref.getDownloadURL();
                       print('Download Link : $urlDownload');
 
-                      var user = FirebaseFirestore.instance
-                          .collection('customers')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({
-                        'image': "$urlDownload",
-                      });
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
 
-                      var data = await FirebaseFirestore.instance
-                          .collection('customers')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .get();
+                      if (prefs.getBool("isMerchant") == false) {
+                        user = FirebaseFirestore.instance
+                            .collection('customers')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .update({
+                          'image': "$urlDownload",
+                        });
+
+                        data = await FirebaseFirestore.instance
+                            .collection('customers')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .get();
+                      } else {
+                        user = FirebaseFirestore.instance
+                            .collection('merchants')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .update({
+                          'image': "$urlDownload",
+                        });
+
+                        data = await FirebaseFirestore.instance
+                            .collection('merchants')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .get();
+                      }
 
                       setState(() {
                         urlDownload = data.data()!['image'];
@@ -311,6 +348,10 @@ class _ProfileState extends State<Profile> {
                   if (val!.isEmpty) {
                     return LocaleString().errorName.tr;
                   }
+                  if(allCusName.contains(val))
+                    {
+                      return "name is already exist";
+                    }
                   return null;
                 },
                 onSaved: (val) {
@@ -477,6 +518,67 @@ class _ProfileState extends State<Profile> {
                     ),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Visibility(
+                  visible: isMerchant,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 65),
+                    child: TextFormField(
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return LocaleString().errorPrizePerLiter.tr;
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.number,
+                      controller: prizePerLiterController,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Graphik"),
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          labelText: LocaleString().rupeesPerLiter.tr,
+                          labelStyle: TextStyle(
+                              color: Theme.of(context).hintColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "Graphik"),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(
+                                color: AppColors.pendingAmountColor, width: 2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide:
+                                const BorderSide(color: AppColors.blue, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(
+                                color: AppColors.borderColor, width: 2),
+                          ),
+                          // prefix: GlobalText(text: "₹",color: AppColors.hintTextColor,fontSize: 25),
+                          prefixText: "₹",
+                          prefixStyle: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20,
+                          ),
+                          hintText: LocaleString().enterYourRupees.tr,
+                          hintStyle: const TextStyle(
+                            color: AppColors.hintTextColor,
+                            fontSize: 13,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always),
+                    ),
+                  ),
+                ),
+              ),
             ],
           )),
     );
@@ -552,6 +654,7 @@ class _ProfileState extends State<Profile> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () async {
+
           if (_globalFromKey.currentState!.validate()) {
             _globalFromKey.currentState!.save();
 
@@ -559,16 +662,32 @@ class _ProfileState extends State<Profile> {
             LoginModels.phone = int.parse(phoneController.text);
             LoginModels.address = addressController.text;
 
-            var user = FirebaseFirestore.instance
-                .collection('customers')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .update({
-              'name': "${LoginModels.name}",
-              'number': "${LoginModels.phone}",
-              'add': "${LoginModels.address}",
-              'type': "customer",
-              'image': "$urlDownload",
-            });
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+
+            if (prefs.getBool("isMerchant") == false) {
+              var user = FirebaseFirestore.instance
+                  .collection('customers')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .update({
+                'name': "${LoginModels.name}",
+                'number': "${LoginModels.phone}",
+                'add': "${LoginModels.address}",
+                'type': "customer",
+                'image': "$urlDownload",
+              });
+            } else {
+              var user = FirebaseFirestore.instance
+                  .collection('merchants')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .update({
+                'name': "${LoginModels.name}",
+                'number': "${LoginModels.phone}",
+                'add': "${LoginModels.address}",
+                'type': "merchant",
+                'image': "$urlDownload",
+                'prize_per_liter': double.parse(prizePerLiterController.text),
+              });
+            }
           }
         },
         child: GlobalText(
