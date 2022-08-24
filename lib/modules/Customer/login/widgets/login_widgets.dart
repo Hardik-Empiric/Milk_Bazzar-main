@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +35,34 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController prizePerLiterController = TextEditingController();
 
   List numbers = [];
+  List allCusName = [];
+
+  var data;
+
+
+  getAllData() async {
+
+    var cc = await FirebaseFirestore.instance
+        .collection('customers')
+        .get();
+
+    var mm = await FirebaseFirestore.instance
+        .collection('merchants')
+        .get();
+
+    cc.docs.forEach((element) {
+      allCusName.add(element.data()["name"].toString().toLowerCase());
+    });
+
+    mm.docs.forEach((element) {
+      allCusName.add(element.data()["name"].toString().toLowerCase());
+
+    });
+
+    allCusName.forEach((element) {
+      log(element);
+    });
+  }
 
   getList() async {
     var customers = await FirebaseFirestore.instance
@@ -58,6 +89,7 @@ class _LoginFormState extends State<LoginForm> {
     // TODO: implement initState
     super.initState();
     getList();
+    getAllData();
   }
 
   @override
@@ -130,6 +162,10 @@ class _LoginFormState extends State<LoginForm> {
                           validator: (val) {
                             if (val!.isEmpty) {
                               return LocaleString().errorName.tr;
+                            }
+                            if(allCusName.contains(val.toLowerCase()))
+                            {
+                              return "name is already exist";
                             }
                             return null;
                           },

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -79,6 +80,8 @@ class _ProfileState extends State<Profile> {
       setState(() {
         urlDownload = data.data()!['image'];
       });
+
+
     } else {
       var data = await FirebaseFirestore.instance
           .collection('customers')
@@ -91,17 +94,33 @@ class _ProfileState extends State<Profile> {
         urlDownload = data.data()!['image'];
       });
     }
-  }
-
-  allCustomerName() async {
-    var data = await FirebaseFirestore.instance
+    var cc = await FirebaseFirestore.instance
         .collection('customers')
         .get();
 
-    data.docs.forEach((element) {
-      allCusName.add(element.data()["name"]);
+    var mm = await FirebaseFirestore.instance
+        .collection('merchants')
+        .get();
+
+    cc.docs.forEach((element) {
+      if(element.data()["name"].toString().toLowerCase() != fullNameController.text.toLowerCase())
+      {
+        allCusName.add(element.data()["name"].toString().toLowerCase());
+      }
+    });
+
+    mm.docs.forEach((element) {
+      if(element.data()["name"].toString().toLowerCase() != fullNameController.text.toLowerCase())
+      {
+        allCusName.add(element.data()["name"].toString().toLowerCase());
+      }
+    });
+
+    allCusName.forEach((element) {
+      log(element);
     });
   }
+
 
   @override
   void initState() {
@@ -348,7 +367,7 @@ class _ProfileState extends State<Profile> {
                   if (val!.isEmpty) {
                     return LocaleString().errorName.tr;
                   }
-                  if(allCusName.contains(val))
+                  if(allCusName.contains(val.toLowerCase()))
                     {
                       return "name is already exist";
                     }
