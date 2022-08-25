@@ -19,11 +19,13 @@ class BillDetails {
   String date;
   String morning;
   String evening;
+  double PPL;
 
   BillDetails({
     required this.date,
     required this.morning,
     required this.evening,
+    required this.PPL,
   });
 }
 
@@ -35,23 +37,23 @@ List<BillDetails> billDetails1 = <BillDetails>[
 ];
 
 List<BillDetails> billDetails2 = <BillDetails>[
-  BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING"),
-  BillDetails(date: '17', morning: '-', evening: '-'),
-  BillDetails(date: '18', morning: '-', evening: '-'),
-  BillDetails(date: '19', morning: '-', evening: '-'),
-  BillDetails(date: '20', morning: '-', evening: '-'),
-  BillDetails(date: '21', morning: '-', evening: '-'),
-  BillDetails(date: '22', morning: '-', evening: '-'),
-  BillDetails(date: '23', morning: '-', evening: '-'),
-  BillDetails(date: '24', morning: '-', evening: '-'),
-  BillDetails(date: '25', morning: '-', evening: '-'),
-  BillDetails(date: '26', morning: '-', evening: '-'),
-  BillDetails(date: '27', morning: '-', evening: '-'),
-  BillDetails(date: '28', morning: '-', evening: '-'),
-  BillDetails(date: '29', morning: '-', evening: '-'),
-  BillDetails(date: '30', morning: '-', evening: '-'),
-  BillDetails(date: '31', morning: '-', evening: '-'),
-  BillDetails(date: '-', morning: '-', evening: '-'),
+  // BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING"),
+  // BillDetails(date: '17', morning: '-', evening: '-'),
+  // BillDetails(date: '18', morning: '-', evening: '-'),
+  // BillDetails(date: '19', morning: '-', evening: '-'),
+  // BillDetails(date: '20', morning: '-', evening: '-'),
+  // BillDetails(date: '21', morning: '-', evening: '-'),
+  // BillDetails(date: '22', morning: '-', evening: '-'),
+  // BillDetails(date: '23', morning: '-', evening: '-'),
+  // BillDetails(date: '24', morning: '-', evening: '-'),
+  // BillDetails(date: '25', morning: '-', evening: '-'),
+  // BillDetails(date: '26', morning: '-', evening: '-'),
+  // BillDetails(date: '27', morning: '-', evening: '-'),
+  // BillDetails(date: '28', morning: '-', evening: '-'),
+  // BillDetails(date: '29', morning: '-', evening: '-'),
+  // BillDetails(date: '30', morning: '-', evening: '-'),
+  // BillDetails(date: '31', morning: '-', evening: '-'),
+  // BillDetails(date: '-', morning: '-', evening: '-'),
 ];
 
 

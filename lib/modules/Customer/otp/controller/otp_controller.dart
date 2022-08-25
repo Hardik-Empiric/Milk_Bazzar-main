@@ -85,7 +85,7 @@ class OtpController extends GetxController {
           'type': "merchant",
           'image': "",
           'uid':"${FirebaseAuth.instance.currentUser!.uid}",
-         'prize_per_liter': LoginModels.rupeesPerLiter,
+         'price_per_liter': LoginModels.rupeesPerLiter,
 
         });
       } else {

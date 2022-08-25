@@ -190,6 +190,11 @@ class _SellMilkState extends State<SellMilk> {
 
           if (sellMilkController.customerName.value != "" &&
               sellMilkController.liter.value >= 0.5) {
+
+            var ppl = await FirebaseFirestore.instance
+                .collection("merchants")
+                .doc(FirebaseAuth.instance.currentUser!.uid).get();
+
             Get.defaultDialog(
               barrierDismissible: false,
               title: "${LocaleString().sellMilk.tr}",
@@ -215,6 +220,9 @@ class _SellMilkState extends State<SellMilk> {
                           "${LocaleString().liter.tr} : ${sellMilkController.liter.value}"),
                   GlobalText(
                       text:
+                      "${LocaleString().PPL.tr} : ${ppl.data()!["price_per_liter"]}"),
+                  GlobalText(
+                      text:
                           "${LocaleString().customer.tr} : ${sellMilkController.customerName.value}"),
                   GlobalText(
                       text:
@@ -225,6 +233,7 @@ class _SellMilkState extends State<SellMilk> {
                 onPressed: () async {
                   if (sellMilkController.customerName.value != "" &&
                       sellMilkController.liter.value >= 0.5) {
+
                     var data = await FirebaseFirestore.instance
                         .collection("customers")
                         .where("name",
@@ -286,6 +295,7 @@ class _SellMilkState extends State<SellMilk> {
                             .update({
                           "${sessionMenu.toString()}": MorningSessionLiter,
                           "total ${sessionMenu.toString()} liter": MorningSum,
+                          "ppl" :  ppl.data()!["price_per_liter"],
                         });
 
                         var sum =  await FirebaseFirestore.instance
@@ -297,7 +307,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         sum.docs.forEach((e) {
                           setState(() {
-                            if(e.id != "total_liter")
+                            if(e.id != "total_liter" && e.id != "total_price")
                               dates.add(int.parse(e.id));
                           });
                         });
@@ -392,7 +402,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         sum.docs.forEach((e) {
                           setState(() {
-                            if(e.id != "total_liter")
+                            if(e.id != "total_liter" && e.id != "total_price")
                               dates.add(int.parse(e.id));
                           });
                         });
@@ -472,6 +482,7 @@ class _SellMilkState extends State<SellMilk> {
                               sellMilkController.liter.value,
                           "evening": [],
                           "total evening liter": 0,
+                          "ppl" :  ppl.data()!["price_per_liter"],
                         });
                       } else {
                         await FirebaseFirestore.instance
@@ -505,6 +516,7 @@ class _SellMilkState extends State<SellMilk> {
                               sellMilkController.liter.value,
                           "morning": [],
                           "total morning liter": 0,
+                          "ppl" :  ppl.data()!["price_per_liter"],
                         });
                       }
                     }

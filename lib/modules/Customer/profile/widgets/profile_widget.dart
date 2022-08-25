@@ -76,7 +76,7 @@ class _ProfileState extends State<Profile> {
       fullNameController.text = data.data()!['name'];
       phoneController.text = data.data()!['number'];
       addressController.text = data.data()!['add'];
-      prizePerLiterController.text = data.data()!["prize_per_liter"].toString();
+      prizePerLiterController.text = data.data()!["price_per_liter"].toString();
       setState(() {
         urlDownload = data.data()!['image'];
       });
@@ -704,7 +704,7 @@ class _ProfileState extends State<Profile> {
                 'add': "${LoginModels.address}",
                 'type': "merchant",
                 'image': "$urlDownload",
-                'prize_per_liter': double.parse(prizePerLiterController.text),
+                'price_per_liter': double.parse(prizePerLiterController.text),
               });
             }
           }

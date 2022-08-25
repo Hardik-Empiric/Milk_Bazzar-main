@@ -58,7 +58,7 @@ class _BillState extends State<Bill> {
         .doc("${d.data()!["merchant"]}").get();
 
     setState(() {
-      prizePerLiter = double.parse("${ppl.data()!["prize_per_liter"]}");
+      prizePerLiter = double.parse("${ppl.data()!["price_per_liter"]}");
     });
 
     print("Total Liter of Month ${totalLiterOfMonth}");

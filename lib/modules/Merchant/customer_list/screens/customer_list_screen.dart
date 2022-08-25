@@ -32,74 +32,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   var newData = [];
   var customerData = [];
 
-  List amount = [];
 
 
   String searchResult = "";
-
-  double totalMonthRupees = 0.0;
-
-  calculateData() async {
-
-    var uid = await FirebaseFirestore.instance
-        .collection("customers")
-        .where("merchant",
-        isEqualTo:
-        FirebaseAuth.instance.currentUser!.uid.toString()).get();
-
-    print(uid.docs[0].id);
-    print(uid.docs[1].id);
-
-
-    uid.docs.forEach((e) async {
-      double totalLiterOfMonth = 0.0;
-      double prizePerLiter = 0.0;
-
-      var totalLiter = await FirebaseFirestore.instance
-          .collection("customers")
-          .doc(e.id)
-          .collection("milk_data")
-          .doc(currentYear)
-          .collection(currentMonth).doc("total_liter").get();
-
-      if(totalLiter.exists)
-        {
-          setState(() {
-            totalLiterOfMonth = totalLiter.data()!["liter"];
-            print(totalLiterOfMonth);
-          });
-
-          var d = await FirebaseFirestore.instance
-              .collection("customers")
-              .doc(e.id).get();
-
-          var ppl = await FirebaseFirestore.instance
-              .collection("merchants")
-              .doc("${d.data()!["merchant"]}").get();
-
-          setState(() {
-            prizePerLiter = double.parse("${ppl.data()!["prize_per_liter"]}");
-            print(prizePerLiter);
-          });
-
-
-          totalMonthRupees = totalLiterOfMonth * prizePerLiter;
-          print(totalMonthRupees);
-
-          setState(() {
-            amount.add(totalMonthRupees);
-            print(amount);
-          });
-        }
-      else
-        {
-          amount.add(0.0);
-        }
-    });
-
-
-  }
-
 
   final List<String> monthItemsInENGLISH = [
     "january",
@@ -139,7 +74,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    amount.clear();
   }
 
   @override
@@ -148,11 +82,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     super.initState();
     currentMonth = monthItemsInENGLISH[DateTime.now().month - 1];
     currentMontInAllLanguage = monthItems[DateTime.now().month - 1];
-
-    calculateData();
-
-    print("final amount : ${amount}");
-
   }
 
   @override
@@ -233,7 +162,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
                       newData = customerData;
 
-
                       if (newData.length == 0) {
                         return Center(
                           child: GlobalText(
@@ -245,128 +173,165 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                           ),
                         );
                       } else {
-                        return (newData.length == amount.length)? ListView.builder(
-                          itemCount: newData.length,
-                          itemBuilder: (context, i) {
-                            final singleData = newData[i];
+                        return ListView.builder(
+                                itemCount: newData.length,
+                                itemBuilder: (context, i) {
+                                  final singleData = newData[i];
 
-
-                            return (singleData["name"]
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(searchResult.toLowerCase()))
-                                ? Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed(
-                                              AppRoutes.generateBillMerchant,
-                                              arguments: DATA(
-                                                uid: singleData,
-                                                month: currentMonth,
-                                                year: currentYear,
-                                              ));
-                                        },
-                                        child: ListTile(
-                                          trailing: Obx(
-                                            () => Visibility(
-                                              visible: customerListController
-                                                  .isRemoveOn.value,
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.cancel,
-                                                  color: AppColors.red,
+                                  return (singleData["name"]
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(searchResult.toLowerCase()))
+                                      ? Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed(
+                                                    AppRoutes
+                                                        .generateBillMerchant,
+                                                    arguments: DATA(
+                                                      uid: singleData['uid'],
+                                                      month: currentMonth,
+                                                      year: currentYear,
+                                                    ));
+                                              },
+                                              child: ListTile(
+                                                trailing: Obx(
+                                                  () => Visibility(
+                                                    visible:
+                                                        customerListController
+                                                            .isRemoveOn.value,
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        Icons.cancel,
+                                                        color: AppColors.red,
+                                                      ),
+                                                      onPressed: () {
+                                                        Get.defaultDialog(
+                                                          onCancel: () {
+                                                            Get.back();
+                                                          },
+                                                          onConfirm: () async {
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'customers')
+                                                                .doc(singleData[
+                                                                        "uid"]
+                                                                    .toString())
+                                                                .delete();
+                                                            Get.back();
+                                                          },
+                                                          title: LocaleString()
+                                                              .areYouSure
+                                                              .tr,
+                                                          backgroundColor:
+                                                              AppColors.white,
+                                                          titleStyle: TextStyle(
+                                                              color: AppColors
+                                                                  .darkBlue),
+                                                          middleTextStyle:
+                                                              TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                          textConfirm:
+                                                              LocaleString()
+                                                                  .yes
+                                                                  .tr,
+                                                          textCancel:
+                                                              LocaleString()
+                                                                  .no
+                                                                  .tr,
+                                                          cancelTextColor:
+                                                              Colors.black,
+                                                          confirmTextColor:
+                                                              Colors.white,
+                                                          buttonColor:
+                                                              AppColors.blue,
+                                                          barrierDismissible:
+                                                              false,
+                                                          radius: 50,
+                                                          content: Text(
+                                                              LocaleString()
+                                                                  .wantToDelete
+                                                                  .tr),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
                                                 ),
-                                                onPressed: () {
-                                                  Get.defaultDialog(
-                                                    onCancel: () {
-                                                      Get.back();
-                                                    },
-                                                    onConfirm: () async {
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection(
-                                                              'customers')
-                                                          .doc(singleData["uid"]
-                                                              .toString())
-                                                          .delete();
-                                                      Get.back();
-                                                    },
-                                                    title: LocaleString()
-                                                        .areYouSure
-                                                        .tr,
-                                                    backgroundColor:
-                                                        AppColors.white,
-                                                    titleStyle: TextStyle(
-                                                        color:
-                                                            AppColors.darkBlue),
-                                                    middleTextStyle: TextStyle(
-                                                        color: Colors.white),
-                                                    textConfirm:
-                                                        LocaleString().yes.tr,
-                                                    textCancel:
-                                                        LocaleString().no.tr,
-                                                    cancelTextColor:
-                                                        Colors.black,
-                                                    confirmTextColor:
-                                                        Colors.white,
-                                                    buttonColor: AppColors.blue,
-                                                    barrierDismissible: false,
-                                                    radius: 50,
-                                                    content: Text(LocaleString()
-                                                        .wantToDelete
-                                                        .tr),
-                                                  );
-                                                },
+                                                leading: CircleAvatar(
+                                                  radius: 22,
+                                                  backgroundImage: (singleData[
+                                                              "image"]
+                                                          .toString()
+                                                          .isNotEmpty)
+                                                      ? NetworkImage(
+                                                          singleData["image"])
+                                                      : null,
+                                                ),
+                                                title: GlobalText(
+                                                  text: singleData["name"],
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 18,
+                                                ),
+                                                subtitle: Row(
+                                                  children: [
+                                                    GlobalText(
+                                                      text:
+                                                          "$currentMontInAllLanguage${LocaleString().ronaldMonth.tr}",
+                                                      color:
+                                                          AppColors.textColor3,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                    StreamBuilder(
+                                                      stream: FirebaseFirestore.instance
+                                                          .collection("customers")
+                                                          .doc("${singleData["uid"]}")
+                                                          .collection("milk_data")
+                                                          .doc(currentYear)
+                                                          .collection(currentMonth)
+                                                          .doc("total_price")
+                                                          .snapshots(),
+                                                      builder: (context,AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshots) {
+
+                                                        if(snapshots.hasData)
+                                                          {
+                                                            var data = snapshots.data!.data()?["prize"];
+                                                            return GlobalText(
+                                                                  text: (data == null) ? "${0.0}" : '${data}',
+                                                                  color: AppColors.orange,
+                                                                  fontWeight: FontWeight.w500,
+                                                                );
+                                                          }
+                                                        else
+                                                          {
+                                                            return Container();
+                                                          }
+
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          leading: CircleAvatar(
-                                            radius: 22,
-                                            backgroundImage: (singleData["image"].toString().isNotEmpty) ? NetworkImage(
-                                                singleData["image"]) : null,
-                                          ),
-                                          title: GlobalText(
-                                            text: singleData["name"],
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 18,
-                                          ),
-                                          subtitle: Row(
-                                            children: [
-                                              GlobalText(
-                                                text: "$currentMontInAllLanguage${LocaleString()
-                                                    .ronaldMonth
-                                                    .tr}",
-                                                color: AppColors.textColor3,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                              (amount.isNotEmpty)? GlobalText(
-                                                text: "${amount[i]}",
-                                                color: AppColors.orange,
-                                                fontWeight: FontWeight.w500,
-                                              ) : Container(),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Divider(
-                                        thickness: 0.5,
-                                        indent: 25,
-                                        endIndent: 25,
-                                        color: AppColors.borderColor,
-                                      ),
-                                    ],
-                                  )
-                                : Visibility(
-                                    child: Container(),
-                                    visible: false,
-                                  );
-                          },
-                        ) :  Center(
-                          child: CircularProgressIndicator(),
-                        );
+                                            Divider(
+                                              thickness: 0.5,
+                                              indent: 25,
+                                              endIndent: 25,
+                                              color: AppColors.borderColor,
+                                            ),
+                                          ],
+                                        )
+                                      : Visibility(
+                                          child: Container(),
+                                          visible: false,
+                                        );
+                                },
+                              );
                       }
                     } else {
                       return Center(
@@ -389,4 +354,5 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       ),
     );
   }
+
 }

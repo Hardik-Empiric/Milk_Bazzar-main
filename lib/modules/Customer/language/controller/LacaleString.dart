@@ -150,6 +150,7 @@ class LocaleString extends Translations {
   String morningSession = "Morning";
   String eveningSession = "Evening";
   String liter = "Liter";
+  String PPL = "Price Per Liter";
   String selectLiter = "Select Your Liter";
   String addMilkButtonText = "Add Milk";
   String cancelButtonText = "Cancel";
@@ -188,6 +189,7 @@ class LocaleString extends Translations {
 
   Map<String, Map<String, String>> get keys => {
         'en_US': {
+          PPL: "Prise Per Liter",
           sendTo: "Send to ",
           enterYourRupees: "Enter Rupees",
           changeLan: 'Change Language',
@@ -341,6 +343,7 @@ class LocaleString extends Translations {
           wantToLogout: "You want to Log Out?",
         },
         'gu_IN': {
+          PPL: "પ્રતિ લિટર ભાવ",
           sendTo: " ને મોકલો",
           enterYourRupees: "રૂપિયા દાખલ કરો",
           rupeesPerLiter: "રૂપિયા પ્રતિ લિટર",
@@ -490,6 +493,7 @@ class LocaleString extends Translations {
           wantToLogout: "તમે લોગ આઉટ કરવા માંગો છો?",
         },
         'hi_IN': {
+          PPL: "मूल्य प्रति लीटर",
           sendTo: " को भेजो",
           enterYourRupees: "रुपये दर्ज करें",
           rupeesPerLiter: "रुपये प्रति लीटर",
