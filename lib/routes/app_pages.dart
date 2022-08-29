@@ -17,6 +17,7 @@ import '../modules/Merchant/customer_category/screens/customer_category_screen.d
 import '../modules/Merchant/customer_list/screens/customer_list_screen.dart';
 import '../modules/Merchant/generate_bill_merchant/screens/generate_bill_merchant_screen.dart';
 import '../modules/Merchant/home/screens/home_screen.dart';
+import '../modules/Merchant/payment/screens/payment_screen.dart';
 import '../modules/Merchant/select_customer/screens/select_customer_screen.dart';
 import 'app_routes.dart';
 
@@ -50,6 +51,7 @@ class AppPages{
     GetPage(name: AppRoutes.addCustomer, page: () => const AddCustomerScreen()),
     GetPage(name: AppRoutes.customerCategory, page: () => const CustomerCategoryScreen()),
     GetPage(name: AppRoutes.generateBillMerchant, page: () => const GenerateBillMerchantScreen()),
+    GetPage(name: AppRoutes.payment, page: () => const PaymentScreen()),
 
   ];
 

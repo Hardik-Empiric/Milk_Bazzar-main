@@ -412,8 +412,6 @@ class _BillState extends State<Bill> {
     print(file.path);
     await file.writeAsBytes(await pdf.save());
 
-    List<String> pdfPath = [file.path];
-
     OpenFile.open(file.path);
   }
 

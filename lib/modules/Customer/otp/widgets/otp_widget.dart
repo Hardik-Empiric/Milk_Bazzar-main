@@ -25,8 +25,6 @@ class _OTPVerificationState extends State<OTPVerification> {
 
   final OtpController otpVerificationController = Get.put(OtpController());
 
-  late Timer timer;
-
 
 
   @override

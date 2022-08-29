@@ -138,12 +138,15 @@ class _ModeState extends State<Mode> {
             child: Row(
               children: [
                 Radio<Modes>(
+                  activeColor: (modeController.i.value == index)
+                      ? MaterialStateColor.resolveWith((states) => AppColors.blue)
+                      : MaterialStateColor.resolveWith((states) => AppColors.borderColor),
                   fillColor: (modeController.i.value == index)
                       ? MaterialStateColor.resolveWith(
                           (states) => AppColors.blue)
                       : MaterialStateColor.resolveWith(
                           (states) => AppColors.borderColor),
-                  value: val,
+                  value: _mode!,
                   groupValue: _mode,
                   onChanged: (value) async {
                     SharedPreferences prefs =

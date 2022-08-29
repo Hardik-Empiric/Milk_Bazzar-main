@@ -1,34 +1,17 @@
-
-import 'dart:developer';
-
-import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:milk_bazzar/utils/app_colors.dart';
-import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
-import '../widgets/add_customer_widget.dart';
+import '../widgets/payment_widget.dart';
 
-
-class AddCustomerScreen extends StatefulWidget {
-  const AddCustomerScreen({Key? key}) : super(key: key);
+class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _AddCustomerScreenState extends State<AddCustomerScreen> {
-
-  per() async {
-    await Permission.contacts.request();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    per();
-  }
+class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +34,14 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               Expanded(
                 flex: 10,
                 child: Container(
-                  color:  Theme.of(context).backgroundColor,
+                  color: Theme.of(context).backgroundColor,
                 ),
               ),
             ],
           ),
 
           /// FrontLayer
-          const AddCustomer(),
+          const Payment(),
         ],
       ),
     );

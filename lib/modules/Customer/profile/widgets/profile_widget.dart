@@ -55,7 +55,7 @@ class _ProfileState extends State<Profile> {
   var data;
   var user;
 
-  late bool isMerchant;
+  bool isMerchant = Get.arguments;
 
   List allCusName = [];
 
@@ -64,10 +64,7 @@ class _ProfileState extends State<Profile> {
 
     print(prefs.getBool("isMerchant"));
 
-    if (prefs.getBool("isMerchant") ?? false) {
-      setState(() {
-        isMerchant = prefs.getBool("isMerchant")!;
-      });
+    if (isMerchant) {
 
       var data = await FirebaseFirestore.instance
           .collection('merchants')
@@ -717,4 +714,5 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+
 }

@@ -30,6 +30,8 @@ class _WelcomeState extends State<Welcome> {
     });
   }
 
+  late String wish;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -37,10 +39,54 @@ class _WelcomeState extends State<Welcome> {
 
     getData();
 
+
+
+    setState(() {
+      int hour = DateTime.now().hour;
+
+      if(hour > 4 && hour < 12)
+      {
+        wish = LocaleString().goodMorning.tr;
+      }
+      else if(hour >= 12 && hour < 17)
+      {
+        wish = LocaleString().goodAfternoon.tr;
+      }
+      else if(hour >= 17 && hour < 22)
+      {
+        wish = LocaleString().goodEvening.tr;
+      }
+      else
+      {
+        wish = LocaleString().goodNight.tr;
+      }
+    });
+
+
   }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      int hour = DateTime.now().hour;
+
+      if(hour > 4 && hour < 12)
+      {
+        wish = LocaleString().goodMorning.tr;
+      }
+      else if(hour >= 12 && hour < 17)
+      {
+        wish = LocaleString().goodAfternoon.tr;
+      }
+      else if(hour >= 17 && hour < 22)
+      {
+        wish = LocaleString().goodEvening.tr;
+      }
+      else
+      {
+        wish = LocaleString().goodNight.tr;
+      }
+    });
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
@@ -86,7 +132,8 @@ class _WelcomeState extends State<Welcome> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
-                          text: "${LocaleString().goodMorning.tr} ${ LoginModels.name.split(" ")[0]}",
+                          text: "${wish} ${ LoginModels.name.split(" ")[0]}",
+                          // text: "${LocaleString().goodMorning.tr} ${ LoginModels.name.split(" ")[0]}",
                           color: Theme.of(context).primaryColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),

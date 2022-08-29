@@ -15,13 +15,15 @@ class LocaleString extends Translations {
   String profile = "Profile";
   String editImage = "Edit Image";
   String errorName = "enter full name first...";
-  String errorPrizePerLiter = "enter Prize of one Liter...";
+  String errorPrizePerLiter = "enter Prise of one Liter...";
+  String errorPrisePerMonth = "enter Prise of one Month...";
   String errorPhone = "enter phone first...";
   String errorAddress = "enter address first...";
   String mode = "Mode";
   String changeMode = "Change Mode";
   String darkMode = "Dark Mode";
   String lightMode = "Light Mode";
+  String addPayment = "Add Payment";
   String logout = "Log Out";
   String termsCondition = "Terms & Conditions";
   String language = "Language";
@@ -83,7 +85,10 @@ class LocaleString extends Translations {
   String welcomeMsg = "Welcome To A.R Penda";
   String next = "Next";
   String and = " and ";
-  String goodMorning = "Good Morning! ";
+  String goodMorning = "Good Morning!";
+  String goodAfternoon = "Good Afternoon!";
+  String goodEvening = "Good Evening!";
+  String goodNight = "Good Night!";
   String otpVeri = "OTP Verification";
   String sentMsg = "We sent it to number";
   String resendMsg = "Resend code in ";
@@ -117,6 +122,8 @@ class LocaleString extends Translations {
   String ronald = "Ronald Richards";
   String ronaldMonth = "Total Amount is ";
   String ronaldAmount = "2,500";
+
+  String rupeesPerMonth = "Rupees Per Month";
 
   String jaiminPatelVarachha = "Jaimin Patel / Varachha";
   String billOf = "Bill Of:";
@@ -187,8 +194,14 @@ class LocaleString extends Translations {
 
   String sendTo = "Send to ";
 
+  String downloadMonthBill = "Download April Bill";
+
   Map<String, Map<String, String>> get keys => {
         'en_US': {
+          rupeesPerMonth : "Rupees Per Month",
+          errorPrisePerMonth : "enter Price of one Month...",
+          addPayment: "Add Payment",
+          downloadMonthBill: "Download April Bill",
           PPL: "Prise Per Liter",
           sendTo: "Send to ",
           enterYourRupees: "Enter Rupees",
@@ -262,7 +275,10 @@ class LocaleString extends Translations {
           mobileNumber: "Mobile Number",
           conCode: "We will send you confirmation code",
           welcomeMsg: "Welcome To A.R Penda",
-          goodMorning: "Good Morning! ",
+          goodMorning: "Good Morning!",
+          goodAfternoon: "Good Afternoon!",
+          goodEvening: "Good Evening!",
+          goodNight: "Good Night!",
           otpVeri: "OTP Verification",
           sentMsg: "We sent it to number",
           resendMsg: "Resend code in ",
@@ -343,6 +359,10 @@ class LocaleString extends Translations {
           wantToLogout: "You want to Log Out?",
         },
         'gu_IN': {
+          rupeesPerMonth : "દર મહિને રૂપિયા",
+          errorPrisePerMonth : "એક મહિનાની કિંમત દાખલ કરો...",
+          addPayment: "ચુકવણી ઉમેરો",
+          downloadMonthBill: "એપ્રિલ બિલ ડાઉનલોડ કરો",
           PPL: "પ્રતિ લિટર ભાવ",
           sendTo: " ને મોકલો",
           enterYourRupees: "રૂપિયા દાખલ કરો",
@@ -414,7 +434,10 @@ class LocaleString extends Translations {
           mobileNumber: "મોબાઇલ નંબર",
           conCode: "અમે તમને કન્ફર્મેશન કોડ મોકલીશું",
           welcomeMsg: "A.R Penda માં આપનું સ્વાગત છે",
-          goodMorning: "સુપ્રભાત! ",
+          goodMorning: "સુપ્રભાત!",
+          goodAfternoon: "શુભ બપોર!",
+          goodEvening: "શુભ સાંજ!",
+          goodNight: "શુભ રાત્રી!",
           sentMsg: "અમે તેને નંબર પર મોકલ્યો",
           didNotReceiveOtp: "OTP પ્રાપ્ત થયો નથી? ",
           resendOtp: "OTP ફરીથી મોકલો",
@@ -493,6 +516,10 @@ class LocaleString extends Translations {
           wantToLogout: "તમે લોગ આઉટ કરવા માંગો છો?",
         },
         'hi_IN': {
+          rupeesPerMonth : "रुपये प्रति माह",
+          errorPrisePerMonth : "एक महीने का मूल्य दर्ज करें...",
+          addPayment: "भुगतान जोड़ें",
+          downloadMonthBill: "अप्रैल बिल डाउनलोड करें",
           PPL: "मूल्य प्रति लीटर",
           sendTo: " को भेजो",
           enterYourRupees: "रुपये दर्ज करें",
@@ -563,7 +590,10 @@ class LocaleString extends Translations {
           mobileNumber: "मोबाइल नंबर",
           conCode: "हम आपको पुष्टिकरण कोड भेजेंगे",
           welcomeMsg: "A.R Penda में आपका स्वागत है",
-          goodMorning: "शुभ प्रभात! ",
+          goodMorning: "शुभ प्रभात!",
+          goodAfternoon: "शुभ दोपहर!",
+          goodEvening: "शुभ शाम!",
+          goodNight: "शुभ रात्रि!",
           sentMsg: "हमने इस नंबर पर भेज दिया",
           didNotReceiveOtp: "OTP प्राप्त नहीं हुआ? ",
           resendOtp: "OTP पुनः भेजें",

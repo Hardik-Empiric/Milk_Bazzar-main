@@ -1,4 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
@@ -6,6 +7,7 @@ import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
 import '../../../../utils/common_widget/app_logo.dart';
 import '../../../../utils/common_widget/global_text.dart';
+import '../../../Merchant/select_customer/controller/select_customer_controller.dart';
 import '../../language/controller/LacaleString.dart';
 import '../controller/invoive_controller.dart';
 import 'package:quiver/time.dart';
@@ -24,18 +26,43 @@ class _InvoiceState extends State<Invoice> {
 
   bool isCheck = false;
 
-  String _selectedMenu = DateTime.now().year.toString();
+  String _selectedMenu = Menu.current.name;
 
-  int index =0;
+  int index = 0;
+
+  final List<String> monthItems = [
+    LocaleString().jan.tr,
+    LocaleString().feb.tr,
+    LocaleString().mar.tr,
+    LocaleString().apr.tr,
+    LocaleString().may.tr,
+    LocaleString().jun.tr,
+    LocaleString().jul.tr,
+    LocaleString().aug.tr,
+    LocaleString().sep.tr,
+    LocaleString().oct.tr,
+    LocaleString().nov.tr,
+    LocaleString().dec.tr,
+  ];
+
+  final List<String> monthItemsInENGLISH = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+  ];
+
 
   @override
   Widget build(BuildContext context) {
-    yearItems.clear();
-
-    for (int i = 1; i < 15; i++) {
-      yearItems.add('${DateTime.now().year - i}');
-    }
-
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
@@ -180,20 +207,17 @@ class _InvoiceState extends State<Invoice> {
           dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
-          items: monthItems
-              .map((item) {
-
-                return DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(
-                    item,
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                );
-          })
-              .toList(),
+          items: monthItems.map((item) {
+            return DropdownMenuItem<String>(
+              value: item,
+              child: Text(
+                item,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            );
+          }).toList(),
           onChanged: (value) {
             invoiceController.selectedValue.value = value.toString();
 
@@ -208,14 +232,12 @@ class _InvoiceState extends State<Invoice> {
             invoiceController.month.value = monthItemsInENGLISH[index];
             //Do something when changing the item if you want.
           },
-          onSaved: (value) {
-
-
-          },
+          onSaved: (value) {},
         ),
       ),
     );
   }
+
 
   yearPicker() {
     return Padding(
@@ -238,7 +260,7 @@ class _InvoiceState extends State<Invoice> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GlobalText(
-                  text: (_selectedMenu.toString() == 'current')
+                  text: (invoiceController.isCurrentSelected.value)
                       ? DateTime.now().year.toString()
                       : (DateTime.now().year - 1).toString(),
                   color: Theme.of(context).primaryColor,
@@ -279,92 +301,98 @@ class _InvoiceState extends State<Invoice> {
             });
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-                PopupMenuItem<Menu>(
-                  value: Menu.current,
-                  child: SizedBox(
-                    width: SizeData.width * 0.7,
-                    child: Row(
-                      children: [
-                        Transform.scale(
-                          scale: 1.3,
-                          child: Obx(
+            PopupMenuItem<Menu>(
+              value: Menu.current,
+              child: SizedBox(
+                width: SizeData.width * 0.7,
+                child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.3,
+                      child: Obx(
                             () => Checkbox(
-                              side: const BorderSide(
-                                  width: 1.5, color: AppColors.borderColor),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              activeColor: AppColors.checkYearColor,
-                              checkColor: AppColors.background,
-                              value: invoiceController.isCurrentSelected.value,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedMenu = Menu.current.name;
-                                });
-                                invoiceController.isCurrentSelected.value =
-                                    value!;
-                                if (invoiceController.isCurrentSelected.value) {
-                                  invoiceController.isPreviousSelected.value =
-                                      false;
-                                }
-                              },
-                            ),
+                          side: const BorderSide(
+                              width: 1.5, color: AppColors.borderColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
                           ),
+                          activeColor: AppColors.checkYearColor,
+                          checkColor: AppColors.background,
+                          value: invoiceController
+                              .isCurrentSelected.value,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedMenu = Menu.current.name;
+                            });
+                            invoiceController
+                                .isCurrentSelected.value = value!;
+                            if (invoiceController
+                                .isCurrentSelected.value) {
+                              invoiceController
+                                  .isPreviousSelected.value = false;
+                            }
+                            Get.back();
+                          },
                         ),
-                        GlobalText(
-                          text: invoiceController.currentYear.toString(),
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 14,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    GlobalText(
+                      text: invoiceController.currentYear.toString(),
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 14,
+                    ),
+                  ],
                 ),
-                PopupMenuItem<Menu>(
-                  value: Menu.previous,
-                  child: SizedBox(
-                    width: SizeData.width * 0.7,
-                    child: Row(
-                      children: [
-                        Transform.scale(
-                          scale: 1.3,
-                          child: Obx(
+              ),
+            ),
+            PopupMenuItem<Menu>(
+              value: Menu.previous,
+              child: SizedBox(
+                width: SizeData.width * 0.7,
+                child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 1.3,
+                      child: Obx(
                             () => Checkbox(
-                              side: const BorderSide(
-                                  width: 1.5, color: AppColors.borderColor),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              activeColor: AppColors.checkYearColor,
-                              checkColor: AppColors.background,
-                              value: invoiceController.isPreviousSelected.value,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedMenu = Menu.previous.name;
-                                });
-                                invoiceController.isPreviousSelected.value =
-                                    value!;
-                                if (invoiceController
-                                    .isPreviousSelected.value) {
-                                  invoiceController.isCurrentSelected.value =
-                                      false;
-                                }
-                              },
-                            ),
+                          side: const BorderSide(
+                              width: 1.5, color: AppColors.borderColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
                           ),
+                          activeColor: AppColors.checkYearColor,
+                          checkColor: AppColors.background,
+                          value: invoiceController
+                              .isPreviousSelected.value,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedMenu = Menu.previous.name;
+                            });
+                            invoiceController
+                                .isPreviousSelected.value = value!;
+                            if (invoiceController
+                                .isPreviousSelected.value) {
+                              invoiceController
+                                  .isCurrentSelected.value = false;
+                            }
+                            Get.back();
+                          },
                         ),
-                        GlobalText(
-                          text: invoiceController.previousYear.toString(),
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 14,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    GlobalText(
+                      text:
+                      invoiceController.previousYear.toString(),
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 14,
+                    ),
+                  ],
                 ),
-              ]),
+              ),
+            ),
+          ]),
     );
   }
 
@@ -412,11 +440,20 @@ class _InvoiceState extends State<Invoice> {
         onPressed: () {
           Get.toNamed(
             AppRoutes.generateBill,
-            arguments: YearMonth(
-              year: (_selectedMenu.toString() == 'current') ? "${DateTime.now().year}" : "${DateTime.now().year - 1}",
-              month: invoiceController.month.value,
+            arguments: DATA(
+              uid: "${FirebaseAuth.instance.currentUser!.uid}",
+              month: "${invoiceController.month.value}",
+              year: (_selectedMenu.toString() == 'current')
+                  ? DateTime.now().year.toString()
+                  : (DateTime.now().year - 1).toString(),
             ),
           );
+
+          print("UID : ${FirebaseAuth.instance.currentUser!.uid}");
+          print("MONTH : ${invoiceController.month.value}");
+          (_selectedMenu.toString() == 'current')
+              ? print("YEAR : ${DateTime.now().year.toString()}")
+              : print("YEAR : ${(DateTime.now().year - 1).toString()}");
         },
         child: GlobalText(
           text: LocaleString().done.tr,

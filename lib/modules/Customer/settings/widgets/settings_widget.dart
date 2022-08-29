@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +23,22 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   final SettingsController settingsController = Get.put(SettingsController());
   final HomeController homeController = Get.put(HomeController());
+
+  bool isMerchant = true;
+  getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      isMerchant = prefs.getBool("isMerchant")??false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,34 +136,37 @@ class _SettingsState extends State<Settings> {
   }
 
   closeButton() {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: GestureDetector(
-        onTap: () {
-          Get.back();
-        },
-        child: Container(
-            margin: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.blue.withOpacity(0.5),
-                  offset: const Offset(0, 0),
-                  spreadRadius: 0,
-                  blurRadius: 10,
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Icon(
-                Icons.close_rounded,
-                size: 30,
-                color: Theme.of(context).primaryColor,
+    return Visibility(
+      visible: !isMerchant,
+      child: Padding(
+        padding: const EdgeInsets.all(15),
+        child: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: Container(
+              margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Theme.of(context).backgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.blue.withOpacity(0.5),
+                    offset: const Offset(0, 0),
+                    spreadRadius: 0,
+                    blurRadius: 10,
+                  ),
+                ],
               ),
-            )),
+              child: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Icon(
+                  Icons.close_rounded,
+                  size: 30,
+                  color: Theme.of(context).primaryColor,
+                ),
+              )),
+        ),
       ),
     );
   }
@@ -246,8 +264,18 @@ class _SettingsState extends State<Settings> {
       required String msg,
       required String navigatorPageName}) {
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(navigatorPageName);
+      onTap: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        bool isMerchant = prefs.getBool("isMerchant")??false;
+        if(navigatorPageName == AppRoutes.profile)
+          {
+            Get.toNamed(navigatorPageName,arguments: isMerchant);
+          }
+        else
+          {
+            Get.toNamed(navigatorPageName);
+          }
       },
       child: Stack(
         alignment: alignment,

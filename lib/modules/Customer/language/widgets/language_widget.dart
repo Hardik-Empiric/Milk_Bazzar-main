@@ -189,14 +189,19 @@ class _LanguageState extends State<Language> {
             child: Row(
               children: [
                 Radio<Languages>(
+                  activeColor: (languageController.i.value == index)
+                ? MaterialStateColor.resolveWith((states) => AppColors.blue)
+                : MaterialStateColor.resolveWith((states) => AppColors.borderColor),
                   fillColor: (languageController.i.value == index)
                       ? MaterialStateColor.resolveWith((states) => AppColors.blue)
                       : MaterialStateColor.resolveWith((states) => AppColors.borderColor),
-                  value: val,
+                  value: _language!,
                   groupValue: _language,
                   onChanged: (value) {
                     languageController.i.value = index;
-                    _language = value;
+                    setState(() {
+                      _language = value;
+                    });
                     lang = true;
                     languageController.mySelectedLanguage.value =
                         value.toString();

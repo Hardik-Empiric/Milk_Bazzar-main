@@ -351,16 +351,18 @@ List months = [
   void initState() {
     // TODO: implement initState
     super.initState();
-    prefs.then((prefs) {
-      isEng = (prefs.getBool("English") ?? false);
-    });
-
     getProfile();
     getData();
     buildPDF();
   }
   @override
   Widget build(BuildContext context) {
+
+    prefs.then((prefs) {
+      setState(() {
+        isEng = (prefs.getBool("English"))??true;
+      });
+    });
 
     return WillPopScope(
       onWillPop: ()async{
@@ -561,8 +563,7 @@ List months = [
                           ),
                         ),
                         Padding(
-                          padding:
-                          const EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 50),
+                          padding: const EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 50),
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                               primary: (!generateBillController.isLoading.value)

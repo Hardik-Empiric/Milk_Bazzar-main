@@ -24,7 +24,7 @@ class SellMilkController extends GetxController {
 
   RxDouble liter = 0.5.obs;
 
-  Rx<Duration> duration = const Duration(hours: 7, minutes: 00).obs;
+  Rx<String> duration = "07:00 AM".obs;
 
   RxString customerName = ''.obs;
 

@@ -19,5 +19,6 @@ class AppRoutes {
   static const selectCustomer = '/selectCustomer';
   static const addCustomer = '/addCustomer';
   static const customerCategory = '/customerCategory';
+  static const payment = '/payment';
 
 }

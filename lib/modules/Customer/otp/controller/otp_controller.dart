@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -8,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../utils/app_colors.dart';
 import '../../language/controller/LacaleString.dart';
 import '../../login/controller/login_controller.dart';
+
+late Timer timer;
 
 class OtpController extends GetxController {
   RxBool isPinPut = false.obs;
@@ -37,13 +41,18 @@ class OtpController extends GetxController {
       numbers.add(data["number"]);
     }
 
+    final OtpController otpVerificationController = Get.put(OtpController());
+    timer.cancel();
+    otpVerificationController.counter.value = 0;
+
     PhoneAuthCredential credential =
         PhoneAuthProvider.credential(verificationId: vid, smsCode: smsCode);
 
     await auth.signInWithCredential(credential);
+    //
+    // Get.snackbar(LocaleString().correctOTP.tr, LocaleString().loginSuccess.tr,
+    //     backgroundColor: AppColors.darkBlue, colorText: AppColors.white);
 
-    Get.snackbar(LocaleString().correctOTP.tr, LocaleString().loginSuccess.tr,
-        backgroundColor: AppColors.darkBlue, colorText: AppColors.white);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 

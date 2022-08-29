@@ -351,8 +351,7 @@ class _AddCustomerState extends State<AddCustomer> {
 
 
 
-            var cus =
-                await FirebaseFirestore.instance.collection('customers').get();
+            var cus = await FirebaseFirestore.instance.collection('customers').get();
 
             List customer = [];
 
@@ -391,9 +390,8 @@ class _AddCustomerState extends State<AddCustomer> {
 
                   log(Permission.contacts.request().isGranted.toString());
                   Contact contact = Contact();
-                  contact.familyName = 'VishalBhai Thummar';
-                  contact.phones = [Item(label: "mobile", value: '9974250661')];
-                  contact.emails = [Item(label: "work", value: 'info@34.71.214.132')];
+                  contact.familyName = '${fullNameController.text}';
+                  contact.phones = [Item(label: "mobile", value: '${phoneController.text}')];
                   if (await Permission.contacts.request().isGranted) {
                     await ContactsService.addContact(contact);
                     log("Contact added successfully");

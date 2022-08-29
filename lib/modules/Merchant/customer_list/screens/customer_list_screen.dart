@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:milk_bazzar/utils/app_colors.dart';
 import 'package:milk_bazzar/utils/app_constants.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../../utils/common_widget/global_text.dart';
@@ -76,10 +78,28 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     super.dispose();
   }
 
+  per() async {
+    await Permission.contacts.request();
+
+    var data = await FirebaseFirestore.instance.collection("customers").where("merchant",isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+
+    data.docs.forEach((e) async {
+
+      Contact contact = Contact();
+      contact.familyName = '${e.data()["name"]}';
+      contact.phones = [Item(label: "mobile", value: '${e.data()["number"]}')];
+      if (await Permission.contacts.request().isGranted) {
+      await ContactsService.addContact(contact);
+      }
+    });
+
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    per();
     currentMonth = monthItemsInENGLISH[DateTime.now().month - 1];
     currentMontInAllLanguage = monthItems[DateTime.now().month - 1];
   }
@@ -300,7 +320,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
                                                         if(snapshots.hasData)
                                                           {
-                                                            var data = snapshots.data!.data()?["prize"];
+                                                            var data = snapshots.data!.data()?["price"];
                                                             return GlobalText(
                                                                   text: (data == null) ? "${0.0}" : '${data}',
                                                                   color: AppColors.orange,
