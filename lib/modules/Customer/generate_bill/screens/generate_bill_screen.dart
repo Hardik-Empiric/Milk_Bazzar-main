@@ -45,7 +45,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
   String finalString = '';
   String finalStringPDF = '';
   double finalTotal = 0.0;
-  GenerateBillController generateBillController = Get.put(GenerateBillController());
+  GenerateBillController generateBillController = Get.put(
+      GenerateBillController());
 
   calculateData() async {
     var totalLiter = await FirebaseFirestore.instance
@@ -103,7 +104,75 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     "december",
   ];
 
+  double PreviousTotalPrice = 0.0;
+  double PreviousReceivedPrice = 0.0;
+  double PreviousAmountDif = 0.0;
+
   getData() async {
+    int currentMonthIndex = monthItemsInENGLISH.indexOf(navigatorData.month);
+
+    String previousMonth;
+    String pcYear;
+
+    if (currentMonthIndex == 0) {
+      previousMonth = monthItemsInENGLISH.last;
+      pcYear = "${int.parse(navigatorData.year) - 1}";
+    }
+    else {
+      previousMonth = monthItemsInENGLISH[currentMonthIndex - 1];
+      pcYear = navigatorData.year;
+    }
+
+
+    print("previousMonth : $previousMonth");
+    print("previousYear : $pcYear");
+
+    var preCheckTotalPrice = await FirebaseFirestore.instance
+        .collection("customers")
+        .doc("${navigatorData.uid}")
+        .collection("milk_data")
+        .doc("${pcYear}")
+        .collection("${previousMonth}").doc("total_price").get();
+
+    var preCheckReceivedPrice = await FirebaseFirestore.instance
+        .collection("customers")
+        .doc("${navigatorData.uid}")
+        .collection("milk_data")
+        .doc("${pcYear}")
+        .collection("${previousMonth}").doc("received_price").get();
+
+
+    if (preCheckTotalPrice.exists) {
+      var data = await FirebaseFirestore.instance
+          .collection("customers")
+          .doc("${navigatorData.uid}")
+          .collection("milk_data")
+          .doc("${pcYear}")
+          .collection("${previousMonth}").doc("total_price").get();
+
+      PreviousTotalPrice = double.parse(data.data()!["price"].toString());
+    }
+
+    if (preCheckReceivedPrice.exists) {
+      var data = await FirebaseFirestore.instance
+          .collection("customers")
+          .doc("${navigatorData.uid}")
+          .collection("milk_data")
+          .doc("${pcYear}")
+          .collection("${previousMonth}").doc("received_price").get();
+
+      PreviousReceivedPrice =
+          double.parse(data.data()!["received_price"].toString());
+    }
+
+    print("PreviousTotalPrice : $PreviousTotalPrice");
+    print("PreviousReceivedPrice : $PreviousReceivedPrice");
+
+    PreviousAmountDif = PreviousTotalPrice - PreviousReceivedPrice;
+
+    print("PreviousAmountDif : ${PreviousAmountDif}");
+
+
     int ddday = daysInMonth(int.parse(navigatorData.year),
         monthItemsInENGLISH.indexOf("${navigatorData.month}") + 1);
 
@@ -126,7 +195,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
 
     data.docs.forEach((e) {
       setState(() {
-        if (e.id != "total_liter" && e.id!="total_price") dates.add(int.parse(e.id));
+        if (e.id != "total_liter" && e.id != "total_price" &&
+            e.id != "received_price") dates.add(int.parse(e.id));
       });
     });
 
@@ -236,7 +306,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         filter[i].docs.forEach((element) {
           totalLiter = totalLiter +
               double.parse(
-                  "${element["total morning liter"] + element["total evening liter"]}");
+                  "${element["total morning liter"] +
+                      element["total evening liter"]}");
         });
       });
       finalData.add(
@@ -259,8 +330,10 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
 
       setState(() {
         finalTotal = finalTotal + amount;
-        finalString = finalString + "${element["liter"]} L * ₹ ${element["prise"]} = ₹ ${amount}\n";
-        finalStringPDF = finalStringPDF + "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
+        finalString = finalString +
+            "${element["liter"]} L * ₹ ${element["prise"]} = ₹ ${amount}\n";
+        finalStringPDF = finalStringPDF +
+            "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
       });
 
       List months = [
@@ -310,7 +383,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
             .doc("total_price")
             .set(
           {
-            "price": finalTotal,
+            "price": finalTotal + PreviousAmountDif,
           },
         );
       }
@@ -332,7 +405,10 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     LocaleString().dec.tr,
   ];
 
-  var currentYear = DateTime.now().year.toString();
+  var currentYear = DateTime
+      .now()
+      .year
+      .toString();
   var currentMonth;
 
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
@@ -360,13 +436,12 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     getData();
     buildPDF();
   }
+
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
-      onWillPop: ()async{
-        if(generateBillController.isLoading.value)
-        {
+      onWillPop: () async {
+        if (generateBillController.isLoading.value) {
           Fluttertoast.showToast(
             msg: "Bill is Generating...",
             toastLength: Toast.LENGTH_SHORT,
@@ -382,12 +457,14 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         body: SafeArea(
           child: Container(
             height: SizeData.height,
-            color: Theme.of(context).backgroundColor,
+            color: Theme
+                .of(context)
+                .backgroundColor,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20,right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: ListView(
                 physics: const BouncingScrollPhysics(),
-                children:  [
+                children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Column(
@@ -395,13 +472,16 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                         Container(
                           padding: const EdgeInsets.only(bottom: 10),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Theme.of(context).primaryColor),
+                            border: Border.all(color: Theme
+                                .of(context)
+                                .primaryColor),
                           ),
                           child: Column(
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 0.5, color: AppColors.darkGrey),
+                                  border: Border.all(
+                                      width: 0.5, color: AppColors.darkGrey),
                                   color: AppColors.tableColor,
                                 ),
                                 margin: const EdgeInsets.only(top: 7),
@@ -415,17 +495,23 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 0.5, color: AppColors.blue),
-                                  color: Theme.of(context).backgroundColor,
+                                  border: Border.all(
+                                      width: 0.5, color: AppColors.blue),
+                                  color: Theme
+                                      .of(context)
+                                      .backgroundColor,
                                 ),
                                 height: SizeData.height * 0.04,
                                 // width: SizeData.width,
                                 alignment: Alignment.center,
                                 child: GlobalText(
                                   text:
-                                  "${LocaleString().billOf.tr} ${navigatorData.month} / ${navigatorData.year}",
+                                  "${LocaleString().billOf.tr} ${navigatorData
+                                      .month} / ${navigatorData.year}",
                                   fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).primaryColor,
+                                  color: Theme
+                                      .of(context)
+                                      .primaryColor,
                                 ),
                               ),
                               (!generateBillController.isLoading.value)
@@ -441,7 +527,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                             2: FlexColumnWidth(2),
                                           },
                                           border: TableBorder.all(
-                                              color: Theme.of(context).primaryColor,
+                                              color: Theme
+                                                  .of(context)
+                                                  .primaryColor,
                                               style: BorderStyle.solid,
                                               width: 1),
                                           children: billDetails1.map((e) {
@@ -450,17 +538,20 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                               children: [
                                                 (e.date == "DATE")
                                                     ? tableHeader(e.date)
-                                                    : (int.parse(e.date) % 2 == 1)
+                                                    : (int.parse(e.date) % 2 ==
+                                                    1)
                                                     ? whiteDate(e.date)
                                                     : tableColorDate(e.date),
                                                 (e.morning == "MORNING")
                                                     ? tableHeader(e.morning)
-                                                    : (int.parse(e.date) % 2 == 1)
+                                                    : (int.parse(e.date) % 2 ==
+                                                    1)
                                                     ? whiteDate(e.morning)
                                                     : tableColorDate(e.morning),
                                                 (e.evening == "EVENING")
                                                     ? tableHeader(e.evening)
-                                                    : (int.parse(e.date) % 2 == 1)
+                                                    : (int.parse(e.date) % 2 ==
+                                                    1)
                                                     ? whiteDate(e.evening)
                                                     : tableColorDate(e.evening),
                                               ],
@@ -476,7 +567,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                             2: FlexColumnWidth(2),
                                           },
                                           border: TableBorder.all(
-                                              color: Theme.of(context).primaryColor,
+                                              color: Theme
+                                                  .of(context)
+                                                  .primaryColor,
                                               style: BorderStyle.solid,
                                               width: 1),
                                           children: billDetails2.map((e) {
@@ -486,18 +579,21 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                               children: [
                                                 (e.date == "DATE")
                                                     ? tableHeader(e.date)
-                                                    : (int.parse(e.date) % 2 == 1)
+                                                    : (int.parse(e.date) % 2 ==
+                                                    1)
                                                     ? whiteDate(e.date)
                                                     : tableColorDate(e.date),
                                                 (e.morning == "MORNING")
                                                     ? tableHeader(e.morning)
-                                                    : (int.parse(e.date) % 2 == 1)
+                                                    : (int.parse(e.date) % 2 ==
+                                                    1)
                                                     ? whiteDate(e.morning)
                                                     : tableColorDate(
                                                     e.morning),
                                                 (e.evening == "EVENING")
                                                     ? tableHeader(e.evening)
-                                                    : (int.parse(e.date) % 2 == 1)
+                                                    : (int.parse(e.date) % 2 ==
+                                                    1)
                                                     ? whiteDate(e.evening)
                                                     : tableColorDate(
                                                     e.evening),
@@ -516,8 +612,12 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                     ],
                                   ),
                                   commonField(
-                                    color: Theme.of(context).backgroundColor,
-                                    textColor: Theme.of(context).primaryColor,
+                                    color: Theme
+                                        .of(context)
+                                        .backgroundColor,
+                                    textColor: Theme
+                                        .of(context)
+                                        .primaryColor,
                                     title: LocaleString().cowMilk.tr,
                                     amount: finalString,
                                   ),
@@ -528,28 +628,29 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                     amount: "${totalLiterOfMonth} L",
                                   ),
                                   commonField(
-                                    color: Theme.of(context).backgroundColor,
-                                    textColor: Theme.of(context).primaryColor,
-                                    title: LocaleString().pMonth.tr,
-                                    amount: "₹${0}",
+                                    color: Theme
+                                        .of(context)
+                                        .backgroundColor,
+                                    textColor: Theme
+                                        .of(context)
+                                        .primaryColor,
+                                    title: LocaleString().pMTA.tr,
+                                    amount: "₹${PreviousTotalPrice}",
                                   ),
                                   commonField(
                                     color: AppColors.tableColor,
                                     textColor: AppColors.black,
-                                    title: LocaleString().cMonth.tr,
-                                    amount: "₹${finalTotal}",
+                                    title: LocaleString().pMRA.tr,
+                                    amount: "₹${PreviousReceivedPrice}",
                                   ),
                                   commonField(
-                                    color: Theme.of(context).backgroundColor,
-                                    textColor: Theme.of(context).primaryColor,
-                                    title: LocaleString().received.tr,
-                                    amount: "₹${0}",
-                                  ),
-                                  commonField(
-                                    color: AppColors.tableColor,
+                                    color: Theme
+                                        .of(context)
+                                        .backgroundColor,
                                     textColor: AppColors.black,
                                     title: LocaleString().total.tr,
-                                    amount: "₹${finalTotal}",
+                                    amount: "₹${finalTotal +
+                                        PreviousAmountDif}",
                                   ),
                                 ],
                               )
@@ -566,14 +667,15 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                               right: 40, left: 40, top: 30, bottom: 50),
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              primary: (!generateBillController.isLoading.value) ? AppColors.blue : AppColors.lightBlue,
+                              primary: (!generateBillController.isLoading.value)
+                                  ? AppColors.blue
+                                  : AppColors.lightBlue,
                               padding:
                               const EdgeInsets.only(
                                   right: 15, left: 15, top: 10, bottom: 10),
                             ),
                             onPressed: () async {
-                              if(!generateBillController.isLoading.value)
-                              {
+                              if (!generateBillController.isLoading.value) {
                                 downloadPDF();
                               }
                             },
@@ -582,7 +684,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                 child: Image.asset(
                                     'assets/icons/download.png', scale: 15)),
                             label: GlobalText(
-                              text: LocaleString().downloadMonthBill.tr,
+                              // text: LocaleString().downloadMonthBill.tr,
+                              text: "Download ${navigatorData.month} Bill",
                               fontSize: 18,
                             ),
                           ),
@@ -598,6 +701,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
       ),
     );
   }
+
   downloadPDF() async {
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
@@ -747,26 +851,20 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                 pwCommonField(
                   color: PdfColors.white,
                   textColor: PdfColors.black,
-                  title: LocaleString().pMonth,
-                  amount: "Rs. 0",
+                  title: LocaleString().pMTA,
+                  amount: "Rs. $PreviousTotalPrice",
                 ),
                 pwCommonField(
                   color: PdfColors.blue50,
                   textColor: PdfColors.black,
-                  title: LocaleString().cMonth,
-                  amount: "Rs. $finalTotal",
+                  title: LocaleString().pMRA,
+                  amount: "Rs. $PreviousReceivedPrice",
                 ),
                 pwCommonField(
                   color: PdfColors.white,
                   textColor: PdfColors.black,
-                  title: LocaleString().received,
-                  amount: "Rs. 0",
-                ),
-                pwCommonField(
-                  color: PdfColors.blue50,
-                  textColor: PdfColors.black,
                   title: LocaleString().total,
-                  amount: "Rs. $finalTotal",
+                  amount: "Rs. ${finalTotal + PreviousAmountDif}",
                 ),
               ],
             ),
@@ -776,11 +874,10 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     );
   }
 
-  commonField(
-      {required Color color,
-        required Color textColor,
-        required String title,
-        required String amount}) {
+  commonField({required Color color,
+    required Color textColor,
+    required String title,
+    required String amount}) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 0.5),
@@ -804,7 +901,10 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              GlobalText(
+              (title == LocaleString().total.tr)
+                  ? GlobalText(
+                  text: amount, fontWeight: FontWeight.bold, color: textColor,fontSize: 18)
+                  : GlobalText(
                   text: amount, fontWeight: FontWeight.w500, color: textColor),
               (amount == finalString)
                   ? GlobalText(
@@ -865,7 +965,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
 
   whiteDate(String val) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme
+          .of(context)
+          .backgroundColor,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 5, bottom: 5, left: 2, right: 2),
       child: Text(
@@ -873,7 +975,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w700,
-          color: Theme.of(context).primaryColor,
+          color: Theme
+              .of(context)
+              .primaryColor,
         ),
       ),
     );
@@ -881,7 +985,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
 
   whiteRowElements(String val) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme
+          .of(context)
+          .backgroundColor,
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 5, bottom: 5, left: 2, right: 2),
       child: Text(
@@ -889,7 +995,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: Theme.of(context).primaryColor,
+          color: Theme
+              .of(context)
+              .primaryColor,
         ),
       ),
     );
@@ -924,11 +1032,11 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
       ),
     );
   }
-  pwCommonField(
-      {required PdfColor color,
-        required PdfColor textColor,
-        required String title,
-        required String amount}) {
+
+  pwCommonField({required PdfColor color,
+    required PdfColor textColor,
+    required String title,
+    required String amount}) {
     return pw.Container(
       decoration: pw.BoxDecoration(
         border: pw.Border.all(width: 0.5),
@@ -948,7 +1056,12 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
             mainAxisAlignment: pw.MainAxisAlignment.end,
             crossAxisAlignment: pw.CrossAxisAlignment.end,
             children: [
-              pw.Text(
+              (title == LocaleString().total)
+                  ? pw.Text(
+                amount,
+                style: pw.TextStyle(fontSize: 17, color: textColor),
+              )
+                  : pw.Text(
                 amount,
                 style: pw.TextStyle(fontSize: 13, color: textColor),
               ),

@@ -26,7 +26,7 @@ class _WelcomeState extends State<Welcome> {
     var name = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
 
     setState(() {
-      LoginModels.name = name.data()?['name'];
+      LoginModels.name = name.data()!['name'];
     });
   }
 

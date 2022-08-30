@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:milk_bazzar/modules/Merchant/home/controller/home_controller.dart';
 import 'package:milk_bazzar/routes/app_routes.dart';
 import '../../../../utils/app_colors.dart';
 import '../../../../utils/app_constants.dart';
@@ -274,8 +275,6 @@ class _SellMilkState extends State<SellMilk> {
               ),
               confirm: ElevatedButton(
                 onPressed: () async {
-                  if (sellMilkController.customerName.value != "" &&
-                      sellMilkController.liter.value >= 0.5) {
 
                     var data = await FirebaseFirestore.instance
                         .collection("customers")
@@ -358,7 +357,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         sum.docs.forEach((e) {
                           setState(() {
-                            if(e.id != "total_liter" && e.id != "total_price")
+                            if(e.id != "total_liter" && e.id != "total_price" && e.id !="received_price")
                               dates.add(int.parse(e.id));
                           });
                         });
@@ -469,7 +468,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         sum.docs.forEach((e) {
                           setState(() {
-                            if(e.id != "total_liter" && e.id != "total_price")
+                            if(e.id != "total_liter" && e.id != "total_price" && e.id != "received_price")
                               dates.add(int.parse(e.id));
                           });
                         });
@@ -532,6 +531,7 @@ class _SellMilkState extends State<SellMilk> {
                           });
                         }
                       }
+
                     } else {
                       if (sessionMenu.toString() == "morning") {
 
@@ -566,7 +566,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         sum.docs.forEach((e) {
                           setState(() {
-                            if(e.id != "total_liter" && e.id != "total_price")
+                            if(e.id != "total_liter" && e.id != "total_price" && e.id != "received_price")
                               dates.add(int.parse(e.id));
                           });
                         });
@@ -661,7 +661,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         sum.docs.forEach((e) {
                           setState(() {
-                            if(e.id != "total_liter" && e.id != "total_price")
+                            if(e.id != "total_liter" && e.id != "total_price" && e.id != "received_price")
                               dates.add(int.parse(e.id));
                           });
                         });
@@ -727,21 +727,8 @@ class _SellMilkState extends State<SellMilk> {
                       }
                     }
 
-                    addMilks.add(
-                      AddMilk(
-                          date: DateTime.now().day.toString(),
-                          month: DateTime.now().month.toString(),
-                          year: DateTime.now().year.toString(),
-                          time: sellMilkController.duration.value.toString(),
-                          customerName: sellMilkController.customerName.value,
-                          session: sessionMenu.toString(),
-                          liter: sellMilkController.liter.value.toString()),
-                    );
-
                     Get.back();
-                  } else {
-                    print("no thay");
-                  }
+
                 },
                 child: GlobalText(text: "${LocaleString().sell.tr}"),
               ),
@@ -752,6 +739,7 @@ class _SellMilkState extends State<SellMilk> {
                 child: GlobalText(text: "${LocaleString().cancelText.tr}"),
               ),
             );
+
           } else {
             Get.snackbar(LocaleString().opps.tr, LocaleString().oppsMsg.tr,
                 backgroundColor: AppColors.darkBlue,

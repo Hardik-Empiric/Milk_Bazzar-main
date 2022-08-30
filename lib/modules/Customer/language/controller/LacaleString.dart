@@ -24,6 +24,8 @@ class LocaleString extends Translations {
   String darkMode = "Dark Mode";
   String lightMode = "Light Mode";
   String addPayment = "Add Payment";
+  String payment = "PAYMENT";
+  String paymentMSG = "Payment Added Successfully...";
   String logout = "Log Out";
   String termsCondition = "Terms & Conditions";
   String language = "Language";
@@ -134,6 +136,8 @@ class LocaleString extends Translations {
   String cowMilkAmount = "79L * ₹ 58 = ₹ 458";
   String totalLiter = "Total Liter:-";
   String totalLiterAmount = "79L";
+  String pMTA = "Previous Month Total Amount:-";
+  String pMRA = "Previous Month Received Amount:-";
   String pMonth = "Remaining Of Previous Month:-";
   String pMonthAmount = "₹ 582";
   String cMonth = "Remaining Of Current Month:-";
@@ -179,6 +183,7 @@ class LocaleString extends Translations {
   String signUpAsMerchant = "SignUp as Merchant";
 
   String noCustomer = "No Any Customer\nClick + Button to Add Customer";
+  String noNoCustomer = "No Any Customer";
 
   String termsAndConditions =
       "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de Finibus Bonorum et Malorum' (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, 'Lorem ipsum dolor sit amet..', comes from a line in section 1.10.32.The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from 'de Finibus Bonorum et Malorum' by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.";
@@ -198,8 +203,12 @@ class LocaleString extends Translations {
 
   Map<String, Map<String, String>> get keys => {
         'en_US': {
-          rupeesPerMonth : "Rupees Per Month",
-          errorPrisePerMonth : "enter Price of one Month...",
+          payment: "PAYMENT",
+          paymentMSG: "Payment Added Successfully...",
+          pMTA: "Previous Month Total Amount:-",
+          pMRA: "Previous Month Received Amount:-",
+          rupeesPerMonth: "Rupees Per Month",
+          errorPrisePerMonth: "enter Price of one Month...",
           addPayment: "Add Payment",
           downloadMonthBill: "Download April Bill",
           PPL: "Prise Per Liter",
@@ -350,6 +359,7 @@ class LocaleString extends Translations {
           totalCustomer: "Total 50 Customer",
           signUpAsMerchant: "SignUp as Merchant",
           noCustomer: "No Any Customer\nClick + Button to Add Customer",
+          noNoCustomer: "No Any Customer",
           areYouSure: "Are You Sure?",
           yes: "Yes",
           no: "No",
@@ -359,8 +369,12 @@ class LocaleString extends Translations {
           wantToLogout: "You want to Log Out?",
         },
         'gu_IN': {
-          rupeesPerMonth : "દર મહિને રૂપિયા",
-          errorPrisePerMonth : "એક મહિનાની કિંમત દાખલ કરો...",
+          payment: "ચુકવણી",
+          paymentMSG: "ચુકવણી સફળતાપૂર્વક ઉમેરાઈ...",
+          pMTA: "પાછલા મહિનાની કુલ રકમ:-",
+          pMRA: "પાછલા મહિને મળેલી રકમ:-",
+          rupeesPerMonth: "દર મહિને રૂપિયા",
+          errorPrisePerMonth: "એક મહિનાની કિંમત દાખલ કરો...",
           addPayment: "ચુકવણી ઉમેરો",
           downloadMonthBill: "એપ્રિલ બિલ ડાઉનલોડ કરો",
           PPL: "પ્રતિ લિટર ભાવ",
@@ -507,6 +521,7 @@ class LocaleString extends Translations {
           totalCustomer: "કુલ 50 ગ્રાહક",
           signUpAsMerchant: "વેપારી તરીકે સાઇન અપ કરો",
           noCustomer: "કોઈ ગ્રાહક નથી\nગ્રાહક ઉમેરવા માટે + બટન પર ક્લિક કરો",
+          noNoCustomer: "કોઈ ગ્રાહક નથી",
           areYouSure: "શું તમને ખાતરી છે?",
           yes: "હા",
           no: "ના",
@@ -516,8 +531,12 @@ class LocaleString extends Translations {
           wantToLogout: "તમે લોગ આઉટ કરવા માંગો છો?",
         },
         'hi_IN': {
-          rupeesPerMonth : "रुपये प्रति माह",
-          errorPrisePerMonth : "एक महीने का मूल्य दर्ज करें...",
+          payment: "भुगतान",
+          paymentMSG: "भुगतान सफलतापूर्वक जोड़ा गया...",
+          pMTA: "पिछला महीना कुल राशि:-",
+          pMRA: "पिछले माह प्राप्त राशि:-",
+          rupeesPerMonth: "रुपये प्रति माह",
+          errorPrisePerMonth: "एक महीने का मूल्य दर्ज करें...",
           addPayment: "भुगतान जोड़ें",
           downloadMonthBill: "अप्रैल बिल डाउनलोड करें",
           PPL: "मूल्य प्रति लीटर",
@@ -665,6 +684,7 @@ class LocaleString extends Translations {
           signUpAsMerchant: "व्यापारी के रूप में साइन अप करें",
           noCustomer:
               "कोई ग्राहक नहीं\nग्राहक जोड़ने के लिए + बटन पर क्लिक करें",
+          noNoCustomer: "कोई ग्राहक नहीं",
           areYouSure: "क्या आपको यकीन है?",
           yes: "हाँ",
           no: "नहीं",

@@ -15,19 +15,19 @@ import '../../../../utils/common_widget/global_text.dart';
 import '../../../Customer/language/controller/LacaleString.dart';
 import '../../home/controller/home_controller.dart';
 import '../../select_customer/controller/select_customer_controller.dart';
-import '../controller/customer_list_controller.dart';
-import '../widgets/customer_list_widget.dart';
+import '../controller/pending_customer_list_controller.dart';
+import '../widgets/pending_customer_list_widget.dart';
 
-class CustomerListScreen extends StatefulWidget {
-  const CustomerListScreen({Key? key}) : super(key: key);
+class PendingCustomerListScreen extends StatefulWidget {
+  const PendingCustomerListScreen({Key? key}) : super(key: key);
 
   @override
-  State<CustomerListScreen> createState() => _CustomerListScreenState();
+  State<PendingCustomerListScreen> createState() => _PendingCustomerListScreenState();
 }
 
-class _CustomerListScreenState extends State<CustomerListScreen> {
-  CustomerListController customerListController =
-      Get.put(CustomerListController());
+class _PendingCustomerListScreenState extends State<PendingCustomerListScreen> {
+  PendingCustomerListController pendingCustomerListController =
+      Get.put(PendingCustomerListController());
 
   final HomeController homeController = Get.put(HomeController());
 
@@ -119,7 +119,26 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(15),
+                      padding: const EdgeInsets.only(left: 0),
+                      child: GestureDetector(
+                        onTap: (){
+                          Get.back();
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 100,
+                          child: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: AppColors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    flex: 2,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15,bottom: 15,right: 25,left: 0),
                       child: TextField(
                         onChanged: (value) {
                           setState(() {
@@ -158,11 +177,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                         ),
                       ),
                     ),
-                    flex: 11,
-                  ),
-                  Expanded(
-                    child: AddPerson(),
-                    flex: 2,
+                    flex: 15,
                   ),
                 ],
               ),
@@ -173,9 +188,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection("customers")
-                      .where("merchant",
-                          isEqualTo:
-                              FirebaseAuth.instance.currentUser!.uid.toString())
+                      .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+                      .where("amount_received",isEqualTo: false)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                     if (snapshots.hasData) {
@@ -186,7 +200,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                       if (newData.length == 0) {
                         return Center(
                           child: GlobalText(
-                            text: LocaleString().noCustomer.tr,
+                            text: LocaleString().noNoCustomer.tr,
                             textAlign: TextAlign.center,
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w600,
@@ -198,6 +212,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                 itemCount: newData.length,
                                 itemBuilder: (context, i) {
                                   final singleData = newData[i];
+
                                   return (singleData["name"]
                                           .toString()
                                           .toLowerCase()
@@ -364,13 +379,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.toNamed(AppRoutes.addCustomer);
-        },
-        backgroundColor: Theme.of(context).backgroundColor,
-        child: Image.asset('assets/icons/addContact.png', scale: 17),
       ),
     );
   }

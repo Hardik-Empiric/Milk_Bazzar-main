@@ -1,5 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:milk_bazzar/modules/Merchant/add_customer/screens/add_customer_screen.dart';
+import 'package:milk_bazzar/modules/Merchant/pending_customer_list/screens/pending_customer_list_screen.dart';
 import 'package:milk_bazzar/modules/Merchant/sell_milk/screens/sell_milk_screen.dart';
 import '../modules/Customer/generate_bill/screens/generate_bill_screen.dart';
 import '../modules/Customer/invoice_bill/screens/invoice_screen.dart';
@@ -40,7 +41,6 @@ class AppPages{
     GetPage(name: AppRoutes.termsConditions, page: () => const TermsConditionsScreen()),
     GetPage(name: AppRoutes.mode, page: () => const ModeScreen()),
     GetPage(name: AppRoutes.profile, page: () => const ProfileScreen()),
-    GetPage(name: AppRoutes.customerList, page: () => const CustomerListScreen()),
     GetPage(name: AppRoutes.generateBill, page: () => const GenerateBillScreen()),
 
    // TODO: Merchant
@@ -52,6 +52,8 @@ class AppPages{
     GetPage(name: AppRoutes.customerCategory, page: () => const CustomerCategoryScreen()),
     GetPage(name: AppRoutes.generateBillMerchant, page: () => const GenerateBillMerchantScreen()),
     GetPage(name: AppRoutes.payment, page: () => const PaymentScreen()),
+    GetPage(name: AppRoutes.customerList, page: () => const CustomerListScreen()),
+    GetPage(name: AppRoutes.pendingCustomerList, page: () => const PendingCustomerListScreen()),
 
   ];
 

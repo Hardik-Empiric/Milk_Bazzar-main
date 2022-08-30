@@ -12,6 +12,7 @@ class AppRoutes {
   static const mode = '/mode';
   static const profile = '/profile';
   static const customerList = '/customerList';
+  static const pendingCustomerList = '/pendingCustomerList';
   static const generateBill = '/generateBill';
   static const generateBillMerchant = '/generateBillMerchant';
   static const home = '/home';

@@ -23,8 +23,7 @@ class Payment extends StatefulWidget {
 enum Menu { current, previous }
 
 class _PaymentState extends State<Payment> {
-  final PaymentController paymentController =
-  Get.put(PaymentController());
+  final PaymentController paymentController = Get.put(PaymentController());
 
   TextEditingController paymentOfMonthController = TextEditingController();
 
@@ -44,7 +43,6 @@ class _PaymentState extends State<Payment> {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
@@ -80,7 +78,7 @@ class _PaymentState extends State<Payment> {
             ),
             child: Padding(
               padding:
-              const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
+                  const EdgeInsets.only(right: 0, left: 0, bottom: 20, top: 0),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -115,7 +113,6 @@ class _PaymentState extends State<Payment> {
                     yearPicker(),
                     paymentTextField(),
                     doneButton(),
-
                   ],
                 ),
               ),
@@ -176,7 +173,7 @@ class _PaymentState extends State<Payment> {
               height: SizeData.height * 0.06,
               width: SizeData.width * 0.8,
               margin:
-              const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+                  const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: AppColors.borderColor, width: 2)),
@@ -187,8 +184,8 @@ class _PaymentState extends State<Payment> {
                     stream: FirebaseFirestore.instance
                         .collection("customers")
                         .where("merchant",
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid
-                            .toString())
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid
+                                .toString())
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                       if (snapshots.hasData) {
@@ -249,14 +246,14 @@ class _PaymentState extends State<Payment> {
                             var uid = await FirebaseFirestore.instance
                                 .collection("customers")
                                 .where("name",
-                                isEqualTo:
-                                "${paymentController.customerName.value}")
+                                    isEqualTo:
+                                        "${paymentController.customerName.value}")
                                 .get();
 
                             print("UID : ${uid.docs[0].id}");
 
                             paymentController.customerUID.value =
-                            "${uid.docs[0].id}";
+                                "${uid.docs[0].id}";
                           },
                         );
                       } else {
@@ -297,27 +294,27 @@ class _PaymentState extends State<Payment> {
             contentPadding: EdgeInsets.zero,
             border: OutlineInputBorder(
               borderSide:
-              const BorderSide(width: 2, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide:
-              const BorderSide(width: 2, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide:
-              const BorderSide(width: 2, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             disabledBorder: OutlineInputBorder(
               borderSide:
-              const BorderSide(width: 2, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             errorBorder: OutlineInputBorder(
               borderSide:
-              const BorderSide(width: 2, color: AppColors.borderColor),
+                  const BorderSide(width: 2, color: AppColors.borderColor),
               borderRadius: BorderRadius.circular(5),
             ),
             //Add more decoration as you want here
@@ -350,10 +347,8 @@ class _PaymentState extends State<Payment> {
           dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
-          items: monthItems
-              .map((item) {
+          items: monthItems.map((item) {
             return DropdownMenuItem<String>(
-
               value: item,
               child: Text(
                 item,
@@ -361,16 +356,16 @@ class _PaymentState extends State<Payment> {
                   fontSize: 14,
                 ),
               ),
-            );})
-              .toList(),
+            );
+          }).toList(),
           onChanged: (value) {
             //Do something when changing the item if you want.
-            paymentController.index.value = monthItems.indexOf(value.toString());
-            paymentController.month.value = monthItemsInENGLISH[paymentController.index.value];
+            paymentController.index.value =
+                monthItems.indexOf(value.toString());
+            paymentController.month.value =
+                monthItemsInENGLISH[paymentController.index.value];
           },
-          onSaved: (value) {
-
-          },
+          onSaved: (value) {},
         ),
       ),
     );
@@ -438,103 +433,99 @@ class _PaymentState extends State<Payment> {
             });
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-            PopupMenuItem<Menu>(
-              value: Menu.current,
-              child: SizedBox(
-                width: SizeData.width * 0.7,
-                child: Row(
-                  children: [
-                    Transform.scale(
-                      scale: 1.3,
-                      child: Obx(
+                PopupMenuItem<Menu>(
+                  value: Menu.current,
+                  child: SizedBox(
+                    width: SizeData.width * 0.7,
+                    child: Row(
+                      children: [
+                        Transform.scale(
+                          scale: 1.3,
+                          child: Obx(
                             () => Checkbox(
-                          side: const BorderSide(
-                              width: 1.5, color: AppColors.borderColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                              side: const BorderSide(
+                                  width: 1.5, color: AppColors.borderColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              activeColor: AppColors.checkYearColor,
+                              checkColor: AppColors.background,
+                              value: paymentController.isCurrentSelected.value,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedMenu = Menu.current.name;
+                                });
+                                paymentController.isCurrentSelected.value =
+                                    value!;
+                                if (paymentController.isCurrentSelected.value) {
+                                  paymentController.isPreviousSelected.value =
+                                      false;
+                                }
+                                Get.back();
+                              },
+                            ),
                           ),
-                          activeColor: AppColors.checkYearColor,
-                          checkColor: AppColors.background,
-                          value: paymentController
-                              .isCurrentSelected.value,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedMenu = Menu.current.name;
-                            });
-                            paymentController
-                                .isCurrentSelected.value = value!;
-                            if (paymentController
-                                .isCurrentSelected.value) {
-                              paymentController
-                                  .isPreviousSelected.value = false;
-                            }
-                            Get.back();
-                          },
                         ),
-                      ),
+                        GlobalText(
+                          text: paymentController.currentYear.toString(),
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 14,
+                        ),
+                      ],
                     ),
-                    GlobalText(
-                      text: paymentController.currentYear.toString(),
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 14,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            PopupMenuItem<Menu>(
-              value: Menu.previous,
-              child: SizedBox(
-                width: SizeData.width * 0.7,
-                child: Row(
-                  children: [
-                    Transform.scale(
-                      scale: 1.3,
-                      child: Obx(
+                PopupMenuItem<Menu>(
+                  value: Menu.previous,
+                  child: SizedBox(
+                    width: SizeData.width * 0.7,
+                    child: Row(
+                      children: [
+                        Transform.scale(
+                          scale: 1.3,
+                          child: Obx(
                             () => Checkbox(
-                          side: const BorderSide(
-                              width: 1.5, color: AppColors.borderColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                              side: const BorderSide(
+                                  width: 1.5, color: AppColors.borderColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              activeColor: AppColors.checkYearColor,
+                              checkColor: AppColors.background,
+                              value: paymentController.isPreviousSelected.value,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedMenu = Menu.previous.name;
+                                });
+                                paymentController.isPreviousSelected.value =
+                                    value!;
+                                if (paymentController
+                                    .isPreviousSelected.value) {
+                                  paymentController.isCurrentSelected.value =
+                                      false;
+                                }
+                                Get.back();
+                              },
+                            ),
                           ),
-                          activeColor: AppColors.checkYearColor,
-                          checkColor: AppColors.background,
-                          value: paymentController
-                              .isPreviousSelected.value,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedMenu = Menu.previous.name;
-                            });
-                            paymentController
-                                .isPreviousSelected.value = value!;
-                            if (paymentController
-                                .isPreviousSelected.value) {
-                              paymentController
-                                  .isCurrentSelected.value = false;
-                            }
-                            Get.back();
-                          },
                         ),
-                      ),
+                        GlobalText(
+                          text: paymentController.previousYear.toString(),
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 14,
+                        ),
+                      ],
                     ),
-                    GlobalText(
-                      text:
-                      paymentController.previousYear.toString(),
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 14,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ]),
+              ]),
     );
   }
 
-  paymentTextField(){
-    return  Padding(
+  paymentTextField() {
+    return Padding(
       padding: const EdgeInsets.only(top: 30),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -554,8 +545,8 @@ class _PaymentState extends State<Payment> {
               fontWeight: FontWeight.w500,
               fontFamily: "Graphik"),
           decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 10),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               label: Center(
                 child: GlobalText(
                   text: LocaleString().rupeesPerMonth.tr,
@@ -571,13 +562,12 @@ class _PaymentState extends State<Payment> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
-                borderSide:
-                const BorderSide(color: AppColors.blue, width: 2),
+                borderSide: const BorderSide(color: AppColors.blue, width: 2),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
-                borderSide: const BorderSide(
-                    color: AppColors.borderColor, width: 2),
+                borderSide:
+                    const BorderSide(color: AppColors.borderColor, width: 2),
               ),
               // prefix: GlobalText(text: "₹",color: AppColors.hintTextColor,fontSize: 25),
               prefixText: "₹",
@@ -604,15 +594,67 @@ class _PaymentState extends State<Payment> {
           primary: AppColors.blue,
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
-        onPressed: () {
-
+        onPressed: () async {
           (_selectedMenu.toString() == 'current')
               ? print("Year : ${DateTime.now().year.toString()}")
               : print("Year : ${(DateTime.now().year - 1).toString()}");
-           print("Month : ${paymentController.month.value}");
-           print("CustomerUID : ${paymentController.customerUID.value}");
-           print("Rupees : ${paymentOfMonthController.text}");
+          print("Month : ${paymentController.month.value}");
+          print("CustomerUID : ${paymentController.customerUID.value}");
+          print("Rupees : ${paymentOfMonthController.text}");
 
+          String year = (_selectedMenu.toString() == 'current')
+              ? "${DateTime.now().year}"
+              : "${(DateTime.now().year - 1)}";
+
+          var data = await FirebaseFirestore.instance
+              .collection("customers")
+              .doc("${paymentController.customerUID.value}")
+              .collection("milk_data")
+              .doc(year)
+              .collection("${paymentController.month.value}")
+              .doc("received_price")
+              .get();
+
+          if(data.exists)
+            {
+              await FirebaseFirestore.instance
+                  .collection("customers")
+                  .doc("${paymentController.customerUID.value}")
+                  .collection("milk_data")
+                  .doc(year)
+                  .collection("${paymentController.month.value}")
+                  .doc("received_price")
+                  .update(
+                {
+                  "received_price" : double.parse(paymentOfMonthController.text),
+                }
+              );
+            }
+          else
+            {
+              await FirebaseFirestore.instance
+                  .collection("customers")
+                  .doc("${paymentController.customerUID.value}")
+                  .collection("milk_data")
+                  .doc(year)
+                  .collection("${paymentController.month.value}")
+                  .doc("received_price")
+                  .set(
+                  {
+                    "received_price" : double.parse(paymentOfMonthController.text),
+                  }
+              );
+            }
+
+          await FirebaseFirestore.instance
+              .collection("customers")
+              .doc("${paymentController.customerUID.value}").update(
+              {
+                "amount_received" : true,
+              }
+          );
+
+          Get.snackbar(LocaleString().payment.tr, LocaleString().paymentMSG.tr,backgroundColor: AppColors.darkBlue,colorText: AppColors.white);
         },
         child: GlobalText(
           text: LocaleString().addPayment.tr,

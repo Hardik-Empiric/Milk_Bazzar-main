@@ -27,11 +27,12 @@ class GenerateBillMerchantScreen extends StatefulWidget {
   const GenerateBillMerchantScreen({Key? key}) : super(key: key);
 
   @override
-  State<GenerateBillMerchantScreen> createState() => _GenerateBillMerchantScreenState();
+  State<GenerateBillMerchantScreen> createState() =>
+      _GenerateBillMerchantScreenState();
 }
 
-class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen> {
-
+class _GenerateBillMerchantScreenState
+    extends State<GenerateBillMerchantScreen> {
   DATA navigatorData = Get.arguments;
 
   final pdf = pw.Document();
@@ -44,7 +45,8 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
   String finalString = '';
   String finalStringPDF = '';
   double finalTotal = 0.0;
-  GenerateBillController generateBillController = Get.put(GenerateBillController());
+  GenerateBillController generateBillController =
+      Get.put(GenerateBillController());
 
   calculateData() async {
     var totalLiter = await FirebaseFirestore.instance
@@ -102,7 +104,81 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
     "december",
   ];
 
+  double PreviousTotalPrice = 0.0;
+  double PreviousReceivedPrice = 0.0;
+  double PreviousAmountDif = 0.0;
+
   getData() async {
+    int currentMonthIndex = monthItemsInENGLISH.indexOf(navigatorData.month);
+
+    String previousMonth;
+    String pcYear;
+
+    if (currentMonthIndex == 0) {
+      previousMonth = monthItemsInENGLISH.last;
+      pcYear = "${int.parse(navigatorData.year) - 1}";
+    } else {
+      previousMonth = monthItemsInENGLISH[currentMonthIndex - 1];
+      pcYear = navigatorData.year;
+    }
+
+    print("previousMonth : $previousMonth");
+    print("previousYear : $pcYear");
+
+    var preCheckTotalPrice = await FirebaseFirestore.instance
+        .collection("customers")
+        .doc("${navigatorData.uid}")
+        .collection("milk_data")
+        .doc("${pcYear}")
+        .collection("${previousMonth}")
+        .doc("total_price")
+        .get();
+
+    var preCheckReceivedPrice = await FirebaseFirestore.instance
+        .collection("customers")
+        .doc("${navigatorData.uid}")
+        .collection("milk_data")
+        .doc("${pcYear}")
+        .collection("${previousMonth}")
+        .doc("received_price")
+        .get();
+
+    if (preCheckTotalPrice.exists) {
+      var data = await FirebaseFirestore.instance
+          .collection("customers")
+          .doc("${navigatorData.uid}")
+          .collection("milk_data")
+          .doc("${pcYear}")
+          .collection("${previousMonth}")
+          .doc("total_price")
+          .get();
+
+      PreviousTotalPrice = double.parse(data.data()!["price"].toString());
+    }
+
+    if (preCheckReceivedPrice.exists) {
+      var data = await FirebaseFirestore.instance
+          .collection("customers")
+          .doc("${navigatorData.uid}")
+          .collection("milk_data")
+          .doc("${pcYear}")
+          .collection("${previousMonth}")
+          .doc("received_price")
+          .get();
+
+      PreviousReceivedPrice = double.parse(data.data()!["received_price"].toString());
+    }
+
+    print("PreviousTotalPrice : $PreviousTotalPrice");
+    print("PreviousReceivedPrice : $PreviousReceivedPrice");
+
+
+    PreviousAmountDif =  PreviousTotalPrice - PreviousReceivedPrice;
+
+    print("PreviousAmountDif : ${PreviousAmountDif}");
+
+
+
     int ddday = daysInMonth(int.parse(navigatorData.year),
         monthItemsInENGLISH.indexOf("${navigatorData.month}") + 1);
 
@@ -125,7 +201,9 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
 
     data.docs.forEach((e) {
       setState(() {
-        if (e.id != "total_liter" && e.id!="total_price") dates.add(int.parse(e.id));
+        if (e.id != "total_liter" &&
+            e.id != "total_price" &&
+            e.id != "received_price") dates.add(int.parse(e.id));
       });
     });
 
@@ -258,9 +336,12 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
 
       setState(() {
         finalTotal = finalTotal + amount;
-        finalString = finalString + "${element["liter"]} L * ₹ ${element["prise"]} = ₹ ${amount}\n";
-        finalStringPDF = finalStringPDF + "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
+        finalString = finalString +
+            "${element["liter"]} L * ₹ ${element["prise"]} = ₹ ${amount}\n";
+        finalStringPDF = finalStringPDF +
+            "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
       });
+
 
       List months = [
         "january",
@@ -296,7 +377,7 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
             .doc("total_price")
             .update(
           {
-            "price": finalTotal,
+            "price": finalTotal + PreviousAmountDif,
           },
         );
       } else {
@@ -309,27 +390,27 @@ class _GenerateBillMerchantScreenState extends State<GenerateBillMerchantScreen>
             .doc("total_price")
             .set(
           {
-            "price": finalTotal,
+            "price": finalTotal + PreviousAmountDif,
           },
         );
       }
     });
   }
 
-List months = [
-  LocaleString().jan.tr,
-  LocaleString().feb.tr,
-  LocaleString().mar.tr,
-  LocaleString().apr.tr,
-  LocaleString().may.tr,
-  LocaleString().jun.tr,
-  LocaleString().jul.tr,
-  LocaleString().aug.tr,
-  LocaleString().sep.tr,
-  LocaleString().oct.tr,
-  LocaleString().nov.tr,
-  LocaleString().dec.tr,
-];
+  List months = [
+    LocaleString().jan.tr,
+    LocaleString().feb.tr,
+    LocaleString().mar.tr,
+    LocaleString().apr.tr,
+    LocaleString().may.tr,
+    LocaleString().jun.tr,
+    LocaleString().jul.tr,
+    LocaleString().aug.tr,
+    LocaleString().sep.tr,
+    LocaleString().oct.tr,
+    LocaleString().nov.tr,
+    LocaleString().dec.tr,
+  ];
 
   var currentYear = DateTime.now().year.toString();
   var currentMonth;
@@ -347,7 +428,7 @@ List months = [
     dates.clear();
   }
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -355,28 +436,27 @@ List months = [
     getData();
     buildPDF();
   }
+
   @override
   Widget build(BuildContext context) {
-
     prefs.then((prefs) {
       setState(() {
-        isEng = (prefs.getBool("English"))??true;
+        isEng = (prefs.getBool("English")) ?? true;
       });
     });
 
     return WillPopScope(
-      onWillPop: ()async{
-        if(generateBillController.isLoading.value)
-          {
-            Fluttertoast.showToast(
-              msg: "Bill is Generating...",
-              toastLength: Toast.LENGTH_SHORT,
-              webBgColor: "#e74c3c",
-              textColor: AppColors.black,
-              timeInSecForIosWeb: 3,
-            );
-          }
-      return !generateBillController.isLoading.value;
+      onWillPop: () async {
+        if (generateBillController.isLoading.value) {
+          Fluttertoast.showToast(
+            msg: "Bill is Generating...",
+            toastLength: Toast.LENGTH_SHORT,
+            webBgColor: "#e74c3c",
+            textColor: AppColors.black,
+            timeInSecForIosWeb: 3,
+          );
+        }
+        return !generateBillController.isLoading.value;
       },
       child: Scaffold(
         backgroundColor: AppColors.blue,
@@ -385,10 +465,10 @@ List months = [
             height: SizeData.height,
             color: Theme.of(context).backgroundColor,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20,right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: ListView(
                 physics: const BouncingScrollPhysics(),
-                children:  [
+                children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Column(
@@ -396,13 +476,15 @@ List months = [
                         Container(
                           padding: const EdgeInsets.only(bottom: 10),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Theme.of(context).primaryColor),
+                            border: Border.all(
+                                color: Theme.of(context).primaryColor),
                           ),
                           child: Column(
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 0.5, color: AppColors.darkGrey),
+                                  border: Border.all(
+                                      width: 0.5, color: AppColors.darkGrey),
                                   color: AppColors.tableColor,
                                 ),
                                 margin: const EdgeInsets.only(top: 7),
@@ -416,7 +498,8 @@ List months = [
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 0.5, color: AppColors.blue),
+                                  border: Border.all(
+                                      width: 0.5, color: AppColors.blue),
                                   color: Theme.of(context).backgroundColor,
                                 ),
                                 height: SizeData.height * 0.04,
@@ -424,146 +507,183 @@ List months = [
                                 alignment: Alignment.center,
                                 child: GlobalText(
                                   text:
-                                  "${LocaleString().billOf.tr} ${navigatorData.month} / ${navigatorData.year}",
+                                      "${LocaleString().billOf.tr} ${navigatorData.month} / ${navigatorData.year}",
                                   fontWeight: FontWeight.w500,
                                   color: Theme.of(context).primaryColor,
                                 ),
                               ),
                               (!generateBillController.isLoading.value)
                                   ? Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Table(
-                                          columnWidths: const {
-                                            0: FlexColumnWidth(1),
-                                            1: FlexColumnWidth(2),
-                                            2: FlexColumnWidth(2),
-                                          },
-                                          border: TableBorder.all(
-                                              color: Theme.of(context).primaryColor,
-                                              style: BorderStyle.solid,
-                                              width: 1),
-                                          children: billDetails1.map((e) {
-                                            int index = billDetails1.indexOf(e);
-                                            return TableRow(
-                                              children: [
-                                                (e.date == "DATE")
-                                                    ? tableHeader(e.date)
-                                                    : (int.parse(e.date) % 2 == 1)
-                                                    ? whiteDate(e.date)
-                                                    : tableColorDate(e.date),
-                                                (e.morning == "MORNING")
-                                                    ? tableHeader(e.morning)
-                                                    : (int.parse(e.date) % 2 == 1)
-                                                    ? whiteDate(e.morning)
-                                                    : tableColorDate(e.morning),
-                                                (e.evening == "EVENING")
-                                                    ? tableHeader(e.evening)
-                                                    : (int.parse(e.date) % 2 == 1)
-                                                    ? whiteDate(e.evening)
-                                                    : tableColorDate(e.evening),
-                                              ],
-                                            );
-                                          }).toList(),
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Table(
+                                                columnWidths: const {
+                                                  0: FlexColumnWidth(1),
+                                                  1: FlexColumnWidth(2),
+                                                  2: FlexColumnWidth(2),
+                                                },
+                                                border: TableBorder.all(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    style: BorderStyle.solid,
+                                                    width: 1),
+                                                children: billDetails1.map((e) {
+                                                  int index =
+                                                      billDetails1.indexOf(e);
+                                                  return TableRow(
+                                                    children: [
+                                                      (e.date == "DATE")
+                                                          ? tableHeader(e.date)
+                                                          : (int.parse(e.date) %
+                                                                      2 ==
+                                                                  1)
+                                                              ? whiteDate(
+                                                                  e.date)
+                                                              : tableColorDate(
+                                                                  e.date),
+                                                      (e.morning == "MORNING")
+                                                          ? tableHeader(
+                                                              e.morning)
+                                                          : (int.parse(e.date) %
+                                                                      2 ==
+                                                                  1)
+                                                              ? whiteDate(
+                                                                  e.morning)
+                                                              : tableColorDate(
+                                                                  e.morning),
+                                                      (e.evening == "EVENING")
+                                                          ? tableHeader(
+                                                              e.evening)
+                                                          : (int.parse(e.date) %
+                                                                      2 ==
+                                                                  1)
+                                                              ? whiteDate(
+                                                                  e.evening)
+                                                              : tableColorDate(
+                                                                  e.evening),
+                                                    ],
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Table(
+                                                columnWidths: const {
+                                                  0: FlexColumnWidth(1),
+                                                  1: FlexColumnWidth(2),
+                                                  2: FlexColumnWidth(2),
+                                                },
+                                                border: TableBorder.all(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    style: BorderStyle.solid,
+                                                    width: 1),
+                                                children: billDetails2.map((e) {
+                                                  int index =
+                                                      billDetails2.indexOf(e);
+                                                  return (e.date != '-')
+                                                      ? TableRow(
+                                                          children: [
+                                                            (e.date == "DATE")
+                                                                ? tableHeader(
+                                                                    e.date)
+                                                                : (int.parse(e.date) %
+                                                                            2 ==
+                                                                        1)
+                                                                    ? whiteDate(
+                                                                        e.date)
+                                                                    : tableColorDate(
+                                                                        e.date),
+                                                            (e.morning ==
+                                                                    "MORNING")
+                                                                ? tableHeader(
+                                                                    e.morning)
+                                                                : (int.parse(e.date) %
+                                                                            2 ==
+                                                                        1)
+                                                                    ? whiteDate(e
+                                                                        .morning)
+                                                                    : tableColorDate(
+                                                                        e.morning),
+                                                            (e.evening ==
+                                                                    "EVENING")
+                                                                ? tableHeader(
+                                                                    e.evening)
+                                                                : (int.parse(e.date) %
+                                                                            2 ==
+                                                                        1)
+                                                                    ? whiteDate(e
+                                                                        .evening)
+                                                                    : tableColorDate(
+                                                                        e.evening),
+                                                          ],
+                                                        )
+                                                      : TableRow(
+                                                          children: [
+                                                            tableColorDate(
+                                                                e.date),
+                                                            tableColorDate(
+                                                                e.morning),
+                                                            tableColorDate(
+                                                                e.evening),
+                                                          ],
+                                                        );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Table(
-                                          columnWidths: const {
-                                            0: FlexColumnWidth(1),
-                                            1: FlexColumnWidth(2),
-                                            2: FlexColumnWidth(2),
-                                          },
-                                          border: TableBorder.all(
-                                              color: Theme.of(context).primaryColor,
-                                              style: BorderStyle.solid,
-                                              width: 1),
-                                          children: billDetails2.map((e) {
-                                            int index = billDetails2.indexOf(e);
-                                            return (e.date != '-')
-                                                ? TableRow(
-                                              children: [
-                                                (e.date == "DATE")
-                                                    ? tableHeader(e.date)
-                                                    : (int.parse(e.date) % 2 == 1)
-                                                    ? whiteDate(e.date)
-                                                    : tableColorDate(e.date),
-                                                (e.morning == "MORNING")
-                                                    ? tableHeader(e.morning)
-                                                    : (int.parse(e.date) % 2 == 1)
-                                                    ? whiteDate(e.morning)
-                                                    : tableColorDate(
-                                                    e.morning),
-                                                (e.evening == "EVENING")
-                                                    ? tableHeader(e.evening)
-                                                    : (int.parse(e.date) % 2 == 1)
-                                                    ? whiteDate(e.evening)
-                                                    : tableColorDate(
-                                                    e.evening),
-                                              ],
-                                            )
-                                                : TableRow(
-                                              children: [
-                                                tableColorDate(e.date),
-                                                tableColorDate(e.morning),
-                                                tableColorDate(e.evening),
-                                              ],
-                                            );
-                                          }).toList(),
+                                        commonField(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          textColor:
+                                              Theme.of(context).primaryColor,
+                                          title: LocaleString().cowMilk.tr,
+                                          amount: finalString,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  commonField(
-                                    color: Theme.of(context).backgroundColor,
-                                    textColor: Theme.of(context).primaryColor,
-                                    title: LocaleString().cowMilk.tr,
-                                    amount: finalString,
-                                  ),
-                                  commonField(
-                                    color: AppColors.tableColor,
-                                    textColor: AppColors.black,
-                                    title: LocaleString().totalLiter.tr,
-                                    amount: "${totalLiterOfMonth} L",
-                                  ),
-                                  commonField(
-                                    color: Theme.of(context).backgroundColor,
-                                    textColor: Theme.of(context).primaryColor,
-                                    title: LocaleString().pMonth.tr,
-                                    amount: "₹${0}",
-                                  ),
-                                  commonField(
-                                    color: AppColors.tableColor,
-                                    textColor: AppColors.black,
-                                    title: LocaleString().cMonth.tr,
-                                    amount: "₹${finalTotal}",
-                                  ),
-                                  commonField(
-                                    color: Theme.of(context).backgroundColor,
-                                    textColor: Theme.of(context).primaryColor,
-                                    title: LocaleString().received.tr,
-                                    amount: "₹${0}",
-                                  ),
-                                  commonField(
-                                    color: AppColors.tableColor,
-                                    textColor: AppColors.black,
-                                    title: LocaleString().total.tr,
-                                    amount: "₹${finalTotal}",
-                                  ),
-                                ],
-                              )
+                                        commonField(
+                                          color: AppColors.tableColor,
+                                          textColor: AppColors.black,
+                                          title: LocaleString().totalLiter.tr,
+                                          amount: "${totalLiterOfMonth} L",
+                                        ),
+                                        commonField(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          textColor:
+                                              Theme.of(context).primaryColor,
+                                          title: LocaleString().pMTA.tr,
+                                          amount: "₹${PreviousTotalPrice}",
+                                        ),
+                                        commonField(
+                                          color: AppColors.tableColor,
+                                          textColor: AppColors.black,
+                                          title: LocaleString().pMRA.tr,
+                                          amount: "₹${PreviousReceivedPrice}",
+                                        ),
+                                        commonField(
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                          textColor: AppColors.black,
+                                          title: LocaleString().total.tr,
+                                          amount:
+                                              "₹${finalTotal + PreviousAmountDif}",
+                                        ),
+                                      ],
+                                    )
                                   : Container(
-                                height: SizeData.height * 0.7,
-                                alignment: Alignment.center,
-                                child: CircularProgressIndicator(),
-                              ),
+                                      height: SizeData.height * 0.7,
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(),
+                                    ),
                             ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 50),
+                          padding: const EdgeInsets.only(
+                              right: 40, left: 40, top: 30, bottom: 50),
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                               primary: (!generateBillController.isLoading.value)
@@ -579,7 +699,9 @@ List months = [
                             },
                             icon: Padding(
                                 padding: const EdgeInsets.only(right: 5),
-                                child: Image.asset('assets/images/WhatssApp.png', scale: 15)),
+                                child: Image.asset(
+                                    'assets/images/WhatssApp.png',
+                                    scale: 15)),
                             label: GlobalText(
                               text: (isEng)
                                   ? "${LocaleString().sendTo.tr}$customerName"
@@ -599,6 +721,7 @@ List months = [
       ),
     );
   }
+
   downloadPDF() async {
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
@@ -607,7 +730,10 @@ List months = [
     print(file.path);
     await file.writeAsBytes(await pdf.save());
 
-    var number = await FirebaseFirestore.instance.collection("customers").doc("${navigatorData.uid}").get();
+    var number = await FirebaseFirestore.instance
+        .collection("customers")
+        .doc("${navigatorData.uid}")
+        .get();
 
     shareWhatsapp.shareFile(
       XFile(file.path),
@@ -675,18 +801,18 @@ List months = [
                                 (e.date == "DATE")
                                     ? pwTableHeader(e.date)
                                     : (int.parse(e.date) % 2 == 1)
-                                    ? pwWhiteDate(e.date)
-                                    : pwTableColorDate(e.date),
+                                        ? pwWhiteDate(e.date)
+                                        : pwTableColorDate(e.date),
                                 (e.morning == "MORNING")
                                     ? pwTableHeader(e.morning)
                                     : (int.parse(e.date) % 2 == 1)
-                                    ? pwWhiteDate(e.morning)
-                                    : pwTableColorDate(e.morning),
+                                        ? pwWhiteDate(e.morning)
+                                        : pwTableColorDate(e.morning),
                                 (e.evening == "EVENING")
                                     ? pwTableHeader(e.evening)
                                     : (int.parse(e.date) % 2 == 1)
-                                    ? pwWhiteDate(e.evening)
-                                    : pwTableColorDate(e.evening),
+                                        ? pwWhiteDate(e.evening)
+                                        : pwTableColorDate(e.evening),
                               ],
                             );
                           }).toList(),
@@ -707,31 +833,31 @@ List months = [
                             int index = billDetails2.indexOf(e);
                             return (e.date != '-')
                                 ? pw.TableRow(
-                              children: [
-                                (e.date == "DATE")
-                                    ? pwTableHeader(e.date)
-                                    : (int.parse(e.date) % 2 == 1)
-                                    ? pwWhiteDate(e.date)
-                                    : pwTableColorDate(e.date),
-                                (e.morning == "MORNING")
-                                    ? pwTableHeader(e.morning)
-                                    : (int.parse(e.date) % 2 == 1)
-                                    ? pwWhiteDate(e.morning)
-                                    : pwTableColorDate(e.morning),
-                                (e.evening == "EVENING")
-                                    ? pwTableHeader(e.evening)
-                                    : (int.parse(e.date) % 2 == 1)
-                                    ? pwWhiteDate(e.evening)
-                                    : pwTableColorDate(e.evening),
-                              ],
-                            )
+                                    children: [
+                                      (e.date == "DATE")
+                                          ? pwTableHeader(e.date)
+                                          : (int.parse(e.date) % 2 == 1)
+                                              ? pwWhiteDate(e.date)
+                                              : pwTableColorDate(e.date),
+                                      (e.morning == "MORNING")
+                                          ? pwTableHeader(e.morning)
+                                          : (int.parse(e.date) % 2 == 1)
+                                              ? pwWhiteDate(e.morning)
+                                              : pwTableColorDate(e.morning),
+                                      (e.evening == "EVENING")
+                                          ? pwTableHeader(e.evening)
+                                          : (int.parse(e.date) % 2 == 1)
+                                              ? pwWhiteDate(e.evening)
+                                              : pwTableColorDate(e.evening),
+                                    ],
+                                  )
                                 : pw.TableRow(
-                              children: [
-                                pwTableColorDate(e.date),
-                                pwTableColorDate(e.morning),
-                                pwTableColorDate(e.evening),
-                              ],
-                            );
+                                    children: [
+                                      pwTableColorDate(e.date),
+                                      pwTableColorDate(e.morning),
+                                      pwTableColorDate(e.evening),
+                                    ],
+                                  );
                           }).toList(),
                         ),
                       ),
@@ -753,26 +879,20 @@ List months = [
                 pwCommonField(
                   color: PdfColors.white,
                   textColor: PdfColors.black,
-                  title: LocaleString().pMonth,
-                  amount: "Rs. 0",
+                  title: LocaleString().pMTA,
+                  amount: "Rs. $PreviousTotalPrice",
                 ),
                 pwCommonField(
                   color: PdfColors.blue50,
                   textColor: PdfColors.black,
-                  title: LocaleString().cMonth,
-                  amount: "Rs. $finalTotal",
+                  title: LocaleString().pMRA,
+                  amount: "Rs. $PreviousReceivedPrice",
                 ),
                 pwCommonField(
                   color: PdfColors.white,
                   textColor: PdfColors.black,
-                  title: LocaleString().received,
-                  amount: "Rs. 0",
-                ),
-                pwCommonField(
-                  color: PdfColors.blue50,
-                  textColor: PdfColors.black,
                   title: LocaleString().total,
-                  amount: "Rs. $finalTotal",
+                  amount: "Rs. ${finalTotal + PreviousAmountDif}",
                 ),
               ],
             ),
@@ -784,9 +904,9 @@ List months = [
 
   commonField(
       {required Color color,
-        required Color textColor,
-        required String title,
-        required String amount}) {
+      required Color textColor,
+      required String title,
+      required String amount}) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 0.5),
@@ -799,7 +919,7 @@ List months = [
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            width: SizeData.width * 0.3,
+            width: SizeData.width * 0.35,
             child: GlobalText(
                 text: "${title}",
                 fontWeight: FontWeight.w500,
@@ -810,13 +930,21 @@ List months = [
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              GlobalText(
-                  text: amount, fontWeight: FontWeight.w500, color: textColor),
+              (title == LocaleString().total.tr)
+                  ? GlobalText(
+                      text: amount,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                      fontSize: 18)
+                  : GlobalText(
+                      text: amount,
+                      fontWeight: FontWeight.w500,
+                      color: textColor),
               (amount == finalString)
                   ? GlobalText(
-                  text: "total : ₹ $finalTotal",
-                  fontWeight: FontWeight.w500,
-                  color: textColor)
+                      text: "total : ₹ $finalTotal",
+                      fontWeight: FontWeight.w500,
+                      color: textColor)
                   : Container(),
             ],
           ),
@@ -930,11 +1058,12 @@ List months = [
       ),
     );
   }
+
   pwCommonField(
       {required PdfColor color,
-        required PdfColor textColor,
-        required String title,
-        required String amount}) {
+      required PdfColor textColor,
+      required String title,
+      required String amount}) {
     return pw.Container(
       decoration: pw.BoxDecoration(
         border: pw.Border.all(width: 0.5),
@@ -946,23 +1075,29 @@ List months = [
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-         pw.Text(
-              "${title}",
-              style: pw.TextStyle(fontSize: 13, color: textColor),
-            ),
+          pw.Text(
+            "${title}",
+            style: pw.TextStyle(fontSize: 13, color: textColor),
+          ),
           pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.end,
             crossAxisAlignment: pw.CrossAxisAlignment.end,
             children: [
-              pw.Text(
-                amount,
-                style: pw.TextStyle(fontSize: 13, color: textColor),
-              ),
+              (title == LocaleString().total)
+                  ? pw.Text(
+                      amount,
+                      style: pw.TextStyle(fontSize: 17, color: textColor),
+                    )
+                  : pw.Text(
+                      amount,
+                      style: pw.TextStyle(fontSize: 13, color: textColor),
+                    ),
               (amount == finalStringPDF)
                   ? pw.Text(
-                "total : Rs. $finalTotal",
-                style: pw.TextStyle(fontSize: 13, color: textColor),
-              ) : pw.Container(),
+                      "total : Rs. $finalTotal",
+                      style: pw.TextStyle(fontSize: 13, color: textColor),
+                    )
+                  : pw.Container(),
             ],
           ),
         ],
@@ -1066,4 +1201,3 @@ pwTableColorRowElements(String val) {
     ),
   );
 }
-

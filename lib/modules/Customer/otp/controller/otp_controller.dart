@@ -109,6 +109,7 @@ class OtpController extends GetxController {
           'image': "",
           'merchant':"",
           'uid':"${FirebaseAuth.instance.currentUser!.uid}",
+          'amount_received': false,
         });
       }
     }

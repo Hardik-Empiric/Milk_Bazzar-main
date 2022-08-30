@@ -167,6 +167,10 @@ class _CustomerCategoryState extends State<CustomerCategory> {
     return GestureDetector(
       onTap: (){
 
+        /// TODO : Implement New Screen Pending Amount Monthly
+
+        Get.toNamed(AppRoutes.pendingCustomerList);
+
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 20, left: 20),
@@ -177,6 +181,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
                 stream: FirebaseFirestore.instance
                     .collection("customers")
                     .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+                    .where("amount_received",isEqualTo: false)
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                   if (snapshots.hasData) {

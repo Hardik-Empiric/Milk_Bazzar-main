@@ -270,10 +270,12 @@ class _ProfileState extends State<Profile> {
                       final snapshot = await uploadTask!.whenComplete(() {});
 
                       urlDownload = await snapshot.ref.getDownloadURL();
-                      print('Download Link : $urlDownload');
+                      log('Download Link : $urlDownload');
 
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
+
+                      log(prefs.getBool("isMerchant").toString());
 
                       if (prefs.getBool("isMerchant") == false) {
                         user = FirebaseFirestore.instance
@@ -303,6 +305,7 @@ class _ProfileState extends State<Profile> {
 
                       setState(() {
                         urlDownload = data.data()!['image'];
+                        print(urlDownload);
                         loading = false;
                       });
                     },
