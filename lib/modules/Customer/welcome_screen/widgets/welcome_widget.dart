@@ -23,7 +23,7 @@ class _WelcomeState extends State<Welcome> {
   final WelcomeController welcomeController = Get.put(WelcomeController());
 
   getData() async {
-    var name = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    var name = await FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser!.phoneNumber).get();
 
     setState(() {
       LoginModels.name = name.data()!['name'];

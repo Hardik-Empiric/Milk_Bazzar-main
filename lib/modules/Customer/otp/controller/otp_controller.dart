@@ -58,10 +58,10 @@ class OtpController extends GetxController {
 
     var name = await FirebaseFirestore.instance
         .collection('customers')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
         .get();
 
-    if (!numbers.contains(LoginModels.phone.toString())) {
+    if (!numbers.contains("+91${LoginModels.phone}")) {
 
       (prefs.getBool("isMerchant") ?? false)
           ? Get.offAllNamed(AppRoutes.home)
@@ -75,40 +75,38 @@ class OtpController extends GetxController {
         mer.add(data["number"]);
       }
 
-      (mer.contains(LoginModels.phone.toString()))
+      (mer.contains("+91${LoginModels.phone}"))
           ? Get.offAllNamed(AppRoutes.home)
           : Get.offAllNamed(AppRoutes.welcome);
     }
 
     prefs.setBool("Login", true);
 
-    if (!numbers.contains(LoginModels.phone.toString())) {
+    if (!numbers.contains("+91${LoginModels.phone}")) {
       if (prefs.getBool("isMerchant") ?? false) {
         var user = FirebaseFirestore.instance
             .collection('merchants')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
             .set({
           'name': "${LoginModels.name}",
-          'number': "${LoginModels.phone}",
+          'number': "+91${LoginModels.phone}",
           'add': "${LoginModels.address}",
           'type': "merchant",
           'image': "",
-          'uid':"${FirebaseAuth.instance.currentUser!.uid}",
          'price_per_liter': LoginModels.rupeesPerLiter,
 
         });
       } else {
         var user = FirebaseFirestore.instance
             .collection('customers')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
             .set({
           'name': "${LoginModels.name}",
-          'number': "${LoginModels.phone}",
-          'add': "${LoginModels.address}",
+          'number': "+91${LoginModels.phone}",
+          'add': "+${LoginModels.address}",
           'type': "customer",
           'image': "",
           'merchant':"",
-          'uid':"${FirebaseAuth.instance.currentUser!.uid}",
           'amount_received': false,
         });
       }

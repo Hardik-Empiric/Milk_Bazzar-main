@@ -153,7 +153,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
                     stream: FirebaseFirestore.instance
                         .collection("customers")
                         .where("merchant",
-                            isEqualTo: FirebaseAuth.instance.currentUser!.uid
+                            isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber
                                 .toString())
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
@@ -222,7 +222,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
                             print("UID : ${uid.docs[0].id}");
 
                             selectCustomerController.customerUID.value =
-                                "${uid.docs[0].id}";
+                                "${uid.docs[0].data()["number"]}";
                           },
                         );
                       } else {

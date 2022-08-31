@@ -81,7 +81,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   per() async {
     await Permission.contacts.request();
 
-    var data = await FirebaseFirestore.instance.collection("customers").where("merchant",isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    var data = await FirebaseFirestore.instance.collection("customers").where("merchant",isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber).get();
 
     data.docs.forEach((e) async {
 
@@ -174,8 +174,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                   stream: FirebaseFirestore.instance
                       .collection("customers")
                       .where("merchant",
-                          isEqualTo:
-                              FirebaseAuth.instance.currentUser!.uid.toString())
+                          isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                     if (snapshots.hasData) {
@@ -210,7 +209,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                                     AppRoutes
                                                         .generateBillMerchant,
                                                     arguments: DATA(
-                                                      uid: singleData['uid'],
+                                                      uid: singleData['number'],
                                                       month: currentMonth,
                                                       year: currentYear,
                                                     ));
@@ -218,9 +217,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                               child: ListTile(
                                                 trailing: Obx(
                                                   () => Visibility(
-                                                    visible:
-                                                        customerListController
-                                                            .isRemoveOn.value,
+                                                    visible: customerListController.isRemoveOn.value,
                                                     child: IconButton(
                                                       icon: Icon(
                                                         Icons.cancel,
@@ -237,7 +234,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                                                 .collection(
                                                                     'customers')
                                                                 .doc(singleData[
-                                                                        "uid"]
+                                                                        "number"]
                                                                     .toString())
                                                                 .delete();
                                                             Get.back();
@@ -310,7 +307,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                                     StreamBuilder(
                                                       stream: FirebaseFirestore.instance
                                                           .collection("customers")
-                                                          .doc("${singleData["uid"]}")
+                                                          .doc("${singleData["number"]}")
                                                           .collection("milk_data")
                                                           .doc(currentYear)
                                                           .collection(currentMonth)

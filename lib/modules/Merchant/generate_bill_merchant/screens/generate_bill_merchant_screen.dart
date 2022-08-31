@@ -57,10 +57,8 @@ class _GenerateBillMerchantScreenState
         .collection("${navigatorData.month}")
         .doc("total_liter")
         .get();
+    totalLiterOfMonth = double.parse("${totalLiter.data()!["liter"]}");
 
-    setState(() {
-      totalLiterOfMonth = double.parse("${totalLiter.data()!["liter"]}");
-    });
 
     var d = await FirebaseFirestore.instance
         .collection("customers")
@@ -72,9 +70,9 @@ class _GenerateBillMerchantScreenState
         .doc("${d.data()!["merchant"]}")
         .get();
 
-    setState(() {
-      prizePerLiter = double.parse("${ppl.data()!["price_per_liter"]}");
-    });
+
+    prizePerLiter = double.parse("${ppl.data()!["price_per_liter"]}");
+
 
     print("Total Liter of Month ${totalLiterOfMonth}");
     print("Prize Per liter ${prizePerLiter}");
@@ -86,7 +84,9 @@ class _GenerateBillMerchantScreenState
         .doc("${navigatorData.uid}")
         .get();
 
-    customerName = cusName.data()!["name"];
+    setState(() {
+      customerName = cusName.data()!["name"];
+    });
   }
 
   final List<String> monthItemsInENGLISH = [
@@ -117,10 +117,12 @@ class _GenerateBillMerchantScreenState
     if (currentMonthIndex == 0) {
       previousMonth = monthItemsInENGLISH.last;
       pcYear = "${int.parse(navigatorData.year) - 1}";
-    } else {
+    }
+    else {
       previousMonth = monthItemsInENGLISH[currentMonthIndex - 1];
       pcYear = navigatorData.year;
     }
+
 
     print("previousMonth : $previousMonth");
     print("previousYear : $pcYear");
@@ -130,18 +132,15 @@ class _GenerateBillMerchantScreenState
         .doc("${navigatorData.uid}")
         .collection("milk_data")
         .doc("${pcYear}")
-        .collection("${previousMonth}")
-        .doc("total_price")
-        .get();
+        .collection("${previousMonth}").doc("total_price").get();
 
     var preCheckReceivedPrice = await FirebaseFirestore.instance
         .collection("customers")
         .doc("${navigatorData.uid}")
         .collection("milk_data")
         .doc("${pcYear}")
-        .collection("${previousMonth}")
-        .doc("received_price")
-        .get();
+        .collection("${previousMonth}").doc("received_price").get();
+
 
     if (preCheckTotalPrice.exists) {
       var data = await FirebaseFirestore.instance
@@ -149,9 +148,7 @@ class _GenerateBillMerchantScreenState
           .doc("${navigatorData.uid}")
           .collection("milk_data")
           .doc("${pcYear}")
-          .collection("${previousMonth}")
-          .doc("total_price")
-          .get();
+          .collection("${previousMonth}").doc("total_price").get();
 
       PreviousTotalPrice = double.parse(data.data()!["price"].toString());
     }
@@ -162,21 +159,18 @@ class _GenerateBillMerchantScreenState
           .doc("${navigatorData.uid}")
           .collection("milk_data")
           .doc("${pcYear}")
-          .collection("${previousMonth}")
-          .doc("received_price")
-          .get();
+          .collection("${previousMonth}").doc("received_price").get();
 
-      PreviousReceivedPrice = double.parse(data.data()!["received_price"].toString());
+      PreviousReceivedPrice =
+          double.parse(data.data()!["received_price"].toString());
     }
 
     print("PreviousTotalPrice : $PreviousTotalPrice");
     print("PreviousReceivedPrice : $PreviousReceivedPrice");
 
-
-    PreviousAmountDif =  PreviousTotalPrice - PreviousReceivedPrice;
+    PreviousAmountDif = PreviousTotalPrice - PreviousReceivedPrice;
 
     print("PreviousAmountDif : ${PreviousAmountDif}");
-
 
 
     int ddday = daysInMonth(int.parse(navigatorData.year),
@@ -200,68 +194,81 @@ class _GenerateBillMerchantScreenState
     dates.clear();
 
     data.docs.forEach((e) {
-      setState(() {
-        if (e.id != "total_liter" &&
-            e.id != "total_price" &&
-            e.id != "received_price") dates.add(int.parse(e.id));
-      });
+
+      if (e.id != "total_liter" && e.id != "total_price" &&
+          e.id != "received_price") dates.add(int.parse(e.id));
+
     });
 
     log(dates.length.toString());
 
-    setState(() {
-      billDetails2.clear();
-      billDetails1.clear();
-    });
 
-    billDetails2.add(
-      BillDetails(
-          date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
-    );
-    billDetails1.add(
-      BillDetails(
-          date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
-    );
+    billDetails2.clear();
+    billDetails1.clear();
+
+
+
+
+    setState(() {
+      billDetails1.add(
+        BillDetails(
+            date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
+      );
+    });
 
     for (int i = 1; i <= 16; i++) {
       var d = await untilMonths.doc("$i").get();
 
       if (dates.contains(i)) {
-        billDetails1.add(
-          BillDetails(
-              date: "$i",
-              morning: ("${d.data()!["total morning liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total morning liter"]}",
-              evening: ("${d.data()!["total evening liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total evening liter"]}",
-              PPL: double.parse("${d.data()!["ppl"]}")),
-        );
+        setState(() {
+          billDetails1.add(
+            BillDetails(
+                date: "$i",
+                morning: ("${d.data()!["total morning liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total morning liter"]}",
+                evening: ("${d.data()!["total evening liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total evening liter"]}",
+                PPL: double.parse("${d.data()!["ppl"]}")),
+          );
+        });
       } else {
-        billDetails1
-            .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        setState(() {
+          billDetails1.add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        });
       }
     }
+
+    setState(() {
+      billDetails2.add(
+        BillDetails(
+            date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
+      );
+    });
 
     for (int i = 17; i <= ddday; i++) {
       var d = await untilMonths.doc("$i").get();
 
       if (dates.contains(i)) {
-        billDetails2.add(
-          BillDetails(
-              date: "$i",
-              morning: ("${d.data()!["total morning liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total morning liter"]}",
-              evening: ("${d.data()!["total evening liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total evening liter"]}",
-              PPL: double.parse("${d.data()!["ppl"]}")),
-        );
+        setState(() {
+          billDetails2.add(
+            BillDetails(
+                date: "$i",
+                morning: ("${d.data()!["total morning liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total morning liter"]}",
+                evening: ("${d.data()!["total evening liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total evening liter"]}",
+                PPL: double.parse("${d.data()!["ppl"]}")),
+          );
+        });
       } else {
-        billDetails2
-            .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        setState(() {
+          billDetails2
+              .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        });
       }
     }
 
@@ -271,9 +278,11 @@ class _GenerateBillMerchantScreenState
     }
 
     calculateData();
+
     setState(() {
       generateBillController.isLoading.value = false;
     });
+
 
     List main = [];
     List prise = [];
@@ -296,9 +305,9 @@ class _GenerateBillMerchantScreenState
       }
     });
 
-    setState(() {
-      prise = prise.toSet().toList();
-    });
+
+    prise = prise.toSet().toList();
+
 
     for (int i = 0; i < prise.length; i++) {
       filter.add(await untilMonths.where("ppl", isEqualTo: prise[i]).get());
@@ -308,31 +317,33 @@ class _GenerateBillMerchantScreenState
     double totalLiter = 0.0;
 
     for (int i = 0; i < filter.length; i++) {
-      setState(() {
-        totalPrice = prise[i];
-        filter[i].docs.forEach((element) {
-          totalLiter = totalLiter +
-              double.parse(
-                  "${element["total morning liter"] + element["total evening liter"]}");
-        });
+
+      totalPrice = prise[i];
+      filter[i].docs.forEach((element) {
+        totalLiter = totalLiter +
+            double.parse(
+                "${element["total morning liter"] +
+                    element["total evening liter"]}");
       });
+
       finalData.add(
         {
           "prise": totalPrice,
           "liter": totalLiter,
         },
       );
-      setState(() {
-        if (filter.length > 1) {
-          totalLiter = 0.0;
-        }
-      });
+
+      if (filter.length > 1) {
+        totalLiter = 0.0;
+      }
+
     }
 
     double amount = 0.0;
 
     finalData.forEach((element) async {
       amount = element["liter"] * element["prise"];
+
 
       setState(() {
         finalTotal = finalTotal + amount;
@@ -377,7 +388,7 @@ class _GenerateBillMerchantScreenState
             .doc("total_price")
             .update(
           {
-            "price": finalTotal + PreviousAmountDif,
+            "price": finalTotal,
           },
         );
       } else {
@@ -395,6 +406,7 @@ class _GenerateBillMerchantScreenState
         );
       }
     });
+
   }
 
   List months = [
@@ -423,15 +435,23 @@ class _GenerateBillMerchantScreenState
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+
     billDetails2.clear();
     billDetails1.clear();
     dates.clear();
+
+    print(billDetails1);
+    print(billDetails2);
+    print(dates);
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    billDetails2.clear();
+    billDetails1.clear();
+    dates.clear();
     getProfile();
     getData();
     buildPDF();
@@ -445,276 +465,258 @@ class _GenerateBillMerchantScreenState
       });
     });
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (generateBillController.isLoading.value) {
-          Fluttertoast.showToast(
-            msg: "Bill is Generating...",
-            toastLength: Toast.LENGTH_SHORT,
-            webBgColor: "#e74c3c",
-            textColor: AppColors.black,
-            timeInSecForIosWeb: 3,
-          );
-        }
-        return !generateBillController.isLoading.value;
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.blue,
-        body: SafeArea(
-          child: Container(
-            height: SizeData.height,
-            color: Theme.of(context).backgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 0.5, color: AppColors.darkGrey),
-                                  color: AppColors.tableColor,
-                                ),
-                                margin: const EdgeInsets.only(top: 7),
-                                height: SizeData.height * 0.04,
-                                // width: SizeData.width,
-                                alignment: Alignment.center,
-                                child: GlobalText(
-                                  text: customerName,
-                                  fontWeight: FontWeight.w500,
-                                ),
+    return Scaffold(
+      backgroundColor: AppColors.blue,
+      body: SafeArea(
+        child: Container(
+          height: SizeData.height,
+          color: Theme.of(context).backgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 0.5, color: AppColors.darkGrey),
+                                color: AppColors.tableColor,
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 0.5, color: AppColors.blue),
-                                  color: Theme.of(context).backgroundColor,
-                                ),
-                                height: SizeData.height * 0.04,
-                                // width: SizeData.width,
-                                alignment: Alignment.center,
-                                child: GlobalText(
-                                  text:
-                                      "${LocaleString().billOf.tr} ${navigatorData.month} / ${navigatorData.year}",
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme.of(context).primaryColor,
-                                ),
+                              margin: const EdgeInsets.only(top: 7),
+                              height: SizeData.height * 0.04,
+                              // width: SizeData.width,
+                              alignment: Alignment.center,
+                              child: GlobalText(
+                                text: customerName,
+                                fontWeight: FontWeight.w500,
                               ),
-                              (!generateBillController.isLoading.value)
-                                  ? Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Table(
-                                                columnWidths: const {
-                                                  0: FlexColumnWidth(1),
-                                                  1: FlexColumnWidth(2),
-                                                  2: FlexColumnWidth(2),
-                                                },
-                                                border: TableBorder.all(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    style: BorderStyle.solid,
-                                                    width: 1),
-                                                children: billDetails1.map((e) {
-                                                  int index =
-                                                      billDetails1.indexOf(e);
-                                                  return TableRow(
-                                                    children: [
-                                                      (e.date == "DATE")
-                                                          ? tableHeader(e.date)
-                                                          : (int.parse(e.date) %
-                                                                      2 ==
-                                                                  1)
-                                                              ? whiteDate(
-                                                                  e.date)
-                                                              : tableColorDate(
-                                                                  e.date),
-                                                      (e.morning == "MORNING")
-                                                          ? tableHeader(
-                                                              e.morning)
-                                                          : (int.parse(e.date) %
-                                                                      2 ==
-                                                                  1)
-                                                              ? whiteDate(
-                                                                  e.morning)
-                                                              : tableColorDate(
-                                                                  e.morning),
-                                                      (e.evening == "EVENING")
-                                                          ? tableHeader(
-                                                              e.evening)
-                                                          : (int.parse(e.date) %
-                                                                      2 ==
-                                                                  1)
-                                                              ? whiteDate(
-                                                                  e.evening)
-                                                              : tableColorDate(
-                                                                  e.evening),
-                                                    ],
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Table(
-                                                columnWidths: const {
-                                                  0: FlexColumnWidth(1),
-                                                  1: FlexColumnWidth(2),
-                                                  2: FlexColumnWidth(2),
-                                                },
-                                                border: TableBorder.all(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    style: BorderStyle.solid,
-                                                    width: 1),
-                                                children: billDetails2.map((e) {
-                                                  int index =
-                                                      billDetails2.indexOf(e);
-                                                  return (e.date != '-')
-                                                      ? TableRow(
-                                                          children: [
-                                                            (e.date == "DATE")
-                                                                ? tableHeader(
-                                                                    e.date)
-                                                                : (int.parse(e.date) %
-                                                                            2 ==
-                                                                        1)
-                                                                    ? whiteDate(
-                                                                        e.date)
-                                                                    : tableColorDate(
-                                                                        e.date),
-                                                            (e.morning ==
-                                                                    "MORNING")
-                                                                ? tableHeader(
-                                                                    e.morning)
-                                                                : (int.parse(e.date) %
-                                                                            2 ==
-                                                                        1)
-                                                                    ? whiteDate(e
-                                                                        .morning)
-                                                                    : tableColorDate(
-                                                                        e.morning),
-                                                            (e.evening ==
-                                                                    "EVENING")
-                                                                ? tableHeader(
-                                                                    e.evening)
-                                                                : (int.parse(e.date) %
-                                                                            2 ==
-                                                                        1)
-                                                                    ? whiteDate(e
-                                                                        .evening)
-                                                                    : tableColorDate(
-                                                                        e.evening),
-                                                          ],
-                                                        )
-                                                      : TableRow(
-                                                          children: [
-                                                            tableColorDate(
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 0.5, color: AppColors.blue),
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                              height: SizeData.height * 0.04,
+                              // width: SizeData.width,
+                              alignment: Alignment.center,
+                              child: GlobalText(
+                                text:
+                                    "${LocaleString().billOf.tr} ${navigatorData.month} / ${navigatorData.year}",
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            (!generateBillController.isLoading.value)
+                                ? Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Table(
+                                              columnWidths: const {
+                                                0: FlexColumnWidth(1),
+                                                1: FlexColumnWidth(2),
+                                                2: FlexColumnWidth(2),
+                                              },
+                                              border: TableBorder.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  style: BorderStyle.solid,
+                                                  width: 1),
+                                              children: billDetails1.map((e) {
+                                                int index =
+                                                    billDetails1.indexOf(e);
+                                                return TableRow(
+                                                  children: [
+                                                    (e.date == "DATE")
+                                                        ? tableHeader(e.date)
+                                                        : (int.parse(e.date) %
+                                                                    2 ==
+                                                                1)
+                                                            ? whiteDate(e.date)
+                                                            : tableColorDate(
                                                                 e.date),
-                                                            tableColorDate(
+                                                    (e.morning == "MORNING")
+                                                        ? tableHeader(e.morning)
+                                                        : (int.parse(e.date) %
+                                                                    2 ==
+                                                                1)
+                                                            ? whiteDate(
+                                                                e.morning)
+                                                            : tableColorDate(
                                                                 e.morning),
-                                                            tableColorDate(
+                                                    (e.evening == "EVENING")
+                                                        ? tableHeader(e.evening)
+                                                        : (int.parse(e.date) %
+                                                                    2 ==
+                                                                1)
+                                                            ? whiteDate(
+                                                                e.evening)
+                                                            : tableColorDate(
                                                                 e.evening),
-                                                          ],
-                                                        );
-                                                }).toList(),
-                                              ),
+                                                  ],
+                                                );
+                                              }).toList(),
                                             ),
-                                          ],
-                                        ),
-                                        commonField(
-                                          color:
-                                              Theme.of(context).backgroundColor,
-                                          textColor:
-                                              Theme.of(context).primaryColor,
-                                          title: LocaleString().cowMilk.tr,
-                                          amount: finalString,
-                                        ),
-                                        commonField(
-                                          color: AppColors.tableColor,
-                                          textColor: AppColors.black,
-                                          title: LocaleString().totalLiter.tr,
-                                          amount: "${totalLiterOfMonth} L",
-                                        ),
-                                        commonField(
-                                          color:
-                                              Theme.of(context).backgroundColor,
-                                          textColor:
-                                              Theme.of(context).primaryColor,
-                                          title: LocaleString().pMTA.tr,
-                                          amount: "₹${PreviousTotalPrice}",
-                                        ),
-                                        commonField(
-                                          color: AppColors.tableColor,
-                                          textColor: AppColors.black,
-                                          title: LocaleString().pMRA.tr,
-                                          amount: "₹${PreviousReceivedPrice}",
-                                        ),
-                                        commonField(
-                                          color:
-                                              Theme.of(context).backgroundColor,
-                                          textColor: AppColors.black,
-                                          title: LocaleString().total.tr,
-                                          amount:
-                                              "₹${finalTotal + PreviousAmountDif}",
-                                        ),
-                                      ],
-                                    )
-                                  : Container(
-                                      height: SizeData.height * 0.7,
-                                      alignment: Alignment.center,
-                                      child: CircularProgressIndicator(),
-                                    ),
-                            ],
+                                          ),
+                                          Expanded(
+                                            child: Table(
+                                              columnWidths: const {
+                                                0: FlexColumnWidth(1),
+                                                1: FlexColumnWidth(2),
+                                                2: FlexColumnWidth(2),
+                                              },
+                                              border: TableBorder.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  style: BorderStyle.solid,
+                                                  width: 1),
+                                              children: billDetails2.map((e) {
+                                                int index =
+                                                    billDetails2.indexOf(e);
+                                                return (e.date != '-')
+                                                    ? TableRow(
+                                                        children: [
+                                                          (e.date == "DATE")
+                                                              ? tableHeader(
+                                                                  e.date)
+                                                              : (int.parse(e.date) %
+                                                                          2 ==
+                                                                      1)
+                                                                  ? whiteDate(
+                                                                      e.date)
+                                                                  : tableColorDate(
+                                                                      e.date),
+                                                          (e.morning ==
+                                                                  "MORNING")
+                                                              ? tableHeader(
+                                                                  e.morning)
+                                                              : (int.parse(e.date) %
+                                                                          2 ==
+                                                                      1)
+                                                                  ? whiteDate(
+                                                                      e.morning)
+                                                                  : tableColorDate(
+                                                                      e.morning),
+                                                          (e.evening ==
+                                                                  "EVENING")
+                                                              ? tableHeader(
+                                                                  e.evening)
+                                                              : (int.parse(e.date) %
+                                                                          2 ==
+                                                                      1)
+                                                                  ? whiteDate(
+                                                                      e.evening)
+                                                                  : tableColorDate(
+                                                                      e.evening),
+                                                        ],
+                                                      )
+                                                    : TableRow(
+                                                        children: [
+                                                          tableColorDate(
+                                                              e.date),
+                                                          tableColorDate(
+                                                              e.morning),
+                                                          tableColorDate(
+                                                              e.evening),
+                                                        ],
+                                                      );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      commonField(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        textColor:
+                                            Theme.of(context).primaryColor,
+                                        title: LocaleString().cowMilk.tr,
+                                        amount: finalString,
+                                      ),
+                                      commonField(
+                                        color: AppColors.tableColor,
+                                        textColor: AppColors.black,
+                                        title: LocaleString().totalLiter.tr,
+                                        amount: "${totalLiterOfMonth} L",
+                                      ),
+                                      commonField(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        textColor:
+                                            Theme.of(context).primaryColor,
+                                        title: LocaleString().pMTA.tr,
+                                        amount: "₹${PreviousTotalPrice}",
+                                      ),
+                                      commonField(
+                                        color: AppColors.tableColor,
+                                        textColor: AppColors.black,
+                                        title: LocaleString().pMRA.tr,
+                                        amount: "₹${PreviousReceivedPrice}",
+                                      ),
+                                      commonField(
+                                        color:
+                                            Theme.of(context).backgroundColor,
+                                        textColor: AppColors.black,
+                                        title: LocaleString().total.tr,
+                                        amount:
+                                            "₹${finalTotal + PreviousAmountDif}",
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: SizeData.height * 0.7,
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 40, left: 40, top: 30, bottom: 50),
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            primary: (!generateBillController.isLoading.value)
+                                ? AppColors.blue
+                                : AppColors.lightBlue,
+                            padding: const EdgeInsets.only(
+                                right: 15, left: 15, top: 10, bottom: 10),
+                          ),
+                          onPressed: () async {
+                            if (!generateBillController.isLoading.value) {
+                              downloadPDF();
+                            }
+                          },
+                          icon: Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Image.asset('assets/images/WhatssApp.png',
+                                  scale: 15)),
+                          label: GlobalText(
+                            text: (isEng)
+                                ? "${LocaleString().sendTo.tr}$customerName"
+                                : "$customerName${LocaleString().sendTo.tr}",
+                            fontSize: 18,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              right: 40, left: 40, top: 30, bottom: 50),
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              primary: (!generateBillController.isLoading.value)
-                                  ? AppColors.blue
-                                  : AppColors.lightBlue,
-                              padding: const EdgeInsets.only(
-                                  right: 15, left: 15, top: 10, bottom: 10),
-                            ),
-                            onPressed: () async {
-                              if (!generateBillController.isLoading.value) {
-                                downloadPDF();
-                              }
-                            },
-                            icon: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Image.asset(
-                                    'assets/images/WhatssApp.png',
-                                    scale: 15)),
-                            label: GlobalText(
-                              text: (isEng)
-                                  ? "${LocaleString().sendTo.tr}$customerName"
-                                  : "$customerName${LocaleString().sendTo.tr}",
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

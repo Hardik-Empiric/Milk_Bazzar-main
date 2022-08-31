@@ -237,7 +237,7 @@ class _SellMilkState extends State<SellMilk> {
 
             var ppl = await FirebaseFirestore.instance
                 .collection("merchants")
-                .doc(FirebaseAuth.instance.currentUser!.uid).get();
+                .doc(FirebaseAuth.instance.currentUser!.phoneNumber).get();
 
             Get.defaultDialog(
               barrierDismissible: false,
@@ -285,7 +285,7 @@ class _SellMilkState extends State<SellMilk> {
 
                     var DATA = await FirebaseFirestore.instance
                         .collection("customers")
-                        .doc(data.docs[0]["uid"].toString())
+                        .doc(data.docs[0]["number"].toString())
                         .collection("milk_data")
                         .doc("${DateTime.now().year}")
                         .collection("${months[DateTime.now().month - 1]}")
@@ -294,7 +294,7 @@ class _SellMilkState extends State<SellMilk> {
 
                     var literDATA = await FirebaseFirestore.instance
                         .collection("customers")
-                        .doc(data.docs[0]["uid"].toString())
+                        .doc(data.docs[0]["number"].toString())
                         .collection("milk_data")
                         .doc("${DateTime.now().year}")
                         .collection("${months[DateTime.now().month - 1]}")
@@ -335,7 +335,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}")
@@ -350,7 +350,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         var sum =  await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}").get();
@@ -372,7 +372,7 @@ class _SellMilkState extends State<SellMilk> {
 
                           var monthSum = await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -397,7 +397,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -410,7 +410,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -447,7 +447,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}")
@@ -461,7 +461,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         var sum =  await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}").get();
@@ -483,7 +483,7 @@ class _SellMilkState extends State<SellMilk> {
 
                           var monthSum = await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -508,7 +508,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -521,7 +521,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -537,7 +537,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}")
@@ -559,7 +559,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         var sum =  await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}").get();
@@ -581,7 +581,7 @@ class _SellMilkState extends State<SellMilk> {
 
                           var monthSum = await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -606,7 +606,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -619,7 +619,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -631,7 +631,7 @@ class _SellMilkState extends State<SellMilk> {
                       } else {
                         await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}")
@@ -654,7 +654,7 @@ class _SellMilkState extends State<SellMilk> {
 
                         var sum =  await FirebaseFirestore.instance
                             .collection("customers")
-                            .doc(data.docs[0]["uid"].toString())
+                            .doc(data.docs[0]["number"].toString())
                             .collection("milk_data")
                             .doc("${DateTime.now().year}")
                             .collection("${months[DateTime.now().month - 1]}").get();
@@ -676,7 +676,7 @@ class _SellMilkState extends State<SellMilk> {
 
                           var monthSum = await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -701,7 +701,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -714,7 +714,7 @@ class _SellMilkState extends State<SellMilk> {
                         {
                           await FirebaseFirestore.instance
                               .collection("customers")
-                              .doc(data.docs[0]["uid"].toString())
+                              .doc(data.docs[0]["number"].toString())
                               .collection("milk_data")
                               .doc("${DateTime.now().year}")
                               .collection("${months[DateTime.now().month - 1]}")
@@ -803,7 +803,7 @@ class _SellMilkState extends State<SellMilk> {
                     stream: FirebaseFirestore.instance
                         .collection("customers")
                         .where("merchant",
-                            isEqualTo: FirebaseAuth.instance.currentUser!.uid
+                            isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber
                                 .toString())
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {

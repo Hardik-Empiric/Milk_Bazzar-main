@@ -34,7 +34,8 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController prizePerLiterController = TextEditingController();
 
-  List numbers = [];
+  List cus = [];
+  List mer = [];
   List allCusName = [];
 
   var data;
@@ -75,12 +76,12 @@ class _LoginFormState extends State<LoginForm> {
 
     for (var docs in customers.docs) {
       Map<String, dynamic> data = docs.data();
-      numbers.add(data["number"]);
+      cus.add(data["number"]);
     }
 
     for (var docs in merchants.docs) {
       Map<String, dynamic> data = docs.data();
-      numbers.add(data["number"]);
+      mer.add(data["number"]);
     }
   }
 
@@ -146,7 +147,7 @@ class _LoginFormState extends State<LoginForm> {
                     text: LocaleString().formHintText.tr,
                     textAlign: TextAlign.center,
                     fontSize: 14,
-                    color: Theme.of(context).hintColor,
+                    color: AppColors.darkBlue,
                     fontWeight: FontWeight.w500),
 
                 // TODO: Implement Form here
@@ -238,9 +239,13 @@ class _LoginFormState extends State<LoginForm> {
                                   if (val!.isEmpty) {
                                     return LocaleString().errorPhone.tr;
                                   }
-                                  else if(numbers.contains(val))
+                                  else if(cus.contains("+91${val}"))
                                     {
-                                      return "Number is Already register...";
+                                      return "Customer is Already register...";
+                                    }
+                                  else if(mer.contains("+91${val}"))
+                                    {
+                                      return "Merchant is Already register...";
                                     }
                                   return null;
                                 },
@@ -343,7 +348,7 @@ class _LoginFormState extends State<LoginForm> {
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.always),
                         ),
-                        (loginController.isMerchant.value) ? Padding(
+                         Padding(
                             padding: const EdgeInsets.only(top: 30,right: 65,left: 65),
                             child: TextFormField(
                               validator: (val) {
@@ -398,7 +403,7 @@ class _LoginFormState extends State<LoginForm> {
                                   floatingLabelBehavior:
                                   FloatingLabelBehavior.always),
                             ),
-                          ) : Container(),
+                          ),
                         const SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -484,6 +489,11 @@ class _LoginFormState extends State<LoginForm> {
                         LoginModels.rupeesPerLiter = double.parse(prizePerLiterController.text.isEmpty ? "0" : prizePerLiterController.text);
 
                             if (loginController.isChecked.value) {
+
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                              prefs.setBool("isMerchant", true);
+
                               Get.toNamed(AppRoutes.otpVerification);
 
                               loginController.sendOtp(phone: phoneController.text);
@@ -503,45 +513,45 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Obx(
-                          () => Transform.scale(
-                        scale: 1.3,
-                        child: Checkbox(
-                          side: const BorderSide(
-                              width: 1, color: AppColors.borderColor),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          activeColor: AppColors.blue,
-                          checkColor: AppColors.background,
-                          value: loginController.isMerchant.value,
-                          onChanged: (value) async {
-                            setState(() {
-                              loginController.isMerchant.value = value!;
-                            });
-                            LoginModels.isMerchant = value;
-
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                            prefs.setBool("isMerchant", loginController.isMerchant.value);
-
-                          },
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                        child: GlobalText(
-                          text: LocaleString().signUpAsMerchant.tr,
-                          color: AppColors.darkBlue,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Obx(
+                //           () => Transform.scale(
+                //         scale: 1.3,
+                //         child: Checkbox(
+                //           side: const BorderSide(
+                //               width: 1, color: AppColors.borderColor),
+                //           shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(5),
+                //           ),
+                //           activeColor: AppColors.blue,
+                //           checkColor: AppColors.background,
+                //           value: loginController.isMerchant.value,
+                //           onChanged: (value) async {
+                //             setState(() {
+                //               loginController.isMerchant.value = value!;
+                //             });
+                //             LoginModels.isMerchant = value;
+                //
+                //             SharedPreferences prefs = await SharedPreferences.getInstance();
+                //
+                //             prefs.setBool("isMerchant", loginController.isMerchant.value);
+                //
+                //           },
+                //         ),
+                //       ),
+                //     ),
+                //     Expanded(
+                //         child: GlobalText(
+                //           text: LocaleString().signUpAsMerchant.tr,
+                //           color: AppColors.darkBlue,
+                //           fontWeight: FontWeight.w600,
+                //         ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

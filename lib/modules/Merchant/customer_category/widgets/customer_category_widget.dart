@@ -180,7 +180,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
             StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection("customers")
-                    .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+                    .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber.toString())
                     .where("amount_received",isEqualTo: false)
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
@@ -240,7 +240,7 @@ class _CustomerCategoryState extends State<CustomerCategory> {
             StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection("customers")
-                    .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+                    .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber.toString())
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                   if (snapshots.hasData) {

@@ -81,7 +81,7 @@ class _PendingCustomerListScreenState extends State<PendingCustomerListScreen> {
   per() async {
     await Permission.contacts.request();
 
-    var data = await FirebaseFirestore.instance.collection("customers").where("merchant",isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    var data = await FirebaseFirestore.instance.collection("customers").where("merchant",isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber).get();
 
     data.docs.forEach((e) async {
 
@@ -188,7 +188,7 @@ class _PendingCustomerListScreenState extends State<PendingCustomerListScreen> {
                 child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection("customers")
-                      .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+                      .where("merchant", isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber.toString())
                       .where("amount_received",isEqualTo: false)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
@@ -225,7 +225,7 @@ class _PendingCustomerListScreenState extends State<PendingCustomerListScreen> {
                                                     AppRoutes
                                                         .generateBillMerchant,
                                                     arguments: DATA(
-                                                      uid: singleData['uid'],
+                                                      uid: singleData['number'],
                                                       month: currentMonth,
                                                       year: currentYear,
                                                     ));
@@ -325,7 +325,7 @@ class _PendingCustomerListScreenState extends State<PendingCustomerListScreen> {
                                                     StreamBuilder(
                                                       stream: FirebaseFirestore.instance
                                                           .collection("customers")
-                                                          .doc("${singleData["uid"]}")
+                                                          .doc("${singleData["number"]}")
                                                           .collection("milk_data")
                                                           .doc(currentYear)
                                                           .collection(currentMonth)

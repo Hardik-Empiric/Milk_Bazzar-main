@@ -207,6 +207,7 @@ class _InvoiceState extends State<Invoice> {
           dropdownDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
           ),
+
           items: monthItems.map((item) {
             return DropdownMenuItem<String>(
               value: item,
@@ -441,7 +442,7 @@ class _InvoiceState extends State<Invoice> {
           Get.toNamed(
             AppRoutes.generateBill,
             arguments: DATA(
-              uid: "${FirebaseAuth.instance.currentUser!.uid}",
+              uid: "${FirebaseAuth.instance.currentUser!.phoneNumber}",
               month: "${invoiceController.month.value}",
               year: (_selectedMenu.toString() == 'current')
                   ? DateTime.now().year.toString()

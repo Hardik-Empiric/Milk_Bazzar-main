@@ -344,120 +344,55 @@ class _AddCustomerState extends State<AddCustomer> {
         ),
         onPressed: () async {
 
-
+          print(FirebaseAuth.instance.currentUser!.phoneNumber);
 
           if (_globalFromKey.currentState!.validate()) {
             _globalFromKey.currentState!.save();
 
 
 
-            var cus = await FirebaseFirestore.instance.collection('customers').get();
 
-            List customer = [];
-
-            for (var docs in cus.docs) {
-              customer.add(docs["number"]);
-            }
-
-            if (customer.contains(phoneController.text)) {
-              var data = await FirebaseFirestore.instance
-                  .collection('customers')
-                  .where("number", isEqualTo: phoneController.text)
-                  .get();
-              var add = data.docs;
-              add.forEach((element) async {
-                var check = await FirebaseFirestore.instance
-                    .collection('customers')
-                    .doc(element.id.toString())
-                    .get();
-                if (check.data()!["merchant"].toString().isEmpty) {
-                  var data = await FirebaseFirestore.instance
-                      .collection('customers')
-                      .doc("${element.id}")
-                      .update({
-                    'merchant':
-                        FirebaseAuth.instance.currentUser!.uid.toString(),
-                  });
-
-                  contactLists.add(
-                    ContactList(
-                      fullName: fullNameController.text,
-                      mobileNumber: phoneController.text,
-                      address: addressController.text,
-                    ),
-                  );
+            var checkdata = await FirebaseFirestore.instance.collection("customers").doc("+91${phoneController.text}").get();
 
 
-                  log(Permission.contacts.request().isGranted.toString());
-                  Contact contact = Contact();
-                  contact.familyName = '${fullNameController.text}';
-                  contact.phones = [Item(label: "mobile", value: '${phoneController.text}')];
-                  if (await Permission.contacts.request().isGranted) {
-                    await ContactsService.addContact(contact);
-                    log("Contact added successfully");
-                  }
+            if(checkdata.exists)
+              {
+               Get.snackbar("Customer Alerady Exists", "Customer Alerady Exists");
+              }
+            else
+              {
+                await FirebaseFirestore.instance.collection("customers").doc("+91${phoneController.text}").set(
+                  {
+                    "add" : addressController.text,
+                    "amount_received" : false,
+                    "image" : "",
+                    "merchant" : "${FirebaseAuth.instance.currentUser!.phoneNumber}",
+                    "name" : fullNameController.text,
+                    "number": "+91${phoneController.text}",
+                    "type" : "customer",
+                  },
+                );
 
-                  homeController.index.value = 0;
+                contactLists.add(
+                  ContactList(
+                    fullName: fullNameController.text,
+                    mobileNumber: phoneController.text,
+                    address: addressController.text,
+                  ),
+                );
 
-                  Get.offAllNamed(AppRoutes.home);
-                } else {
-                  var data = await FirebaseFirestore.instance
-                      .collection("customers")
-                      .where("number", isEqualTo: "${phoneController.text}")
-                      .get();
 
-                  var mer = await FirebaseFirestore.instance
-                      .collection("merchants")
-                      .get();
-
-                  List merId = [];
-
-                  mer.docs.forEach((element) {
-                    merId.add(element.id.toString());
-                  });
-
-                  if (merId.contains("${data.docs[0]["merchant"]}")) {
-                    Get.snackbar("Customer",
-                        "customer has Already have an other Merchant...",
-                        backgroundColor: AppColors.darkBlue,
-                        colorText: AppColors.white);
-                  } else {
-                    var data = await FirebaseFirestore.instance
-                        .collection('customers')
-                        .doc("${element.id}")
-                        .update({
-                      'merchant':
-                          FirebaseAuth.instance.currentUser!.uid.toString(),
-                    });
-
-                    contactLists.add(
-                      ContactList(
-                        fullName: fullNameController.text,
-                        mobileNumber: phoneController.text,
-                        address: addressController.text,
-                      ),
-                    );
-
-                    log(Permission.contacts.request().isGranted.toString());
-                    Contact contact = Contact();
-                    contact.familyName = '${fullNameController.text}';
-                    contact.phones = [Item(label: "mobile", value: '${phoneController.text}')];
-                    if (await Permission.contacts.request().isGranted) {
-                      await ContactsService.addContact(contact);
-                      log("Contact added successfully");
-                    }
-
-                    homeController.index.value = 0;
-
-                    Get.offAllNamed(AppRoutes.home);
-                  }
+                log(Permission.contacts.request().isGranted.toString());
+                Contact contact = Contact();
+                contact.familyName = '${fullNameController.text}';
+                contact.phones = [Item(label: "mobile", value: '${phoneController.text}')];
+                if (await Permission.contacts.request().isGranted) {
+                  await ContactsService.addContact(contact);
+                  log("Contact added successfully");
                 }
-              });
-            } else {
-              Get.snackbar("Customer", "No Found",
-                  backgroundColor: AppColors.darkBlue,
-                  colorText: AppColors.white);
-            }
+
+               Get.back();
+              }
           }
         },
         child: GlobalText(

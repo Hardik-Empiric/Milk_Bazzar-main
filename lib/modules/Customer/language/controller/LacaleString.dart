@@ -67,7 +67,7 @@ class LocaleString extends Translations {
   String selectMonthYearText = "Select Month And Select Year";
   String selectBillText = "Select Customer’s Bill Category";
   String resendText = "Resend code in ";
-  String formHintText = "Disover your social & Try to Sign up";
+  String formHintText = "Disover your social & Only Merchant can Sign up";
   String mobileHintText = "We will send you confirmation code";
   String settingHintText = "Edit profile, Change Langauge, Dark mode";
   String sellMilkHintText = "Please Add Milk’s Data Carefully";
@@ -267,7 +267,7 @@ class LocaleString extends Translations {
           selectMonthYearText: "Select Month And Select Year",
           selectBillText: "Select Customer’s Bill Category",
           resendText: "Resend code in ",
-          formHintText: "Disover your social & Try to Sign up",
+          formHintText: "Disover your social & Only Merchant can Sign up",
           mobileHintText: "We will send you confirmation code",
           settingHintText: "Edit profile, Change Language, Dark mode",
           sellMilkHintText: "Please Add Milk’s Data Carefully",
@@ -432,7 +432,7 @@ class LocaleString extends Translations {
           selectMonthYearText: "મહિનો પસંદ કરો અને વર્ષ પસંદ કરો",
           selectBillText: "ગ્રાહકની બિલ કેટેગરી પસંદ કરો",
           resendText: "કોડ ફરીથી મોકલો ",
-          formHintText: "તમારા સામાજિક શોધો અને સાઇન અપ કરવાનો પ્રયાસ કરો",
+          formHintText: "તમારા સામાજિક શોધો અને ફક્ત વેપારીઓ જ સાઇન અપ કરી શકે છે",
           mobileHintText: "અમે તમને કન્ફર્મેશન કોડ મોકલીશું",
           settingHintText: "પ્રોફાઇલ સંપાદિત કરો, ભાષા બદલો, ડાર્ક મોડ",
           sellMilkHintText: "કૃપા કરીને દૂધનો ડેટા કાળજીપૂર્વક ઉમેરો",
@@ -591,7 +591,7 @@ class LocaleString extends Translations {
           selectMonthYearText: "महीना चुनें और साल चुनें",
           selectBillText: "ग्राहक की बिल श्रेणी चुनें",
           resendText: "कोड फिर से भेजें ",
-          formHintText: "अपना सामाजिक खोजें और साइन अप करने का प्रयास करें",
+          formHintText: "अपने सामाजिक की खोज करें और केवल व्यापारी ही साइन अप कर सकते हैं",
           mobileHintText: "हम आपको पुष्टिकरण कोड भेजेंगे",
           settingHintText: "प्रोफ़ाइल संपादित करें, भाषा बदलें, डार्क मोड",
           sellMilkHintText: "कृपया दूध का डेटा सावधानी से जोड़ें",

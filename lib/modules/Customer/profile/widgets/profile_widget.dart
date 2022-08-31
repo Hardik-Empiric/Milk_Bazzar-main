@@ -68,10 +68,10 @@ class _ProfileState extends State<Profile> {
 
       var data = await FirebaseFirestore.instance
           .collection('merchants')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .get();
       fullNameController.text = data.data()!['name'];
-      phoneController.text = data.data()!['number'];
+      phoneController.text = data.data()!['number'].toString().replaceAll('+91', "");
       addressController.text = data.data()!['add'];
       prizePerLiterController.text = data.data()!["price_per_liter"].toString();
       setState(() {
@@ -82,10 +82,10 @@ class _ProfileState extends State<Profile> {
     } else {
       var data = await FirebaseFirestore.instance
           .collection('customers')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .get();
       fullNameController.text = data.data()!['name'];
-      phoneController.text = data.data()!['number'];
+      phoneController.text = data.data()!['number'].toString().replaceAll('+91', "");
       addressController.text = data.data()!['add'];
       setState(() {
         urlDownload = data.data()!['image'];

@@ -13,3 +13,4 @@ class BillDetails {
 List<BillDetails> billDetails1 = <BillDetails>[];
 
 List<BillDetails> billDetails2 = <BillDetails>[];
+

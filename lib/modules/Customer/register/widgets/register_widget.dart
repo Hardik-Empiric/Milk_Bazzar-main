@@ -157,7 +157,7 @@ class _RegisterState extends State<Register> {
                                   if (val!.isEmpty) {
                                     return LocaleString().errorPhone.tr;
                                   }
-                                  else if(!numbers.contains(val))
+                                  else if(!numbers.contains("+91${val}"))
                                   {
                                     return "Number is not register...";
                                   }
@@ -236,7 +236,7 @@ class _RegisterState extends State<Register> {
                           LoginModels.phone = int.parse(phoneController.text);
                         });
 
-                        if(mer.contains(phoneController.text.toString()))
+                        if(mer.contains("+91${phoneController.text}"))
                           {
                             prefs.setBool("isMerchant", true);
                           }

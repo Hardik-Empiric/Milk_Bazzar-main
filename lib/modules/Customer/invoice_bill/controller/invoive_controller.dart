@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -7,12 +9,15 @@ import '../../language/controller/LacaleString.dart';
 int currentY = DateTime.now().year;
 int previousY = DateTime.now().year - 1;
 
+int index = DateTime.now().month;
+
 class InvoiceController extends GetxController {
-  RxString selectedValue = LocaleString().jan.tr.obs;
+
+  RxString selectedValue = rxmonthItems[DateTime.now().month - 1];
 
   RxBool isChecked = false.obs;
 
-  RxString month = 'january'.obs;
+  RxString month = RxmonthItemsInENGLISH[DateTime.now().month - 1];
   RxInt currentYear = currentY.obs;
   RxInt previousYear = previousY.obs;
 
@@ -35,6 +40,21 @@ final List<String> monthItems = [
   LocaleString().dec.tr,
 ];
 
+final List<RxString> rxmonthItems = [
+  LocaleString().jan.tr.obs,
+  LocaleString().feb.tr.obs,
+  LocaleString().mar.tr.obs,
+  LocaleString().apr.tr.obs,
+  LocaleString().may.tr.obs,
+  LocaleString().jun.tr.obs,
+  LocaleString().jul.tr.obs,
+  LocaleString().aug.tr.obs,
+  LocaleString().sep.tr.obs,
+  LocaleString().oct.tr.obs,
+  LocaleString().nov.tr.obs,
+  LocaleString().dec.tr.obs,
+];
+
 final List<String> monthItemsInENGLISH = [
   "january",
   "february",
@@ -48,6 +68,21 @@ final List<String> monthItemsInENGLISH = [
   "october",
   "november",
   "december",
+];
+
+final List<RxString> RxmonthItemsInENGLISH = [
+  "january".obs,
+  "february".obs,
+  "march".obs,
+  "april".obs,
+  "may".obs,
+  "june".obs,
+  "july".obs,
+  "august".obs,
+  "september".obs,
+  "october".obs,
+  "november".obs,
+  "december".obs,
 ];
 
 final List<String> yearItems = [];

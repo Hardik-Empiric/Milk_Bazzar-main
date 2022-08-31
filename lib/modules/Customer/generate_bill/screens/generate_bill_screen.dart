@@ -57,10 +57,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         .collection("${navigatorData.month}")
         .doc("total_liter")
         .get();
+    totalLiterOfMonth = double.parse("${totalLiter.data()!["liter"]}");
 
-    setState(() {
-      totalLiterOfMonth = double.parse("${totalLiter.data()!["liter"]}");
-    });
 
     var d = await FirebaseFirestore.instance
         .collection("customers")
@@ -72,9 +70,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         .doc("${d.data()!["merchant"]}")
         .get();
 
-    setState(() {
+
       prizePerLiter = double.parse("${ppl.data()!["price_per_liter"]}");
-    });
+
 
     print("Total Liter of Month ${totalLiterOfMonth}");
     print("Prize Per liter ${prizePerLiter}");
@@ -86,7 +84,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         .doc("${navigatorData.uid}")
         .get();
 
-    customerName = cusName.data()!["name"];
+    setState(() {
+      customerName = cusName.data()!["name"];
+    });
   }
 
   final List<String> monthItemsInENGLISH = [
@@ -194,67 +194,81 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     dates.clear();
 
     data.docs.forEach((e) {
-      setState(() {
+
         if (e.id != "total_liter" && e.id != "total_price" &&
             e.id != "received_price") dates.add(int.parse(e.id));
-      });
+
     });
 
     log(dates.length.toString());
 
-    setState(() {
+
       billDetails2.clear();
       billDetails1.clear();
-    });
 
-    billDetails2.add(
-      BillDetails(
-          date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
-    );
-    billDetails1.add(
-      BillDetails(
-          date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
-    );
+
+
+
+    setState(() {
+      billDetails1.add(
+        BillDetails(
+            date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
+      );
+    });
 
     for (int i = 1; i <= 16; i++) {
       var d = await untilMonths.doc("$i").get();
 
       if (dates.contains(i)) {
-        billDetails1.add(
-          BillDetails(
-              date: "$i",
-              morning: ("${d.data()!["total morning liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total morning liter"]}",
-              evening: ("${d.data()!["total evening liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total evening liter"]}",
-              PPL: double.parse("${d.data()!["ppl"]}")),
-        );
+        setState(() {
+          billDetails1.add(
+            BillDetails(
+                date: "$i",
+                morning: ("${d.data()!["total morning liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total morning liter"]}",
+                evening: ("${d.data()!["total evening liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total evening liter"]}",
+                PPL: double.parse("${d.data()!["ppl"]}")),
+          );
+        });
       } else {
-        billDetails1
-            .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        setState(() {
+          billDetails1.add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        });
       }
     }
+
+    setState(() {
+      billDetails2.add(
+        BillDetails(
+            date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
+      );
+    });
 
     for (int i = 17; i <= ddday; i++) {
       var d = await untilMonths.doc("$i").get();
 
       if (dates.contains(i)) {
-        billDetails2.add(
-          BillDetails(
-              date: "$i",
-              morning: ("${d.data()!["total morning liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total morning liter"]}",
-              evening: ("${d.data()!["total evening liter"]}" == "0")
-                  ? "-"
-                  : "${d.data()!["total evening liter"]}",
-              PPL: double.parse("${d.data()!["ppl"]}")),
-        );
+        setState(() {
+          billDetails2.add(
+            BillDetails(
+                date: "$i",
+                morning: ("${d.data()!["total morning liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total morning liter"]}",
+                evening: ("${d.data()!["total evening liter"]}" == "0")
+                    ? "-"
+                    : "${d.data()!["total evening liter"]}",
+                PPL: double.parse("${d.data()!["ppl"]}")),
+          );
+        });
       } else {
-        billDetails2
-            .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        setState(() {
+          billDetails2
+              .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+        });
       }
     }
 
@@ -264,9 +278,11 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     }
 
     calculateData();
-    setState(() {
-      generateBillController.isLoading.value = false;
-    });
+
+      setState(() {
+        generateBillController.isLoading.value = false;
+      });
+
 
     List main = [];
     List prise = [];
@@ -289,9 +305,9 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
       }
     });
 
-    setState(() {
+
       prise = prise.toSet().toList();
-    });
+
 
     for (int i = 0; i < prise.length; i++) {
       filter.add(await untilMonths.where("ppl", isEqualTo: prise[i]).get());
@@ -301,7 +317,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     double totalLiter = 0.0;
 
     for (int i = 0; i < filter.length; i++) {
-      setState(() {
+
         totalPrice = prise[i];
         filter[i].docs.forEach((element) {
           totalLiter = totalLiter +
@@ -309,18 +325,18 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                   "${element["total morning liter"] +
                       element["total evening liter"]}");
         });
-      });
+
       finalData.add(
         {
           "prise": totalPrice,
           "liter": totalLiter,
         },
       );
-      setState(() {
+
         if (filter.length > 1) {
           totalLiter = 0.0;
         }
-      });
+
     }
 
     double amount = 0.0;
@@ -328,13 +344,15 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     finalData.forEach((element) async {
       amount = element["liter"] * element["prise"];
 
-      setState(() {
-        finalTotal = finalTotal + amount;
-        finalString = finalString +
-            "${element["liter"]} L * ₹ ${element["prise"]} = ₹ ${amount}\n";
-        finalStringPDF = finalStringPDF +
-            "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
-      });
+
+        setState(() {
+          finalTotal = finalTotal + amount;
+          finalString = finalString +
+              "${element["liter"]} L * ₹ ${element["prise"]} = ₹ ${amount}\n";
+          finalStringPDF = finalStringPDF +
+              "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
+        });
+
 
       List months = [
         "january",
@@ -388,6 +406,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         );
       }
     });
+
   }
 
   List months = [
@@ -416,15 +435,6 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
   bool isEng = true;
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    billDetails2.clear();
-    billDetails1.clear();
-    dates.clear();
-  }
-
-  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -440,17 +450,13 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (generateBillController.isLoading.value) {
-          Fluttertoast.showToast(
-            msg: "Bill is Generating...",
-            toastLength: Toast.LENGTH_SHORT,
-            webBgColor: "#e74c3c",
-            textColor: AppColors.black,
-            timeInSecForIosWeb: 3,
-          );
-        }
-        return !generateBillController.isLoading.value;
+      onWillPop: ()async{
+        setState(() {
+          billDetails1.clear();
+          billDetails2.clear();
+          dates.clear();
+        });
+        return true;
       },
       child: Scaffold(
         backgroundColor: AppColors.blue,
@@ -611,47 +617,51 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                       ),
                                     ],
                                   ),
-                                  commonField(
-                                    color: Theme
-                                        .of(context)
-                                        .backgroundColor,
-                                    textColor: Theme
-                                        .of(context)
-                                        .primaryColor,
-                                    title: LocaleString().cowMilk.tr,
-                                    amount: finalString,
-                                  ),
-                                  commonField(
-                                    color: AppColors.tableColor,
-                                    textColor: AppColors.black,
-                                    title: LocaleString().totalLiter.tr,
-                                    amount: "${totalLiterOfMonth} L",
-                                  ),
-                                  commonField(
-                                    color: Theme
-                                        .of(context)
-                                        .backgroundColor,
-                                    textColor: Theme
-                                        .of(context)
-                                        .primaryColor,
-                                    title: LocaleString().pMTA.tr,
-                                    amount: "₹${PreviousTotalPrice}",
-                                  ),
-                                  commonField(
-                                    color: AppColors.tableColor,
-                                    textColor: AppColors.black,
-                                    title: LocaleString().pMRA.tr,
-                                    amount: "₹${PreviousReceivedPrice}",
-                                  ),
-                                  commonField(
-                                    color: Theme
-                                        .of(context)
-                                        .backgroundColor,
-                                    textColor: AppColors.black,
-                                    title: LocaleString().total.tr,
-                                    amount: "₹${finalTotal +
-                                        PreviousAmountDif}",
-                                  ),
+                                  Column(
+                                   children: [
+                                     commonField(
+                                       color: Theme
+                                           .of(context)
+                                           .backgroundColor,
+                                       textColor: Theme
+                                           .of(context)
+                                           .primaryColor,
+                                       title: LocaleString().cowMilk.tr,
+                                       amount: finalString,
+                                     ),
+                                     commonField(
+                                       color: AppColors.tableColor,
+                                       textColor: AppColors.black,
+                                       title: LocaleString().totalLiter.tr,
+                                       amount: "${totalLiterOfMonth} L",
+                                     ),
+                                     commonField(
+                                       color: Theme
+                                           .of(context)
+                                           .backgroundColor,
+                                       textColor: Theme
+                                           .of(context)
+                                           .primaryColor,
+                                       title: LocaleString().pMTA.tr,
+                                       amount: "₹${PreviousTotalPrice}",
+                                     ),
+                                     commonField(
+                                       color: AppColors.tableColor,
+                                       textColor: AppColors.black,
+                                       title: LocaleString().pMRA.tr,
+                                       amount: "₹${PreviousReceivedPrice}",
+                                     ),
+                                     commonField(
+                                       color: Theme
+                                           .of(context)
+                                           .backgroundColor,
+                                       textColor: AppColors.black,
+                                       title: LocaleString().total.tr,
+                                       amount: "₹${finalTotal +
+                                           PreviousAmountDif}",
+                                     ),
+                                   ],
+                                 ),
                                 ],
                               )
                                   : Container(

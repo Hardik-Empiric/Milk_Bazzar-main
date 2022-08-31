@@ -13,6 +13,8 @@ class GenerateBillController extends GetxController {
 
   RxBool isLoading = true.obs;
 
+  RxString customerName  = ''.obs;
+
 }
 
 class BillDetails {

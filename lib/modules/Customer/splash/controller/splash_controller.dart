@@ -35,7 +35,7 @@ class SplashController extends GetxController {
         await FirebaseFirestore.instance.collection('merchants').get();
 
     merchants.docs.forEach((element) {
-      mer.add(element.id.toString());
+      mer.add(element.data()["number"].toString());
     });
 
 
@@ -66,7 +66,7 @@ class SplashController extends GetxController {
     Timer(const Duration(seconds: 2), () {
       print(LoginModels.phone);
       prefs.getBool("Login") ?? false
-          ? (mer.contains(FirebaseAuth.instance.currentUser!.uid.toString()))
+          ? (mer.contains(FirebaseAuth.instance.currentUser!.phoneNumber.toString()))
               ? Get.offAllNamed(AppRoutes.home)
               : Get.offAllNamed(AppRoutes.welcome,arguments: wish)
           : Get.offAll(const LoginScreen());
