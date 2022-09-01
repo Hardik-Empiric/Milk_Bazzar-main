@@ -104,12 +104,32 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     "december",
   ];
 
+  final List<String> monthItemsInENGLISHCap = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  String showMonth = "";
+
+
   double PreviousTotalPrice = 0.0;
   double PreviousReceivedPrice = 0.0;
   double PreviousAmountDif = 0.0;
 
   getData() async {
     int currentMonthIndex = monthItemsInENGLISH.indexOf(navigatorData.month);
+
+    showMonth = monthItemsInENGLISHCap[currentMonthIndex];
 
     String previousMonth;
     String pcYear;
@@ -206,78 +226,231 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
       billDetails2.clear();
       billDetails1.clear();
 
+    var date1 = [];
+    var date2 = [];
+
+      date1.clear();
+      date2.clear();
+
+
+      print("dates : $dates");
+
+      dates.forEach((element) {
+
+                if(element<=16)
+                  {
+                    date1.add(element);
+                  }
+                else
+                  {
+                    date2.add(element);
+                  }
+
+
+      });
+
+      print("date1 : $date1");
+      print("date2 : $date2");
 
 
 
-    setState(() {
-      billDetails1.add(
-        BillDetails(
-            date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
-      );
-    });
+
+    /// TODO : main Logic
+
+     setState(() {
+          billDetails1.add(BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),);
+        });
+
+        setState(() {
+          billDetails2.add(BillDetails(date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),);
+        });
 
     for (int i = 1; i <= 16; i++) {
-      var d = await untilMonths.doc("$i").get();
-
-      if (dates.contains(i)) {
-        setState(() {
-          billDetails1.add(
-            BillDetails(
-                date: "$i",
-                morning: ("${d.data()!["total morning liter"]}" == "0")
-                    ? "-"
-                    : "${d.data()!["total morning liter"]}",
-                evening: ("${d.data()!["total evening liter"]}" == "0")
-                    ? "-"
-                    : "${d.data()!["total evening liter"]}",
-                PPL: double.parse("${d.data()!["ppl"]}")),
-          );
-        });
-      } else {
-        setState(() {
-          billDetails1.add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
-        });
-      }
+      setState(() {
+        billDetails1.add(BillDetails(date: '$i', morning: "-", evening: "-", PPL: 0.0));
+      });
     }
 
-    setState(() {
-      billDetails2.add(
-        BillDetails(
-            date: 'DATE', morning: "MORNING", evening: "EVENING", PPL: 0.0),
-      );
-    });
-
     for (int i = 17; i <= ddday; i++) {
-      var d = await untilMonths.doc("$i").get();
-
-      if (dates.contains(i)) {
-        setState(() {
-          billDetails2.add(
-            BillDetails(
-                date: "$i",
-                morning: ("${d.data()!["total morning liter"]}" == "0")
-                    ? "-"
-                    : "${d.data()!["total morning liter"]}",
-                evening: ("${d.data()!["total evening liter"]}" == "0")
-                    ? "-"
-                    : "${d.data()!["total evening liter"]}",
-                PPL: double.parse("${d.data()!["ppl"]}")),
-          );
-        });
-      } else {
-        setState(() {
-          billDetails2
-              .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
-        });
-      }
+      setState(() {
+        billDetails2.add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+      });
     }
 
     for (int i = ddday; i <= 31; i++) {
-      billDetails2
-          .add(BillDetails(date: "-", morning: "-", evening: "-", PPL: 0.0));
+      setState(() {
+        billDetails2.add(BillDetails(date: "-", morning: "-", evening: "-", PPL: 0.0));
+      });
     }
 
+    for(var element in date1)
+      {
+        print("element : $element");
+        var d = await untilMonths.doc("$element").get();
+        setState(() {
+          billDetails1[element] = BillDetails(
+              date: "$element",
+              morning: ("${d.data()!["total morning liter"]}" == "0")
+                  ? "-"
+                  : "${d.data()!["total morning liter"]}",
+              evening: ("${d.data()!["total evening liter"]}" == "0")
+                  ? "-"
+                  : "${d.data()!["total evening liter"]}",
+              PPL: double.parse("${d.data()!["ppl"]}"));
+
+          print("=======================");
+          print(billDetails1[element].date);
+          print(billDetails1[element].morning);
+          print(billDetails1[element].evening);
+          print(billDetails1[element].PPL);
+          print("=======================");
+
+        });
+      }
+
+    for(var element in date2)
+    {
+      var d = await untilMonths.doc("${element}").get();
+      setState(() {
+        billDetails2[element-16] = BillDetails(
+            date: "${element}",
+            morning: ("${d.data()!["total morning liter"]}" == "0")
+                ? "-"
+                : "${d.data()!["total morning liter"]}",
+            evening: ("${d.data()!["total evening liter"]}" == "0")
+                ? "-"
+                : "${d.data()!["total evening liter"]}",
+            PPL: double.parse("${d.data()!["ppl"]}"));
+
+        print("=======================");
+        print(billDetails2[element-16].date);
+        print(billDetails2[element-16].morning);
+        print(billDetails2[element-16].evening);
+        print(billDetails2[element-16].PPL);
+        print("=======================");
+
+      });
+    }
+
+
+
+    // date1.forEach((element) async {
+    //   print("element : $element");
+    //   var d = await untilMonths.doc("$element").get();
+    //   setState(() {
+    //     billDetails1[element] = BillDetails(
+    //         date: "$element",
+    //         morning: ("${d.data()!["total morning liter"]}" == "0")
+    //             ? "-"
+    //             : "${d.data()!["total morning liter"]}",
+    //         evening: ("${d.data()!["total evening liter"]}" == "0")
+    //             ? "-"
+    //             : "${d.data()!["total evening liter"]}",
+    //         PPL: double.parse("${d.data()!["ppl"]}"));
+    //
+    //     print("=======================");
+    //     print(billDetails1[element].date);
+    //     print(billDetails1[element].morning);
+    //     print(billDetails1[element].evening);
+    //     print(billDetails1[element].PPL);
+    //     print("=======================");
+    //
+    //   });
+    // });
+
+    // date2.forEach((element) async {
+    //   var d = await untilMonths.doc("${element}").get();
+    //   setState(() {
+    //     billDetails2[element-16] = BillDetails(
+    //         date: "${element}",
+    //         morning: ("${d.data()!["total morning liter"]}" == "0")
+    //             ? "-"
+    //             : "${d.data()!["total morning liter"]}",
+    //         evening: ("${d.data()!["total evening liter"]}" == "0")
+    //             ? "-"
+    //             : "${d.data()!["total evening liter"]}",
+    //         PPL: double.parse("${d.data()!["ppl"]}"));
+    //
+    //     print("=======================");
+    //     print(billDetails2[element-16].date);
+    //     print(billDetails2[element-16].morning);
+    //     print(billDetails2[element-16].evening);
+    //     print(billDetails2[element-16].PPL);
+    //     print("=======================");
+    //
+    //   });
+    // });
+
+    billDetails1.forEach((element) {
+      print(element.date);
+      print(element.morning);
+      print(element.evening);
+      print(element.PPL);
+    });
+
+    billDetails2.forEach((element) {
+      print(element.date);
+      print(element.morning);
+      print(element.evening);
+      print(element.PPL);
+    });
+
+    // for (int i = 1; i <= 16; i++) {
+    //   var d = await untilMonths.doc("$i").get();
+    //
+    //
+    //   if (dates.contains(i)) {
+    //     setState(() {
+    //       billDetails1.add(
+    //         BillDetails(
+    //             date: "$i",
+    //             morning: ("${d.data()!["total morning liter"]}" == "0")
+    //                 ? "-"
+    //                 : "${d.data()!["total morning liter"]}",
+    //             evening: ("${d.data()!["total evening liter"]}" == "0")
+    //                 ? "-"
+    //                 : "${d.data()!["total evening liter"]}",
+    //             PPL: double.parse("${d.data()!["ppl"]}")),
+    //       );
+    //     });
+    //   } else {
+    //     setState(() {
+    //       billDetails1.add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+    //     });
+    //   }
+    // }
+    //
+    //
+    //
+    // for (int i = 17; i <= ddday; i++) {
+    //   var d = await untilMonths.doc("$i").get();
+    //
+    //   if (dates.contains(i)) {
+    //     setState(() {
+    //       billDetails2.add(
+    //         BillDetails(
+    //             date: "$i",
+    //             morning: ("${d.data()!["total morning liter"]}" == "0")
+    //                 ? "-"
+    //                 : "${d.data()!["total morning liter"]}",
+    //             evening: ("${d.data()!["total evening liter"]}" == "0")
+    //                 ? "-"
+    //                 : "${d.data()!["total evening liter"]}",
+    //             PPL: double.parse("${d.data()!["ppl"]}")),
+    //       );
+    //     });
+    //   } else {
+    //     setState(() {
+    //       billDetails2
+    //           .add(BillDetails(date: "$i", morning: "-", evening: "-", PPL: 0.0));
+    //     });
+    //   }
+    // }
+
+
+
     calculateData();
+
 
       setState(() {
         generateBillController.isLoading.value = false;
@@ -286,6 +459,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
 
     List main = [];
     List prise = [];
+
+
 
     billDetails1.forEach((element) {
       if (element.date != "-" && element.date != "DATE") {
@@ -299,14 +474,24 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
       }
     });
 
+    print("main:$main");
+
+    print(main[0].date);
+    print(main[0].morning);
+    print(main[0].evening);
+    print(main[0].PPL);
+
     main.forEach((element) {
       if (element.PPL != 0.0) {
         prise.add(element.PPL);
+        print("prise : $prise");
       }
     });
 
 
       prise = prise.toSet().toList();
+
+      print("prise : $prise");
 
 
     for (int i = 0; i < prise.length; i++) {
@@ -333,6 +518,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         },
       );
 
+      print("finalData : $finalData");
+
         if (filter.length > 1) {
           totalLiter = 0.0;
         }
@@ -353,6 +540,12 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
               "${element["liter"]} L * Rs. ${element["prise"]} = Rs. ${amount}\n";
         });
 
+        print("finalTotal : $finalTotal");
+        print("finalString : $finalString");
+
+      setState(() {
+        generateBillController.downloadEnabled.value = false;
+      });
 
       List months = [
         "january",
@@ -405,6 +598,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
           },
         );
       }
+
     });
 
   }
@@ -512,8 +706,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                 alignment: Alignment.center,
                                 child: GlobalText(
                                   text:
-                                  "${LocaleString().billOf.tr} ${navigatorData
-                                      .month} / ${navigatorData.year}",
+                                  "${LocaleString().billOf.tr} ${showMonth} / ${navigatorData.year}",
                                   fontWeight: FontWeight.w500,
                                   color: Theme
                                       .of(context)
@@ -617,51 +810,54 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                       ),
                                     ],
                                   ),
-                                  Column(
-                                   children: [
-                                     commonField(
-                                       color: Theme
-                                           .of(context)
-                                           .backgroundColor,
-                                       textColor: Theme
-                                           .of(context)
-                                           .primaryColor,
-                                       title: LocaleString().cowMilk.tr,
-                                       amount: finalString,
-                                     ),
-                                     commonField(
-                                       color: AppColors.tableColor,
-                                       textColor: AppColors.black,
-                                       title: LocaleString().totalLiter.tr,
-                                       amount: "${totalLiterOfMonth} L",
-                                     ),
-                                     commonField(
-                                       color: Theme
-                                           .of(context)
-                                           .backgroundColor,
-                                       textColor: Theme
-                                           .of(context)
-                                           .primaryColor,
-                                       title: LocaleString().pMTA.tr,
-                                       amount: "₹${PreviousTotalPrice}",
-                                     ),
-                                     commonField(
-                                       color: AppColors.tableColor,
-                                       textColor: AppColors.black,
-                                       title: LocaleString().pMRA.tr,
-                                       amount: "₹${PreviousReceivedPrice}",
-                                     ),
-                                     commonField(
-                                       color: Theme
-                                           .of(context)
-                                           .backgroundColor,
-                                       textColor: AppColors.black,
-                                       title: LocaleString().total.tr,
-                                       amount: "₹${finalTotal +
-                                           PreviousAmountDif}",
-                                     ),
-                                   ],
+                                  Visibility(
+                                    visible: !generateBillController.isLoading.value,
+                                    child: Column(
+                                     children: [
+                                       commonField(
+                                         color: Theme
+                                             .of(context)
+                                             .backgroundColor,
+                                         textColor: Theme
+                                             .of(context)
+                                             .primaryColor,
+                                         title: LocaleString().cowMilk.tr,
+                                         amount: finalString,
+                                       ),
+                                       commonField(
+                                         color: AppColors.tableColor,
+                                         textColor: AppColors.black,
+                                         title: LocaleString().totalLiter.tr,
+                                         amount: "${totalLiterOfMonth} L",
+                                       ),
+                                       commonField(
+                                         color: Theme
+                                             .of(context)
+                                             .backgroundColor,
+                                         textColor: Theme
+                                             .of(context)
+                                             .primaryColor,
+                                         title: LocaleString().pMTA.tr,
+                                         amount: "₹${PreviousTotalPrice}",
+                                       ),
+                                       commonField(
+                                         color: AppColors.tableColor,
+                                         textColor: AppColors.black,
+                                         title: LocaleString().pMRA.tr,
+                                         amount: "₹${PreviousReceivedPrice}",
+                                       ),
+                                       commonField(
+                                         color: Theme
+                                             .of(context)
+                                             .backgroundColor,
+                                         textColor: AppColors.black,
+                                         title: LocaleString().total.tr,
+                                         amount: "₹${finalTotal +
+                                             PreviousAmountDif}",
+                                       ),
+                                     ],
                                  ),
+                                  ),
                                 ],
                               )
                                   : Container(
@@ -677,7 +873,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                               right: 40, left: 40, top: 30, bottom: 50),
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              primary: (!generateBillController.isLoading.value)
+                              primary: (generateBillController.downloadEnabled.value)
                                   ? AppColors.blue
                                   : AppColors.lightBlue,
                               padding:
@@ -685,7 +881,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                   right: 15, left: 15, top: 10, bottom: 10),
                             ),
                             onPressed: () async {
-                              if (!generateBillController.isLoading.value) {
+                              if (generateBillController.downloadEnabled.value) {
                                 downloadPDF();
                               }
                             },
@@ -695,7 +891,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                                     'assets/icons/download.png', scale: 15)),
                             label: GlobalText(
                               // text: LocaleString().downloadMonthBill.tr,
-                              text: "Download ${navigatorData.month} Bill",
+                              text: "Download ${showMonth} Bill",
                               fontSize: 18,
                             ),
                           ),
@@ -716,7 +912,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
 
-    final file = File('$tempPath/${DateTime.now()}.pdf');
+    final file = File('$tempPath/${showMonth}_${navigatorData.year}.pdf');
     print(file.path);
     await file.writeAsBytes(await pdf.save());
 
@@ -757,7 +953,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                   width: SizeData.width,
                   alignment: pw.Alignment.center,
                   child: pw.Text(
-                    "Bill of : ${navigatorData.month} / ${navigatorData.year}",
+                    "Bill of : ${showMonth} / ${navigatorData.year}",
                     style: pw.TextStyle(),
                   ),
                 ),

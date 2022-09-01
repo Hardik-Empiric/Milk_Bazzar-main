@@ -65,50 +65,45 @@ class _ProfileState extends State<Profile> {
     print(prefs.getBool("isMerchant"));
 
     if (isMerchant) {
-
       var data = await FirebaseFirestore.instance
           .collection('merchants')
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .get();
       fullNameController.text = data.data()!['name'];
-      phoneController.text = data.data()!['number'].toString().replaceAll('+91', "");
+      phoneController.text =
+          data.data()!['number'].toString().replaceAll('+91', "");
       addressController.text = data.data()!['add'];
       prizePerLiterController.text = data.data()!["price_per_liter"].toString();
       setState(() {
         urlDownload = data.data()!['image'];
       });
-
-
     } else {
       var data = await FirebaseFirestore.instance
           .collection('customers')
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
           .get();
       fullNameController.text = data.data()!['name'];
-      phoneController.text = data.data()!['number'].toString().replaceAll('+91', "");
+      phoneController.text =
+          data.data()!['number'].toString().replaceAll('+91', "");
       addressController.text = data.data()!['add'];
       setState(() {
         urlDownload = data.data()!['image'];
       });
     }
-    var cc = await FirebaseFirestore.instance
-        .collection('customers')
-        .get();
+    var cc = await FirebaseFirestore.instance.collection('customers').get();
 
-    var mm = await FirebaseFirestore.instance
-        .collection('merchants')
-        .get();
+    var mm = await FirebaseFirestore.instance.collection('merchants').get();
 
     cc.docs.forEach((element) {
-      if(element.data()["name"].toString().toLowerCase() != fullNameController.text.toLowerCase())
-      {
+      if (element.data()["name"].toString().toLowerCase() !=
+          fullNameController.text.toLowerCase()) {
         allCusName.add(element.data()["name"].toString().toLowerCase());
       }
     });
 
     mm.docs.forEach((element) {
-      if(element.data()["name"].toString().toLowerCase() != fullNameController.text.toLowerCase())
-      {
+      if (element.data()["name"].toString().toLowerCase() !=
+          fullNameController.text.toLowerCase()) {
         allCusName.add(element.data()["name"].toString().toLowerCase());
       }
     });
@@ -117,7 +112,6 @@ class _ProfileState extends State<Profile> {
       log(element);
     });
   }
-
 
   @override
   void initState() {
@@ -235,8 +229,13 @@ class _ProfileState extends State<Profile> {
                           await _picker.pickImage(source: ImageSource.gallery);
 
                       setState(() {
-                        img_path = photo!.path;
                         loading = true;
+                        print(loading);
+                      });
+
+                      setState(() {
+                        img_path = photo!.path;
+                        print(img_path);
                       });
 
                       File tmpFile = File(img_path);
@@ -272,6 +271,10 @@ class _ProfileState extends State<Profile> {
                       urlDownload = await snapshot.ref.getDownloadURL();
                       log('Download Link : $urlDownload');
 
+                      setState(() {
+                        loading = false;
+                      });
+
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
 
@@ -280,36 +283,35 @@ class _ProfileState extends State<Profile> {
                       if (prefs.getBool("isMerchant") == false) {
                         user = FirebaseFirestore.instance
                             .collection('customers')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                             .update({
                           'image': "$urlDownload",
                         });
 
                         data = await FirebaseFirestore.instance
                             .collection('customers')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                             .get();
                       } else {
                         user = FirebaseFirestore.instance
                             .collection('merchants')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                             .update({
                           'image': "$urlDownload",
                         });
 
                         data = await FirebaseFirestore.instance
                             .collection('merchants')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                             .get();
                       }
 
                       setState(() {
                         urlDownload = data.data()!['image'];
                         print(urlDownload);
-                        loading = false;
                       });
                     },
-                    child: urlDownload.isNotEmpty
+                    child: (urlDownload.isNotEmpty)
                         ? Container(
                             height: 100,
                             width: 100,
@@ -333,14 +335,21 @@ class _ProfileState extends State<Profile> {
                             ),
                           )
                         : Container(
-                            height: 100,
-                            width: 100,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.blue,
-                            ),
-                            child: const Icon(Icons.camera),
-                          ),
+                                height: 100,
+                                width: 100,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.blue,
+                                ),
+                                child: (img_path == "")
+                                    ? const Icon(Icons.camera)
+                                    : Transform.scale(
+                                  scale: 0.2,
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                              )
                   ),
                   GlobalText(
                       text: LocaleString().editImage.tr,
@@ -367,10 +376,9 @@ class _ProfileState extends State<Profile> {
                   if (val!.isEmpty) {
                     return LocaleString().errorName.tr;
                   }
-                  if(allCusName.contains(val.toLowerCase()))
-                    {
-                      return "name is already exist";
-                    }
+                  if (allCusName.contains(val.toLowerCase())) {
+                    return "name is already exist";
+                  }
                   return null;
                 },
                 onSaved: (val) {
@@ -574,8 +582,8 @@ class _ProfileState extends State<Profile> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
-                            borderSide:
-                                const BorderSide(color: AppColors.blue, width: 2),
+                            borderSide: const BorderSide(
+                                color: AppColors.blue, width: 2),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -673,7 +681,6 @@ class _ProfileState extends State<Profile> {
           fixedSize: Size(SizeData.width * 0.7, 45),
         ),
         onPressed: () async {
-
           if (_globalFromKey.currentState!.validate()) {
             _globalFromKey.currentState!.save();
 
@@ -686,7 +693,7 @@ class _ProfileState extends State<Profile> {
             if (prefs.getBool("isMerchant") == false) {
               var user = FirebaseFirestore.instance
                   .collection('customers')
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                   .update({
                 'name': "${LoginModels.name}",
                 'number': "${LoginModels.phone}",
@@ -697,7 +704,7 @@ class _ProfileState extends State<Profile> {
             } else {
               var user = FirebaseFirestore.instance
                   .collection('merchants')
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
                   .update({
                 'name': "${LoginModels.name}",
                 'number': "${LoginModels.phone}",
@@ -707,6 +714,11 @@ class _ProfileState extends State<Profile> {
                 'price_per_liter': double.parse(prizePerLiterController.text),
               });
             }
+
+            Get.snackbar(
+                LocaleString().profile.tr, LocaleString().profileMSG.tr,
+                backgroundColor: AppColors.darkBlue,
+                colorText: AppColors.white);
           }
         },
         child: GlobalText(
@@ -717,5 +729,4 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
 }

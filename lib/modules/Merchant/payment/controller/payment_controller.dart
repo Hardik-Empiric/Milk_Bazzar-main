@@ -7,13 +7,16 @@ int previousY = DateTime.now().year - 1;
 
 class PaymentController extends GetxController {
 
-  RxString selectedValue = LocaleString().jan.tr.obs;
+
 
   RxInt index = 0.obs;
 
   RxBool isChecked = false.obs;
 
-  RxString month = 'january'.obs;
+  RxString month = RxmonthItemsInENGLISH[DateTime.now().month - 1];
+  RxString selectedValue = rxmonthItems[DateTime.now().month - 1];
+
+
   RxInt currentYear = currentY.obs;
   RxInt previousYear = previousY.obs;
 
@@ -39,6 +42,36 @@ final List<String> monthItems = [
   LocaleString().oct.tr,
   LocaleString().nov.tr,
   LocaleString().dec.tr,
+];
+
+final List<RxString> rxmonthItems = [
+  LocaleString().jan.tr.obs,
+  LocaleString().feb.tr.obs,
+  LocaleString().mar.tr.obs,
+  LocaleString().apr.tr.obs,
+  LocaleString().may.tr.obs,
+  LocaleString().jun.tr.obs,
+  LocaleString().jul.tr.obs,
+  LocaleString().aug.tr.obs,
+  LocaleString().sep.tr.obs,
+  LocaleString().oct.tr.obs,
+  LocaleString().nov.tr.obs,
+  LocaleString().dec.tr.obs,
+];
+
+final List<RxString> RxmonthItemsInENGLISH = [
+  "january".obs,
+  "february".obs,
+  "march".obs,
+  "april".obs,
+  "may".obs,
+  "june".obs,
+  "july".obs,
+  "august".obs,
+  "september".obs,
+  "october".obs,
+  "november".obs,
+  "december".obs,
 ];
 
 

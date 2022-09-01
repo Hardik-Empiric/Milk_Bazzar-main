@@ -243,14 +243,13 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                                               .areYouSure
                                                               .tr,
                                                           backgroundColor:
-                                                              AppColors.white,
+                                                          Theme.of(context).backgroundColor,
                                                           titleStyle: TextStyle(
                                                               color: AppColors
                                                                   .darkBlue),
                                                           middleTextStyle:
                                                               TextStyle(
-                                                                  color: Colors
-                                                                      .white),
+                                                                  color: Theme.of(context).backgroundColor),
                                                           textConfirm:
                                                               LocaleString()
                                                                   .yes
@@ -259,10 +258,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                                               LocaleString()
                                                                   .no
                                                                   .tr,
-                                                          cancelTextColor:
-                                                              Colors.black,
-                                                          confirmTextColor:
-                                                              Colors.white,
+                                                          cancelTextColor: Theme.of(context).primaryColor,
+                                                          confirmTextColor: Theme.of(context).backgroundColor,
                                                           buttonColor:
                                                               AppColors.blue,
                                                           barrierDismissible:
@@ -271,7 +268,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                                           content: Text(
                                                               LocaleString()
                                                                   .wantToDelete
-                                                                  .tr),
+                                                                  .tr,style: TextStyle(
+                                                            color: Theme.of(context).primaryColor,
+                                                          ),),
                                                         );
                                                       },
                                                     ),

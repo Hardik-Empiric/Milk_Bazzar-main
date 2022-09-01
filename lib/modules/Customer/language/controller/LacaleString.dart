@@ -7,12 +7,13 @@ class LocaleString extends Translations {
   String milkBazzar = "Milk Bazzar";
   String getStartedText = "Get Started";
   String updateProfile = "Update Profile";
+  String profile = "Profile";
+  String profileMSG = "Profile Update Successfully...";
   String nameMobileNumberAddressLogo = "Name,Mobile number,Address, Logo";
   String selectCustomerText = "Select Customer";
   String signUpText = "Sign Up";
   String changeLan = "Change Language";
   String selectMode = "Select Your Application mode";
-  String profile = "Profile";
   String editImage = "Edit Image";
   String errorName = "enter full name first...";
   String errorPrizePerLiter = "enter Prise of one Liter...";
@@ -52,6 +53,7 @@ class LocaleString extends Translations {
   String editProfileText = "Edit Image";
   String invoiceBill = "Invoice Bill";
   String settings = "Settings";
+  String searchCustomer = "Search Customer...";
   String termsConditionText = "Terms & Conditions";
   String languageText = "Change Language";
   String languageHintText = "Select Your Language";
@@ -203,6 +205,7 @@ class LocaleString extends Translations {
 
   Map<String, Map<String, String>> get keys => {
         'en_US': {
+          searchCustomer: "Search Customer...",
           payment: "PAYMENT",
           paymentMSG: "Payment Added Successfully...",
           pMTA: "Previous Month Total Amount:-",
@@ -223,6 +226,8 @@ class LocaleString extends Translations {
           errorAddress: "enter address first...",
           errorCheck: "fill CheckBox!', 'Please! Agree With Our Policy",
           updateProfile: "Update Profile",
+          profile: "Profile",
+          profileMSG: "Profile Update Successfully...",
           profileMsg: "Name,Mobile number,Address, Logo",
           selectCustomerText: "Select Customer",
           signUpText: "Sign Up",
@@ -369,6 +374,9 @@ class LocaleString extends Translations {
           wantToLogout: "You want to Log Out?",
         },
         'gu_IN': {
+          searchCustomer: "ગ્રાહક શોધો...",
+          profile: "પ્રોફાઇલ",
+          profileMSG: "પ્રોફાઇલ અપડેટ સફળતાપૂર્વક...",
           payment: "ચુકવણી",
           paymentMSG: "ચુકવણી સફળતાપૂર્વક ઉમેરાઈ...",
           pMTA: "પાછલા મહિનાની કુલ રકમ:-",
@@ -432,7 +440,8 @@ class LocaleString extends Translations {
           selectMonthYearText: "મહિનો પસંદ કરો અને વર્ષ પસંદ કરો",
           selectBillText: "ગ્રાહકની બિલ કેટેગરી પસંદ કરો",
           resendText: "કોડ ફરીથી મોકલો ",
-          formHintText: "તમારા સામાજિક શોધો અને ફક્ત વેપારીઓ જ સાઇન અપ કરી શકે છે",
+          formHintText:
+              "તમારા સામાજિક શોધો અને ફક્ત વેપારીઓ જ સાઇન અપ કરી શકે છે",
           mobileHintText: "અમે તમને કન્ફર્મેશન કોડ મોકલીશું",
           settingHintText: "પ્રોફાઇલ સંપાદિત કરો, ભાષા બદલો, ડાર્ક મોડ",
           sellMilkHintText: "કૃપા કરીને દૂધનો ડેટા કાળજીપૂર્વક ઉમેરો",
@@ -531,6 +540,9 @@ class LocaleString extends Translations {
           wantToLogout: "તમે લોગ આઉટ કરવા માંગો છો?",
         },
         'hi_IN': {
+          searchCustomer: "ग्राहक खोजें...",
+          profile: "प्रोफ़ाइल",
+          profileMSG: "प्रोफ़ाइल अपडेट सफलतापूर्वक...",
           payment: "भुगतान",
           paymentMSG: "भुगतान सफलतापूर्वक जोड़ा गया...",
           pMTA: "पिछला महीना कुल राशि:-",
@@ -591,7 +603,8 @@ class LocaleString extends Translations {
           selectMonthYearText: "महीना चुनें और साल चुनें",
           selectBillText: "ग्राहक की बिल श्रेणी चुनें",
           resendText: "कोड फिर से भेजें ",
-          formHintText: "अपने सामाजिक की खोज करें और केवल व्यापारी ही साइन अप कर सकते हैं",
+          formHintText:
+              "अपने सामाजिक की खोज करें और केवल व्यापारी ही साइन अप कर सकते हैं",
           mobileHintText: "हम आपको पुष्टिकरण कोड भेजेंगे",
           settingHintText: "प्रोफ़ाइल संपादित करें, भाषा बदलें, डार्क मोड",
           sellMilkHintText: "कृपया दूध का डेटा सावधानी से जोड़ें",

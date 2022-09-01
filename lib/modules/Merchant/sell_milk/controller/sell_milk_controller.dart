@@ -17,6 +17,8 @@ class SellMilkController extends GetxController {
   RxString morningSession = 'Morning'.obs;
   RxString eveningSession = 'Evening'.obs;
 
+  RxBool isAdded = true.obs;
+
 
 
   RxBool isMorningSelected = true.obs;

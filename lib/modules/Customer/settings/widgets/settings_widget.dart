@@ -200,17 +200,17 @@ class _SettingsState extends State<Settings> {
               Get.offAllNamed(navigatorPageName);
             },
             title: LocaleString().areYouSure.tr,
-            backgroundColor: AppColors.white,
+            backgroundColor:Theme.of(context).backgroundColor,
             titleStyle: TextStyle(color: AppColors.darkBlue),
-            middleTextStyle: TextStyle(color: Colors.white),
+            middleTextStyle: TextStyle(color: Theme.of(context).backgroundColor),
             textConfirm: LocaleString().yes.tr,
             textCancel: LocaleString().no.tr,
-            cancelTextColor: Colors.black,
-            confirmTextColor: Colors.white,
+            cancelTextColor: Theme.of(context).primaryColor,
+            confirmTextColor: Theme.of(context).backgroundColor,
             buttonColor: AppColors.blue,
             barrierDismissible: false,
             radius: 50,
-            content: Text(LocaleString().wantToLogout.tr),
+            content: Text(LocaleString().wantToLogout.tr,style: TextStyle(color: Theme.of(context).primaryColor),),
           );
         } else {
           Get.toNamed(navigatorPageName);

@@ -25,11 +25,15 @@ class _SelectCustomerState extends State<SelectCustomer> {
   final SelectCustomerController selectCustomerController =
       Get.put(SelectCustomerController());
 
+  TextEditingController searchController = TextEditingController();
+
   bool isCheck = false;
 
   String _selectedMenu = "current";
 
+
   var customerList = [];
+
 
   @override
   void initState() {
@@ -190,6 +194,42 @@ class _SelectCustomerState extends State<SelectCustomer> {
                           ),
                           iconSize: 30,
                           buttonHeight: 50,
+                          searchController: searchController,
+                          searchInnerWidget: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              bottom: 4,
+                              right: 8,
+                              left: 8,
+                            ),
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                hintText: LocaleString().searchCustomer.tr,
+                                hintStyle: const TextStyle(fontSize: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                          searchMatchFn: (item, searchValue) {
+                            return (item.value.toString().toLowerCase().contains(searchValue.toLowerCase()));
+                          },
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              searchController.clear();
+                            }
+                          },
                           items: customerList.map((item) {
                             return DropdownMenuItem<String>(
                               value: item["name"].toString(),
@@ -201,6 +241,7 @@ class _SelectCustomerState extends State<SelectCustomer> {
                               ),
                             );
                           }).toList(),
+
                           validator: (value) {
                             if (value == null) {
                               return 'Please select customer.';

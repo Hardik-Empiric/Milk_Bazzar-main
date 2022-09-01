@@ -12,6 +12,7 @@ class GenerateBillController extends GetxController {
   RxInt currentMonthsTotalDays = CMTD.obs;
 
   RxBool isLoading = true.obs;
+  RxBool downloadEnabled = false.obs;
 
   RxString customerName  = ''.obs;
 
@@ -34,6 +35,8 @@ class BillDetails {
 
 
 List<BillDetails> billDetails1 = <BillDetails>[
+
+
 
 ];
 

@@ -31,6 +31,9 @@ class _PaymentState extends State<Payment> {
 
   String _selectedMenu = "current";
 
+  TextEditingController searchController = TextEditingController();
+
+
   var customerList = [];
 
   @override
@@ -173,7 +176,7 @@ class _PaymentState extends State<Payment> {
               height: SizeData.height * 0.06,
               width: SizeData.width * 0.8,
               margin:
-                  const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
+              const EdgeInsets.only(left: 0, right: 0, bottom: 15, top: 15),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: AppColors.borderColor, width: 2)),
@@ -184,8 +187,8 @@ class _PaymentState extends State<Payment> {
                     stream: FirebaseFirestore.instance
                         .collection("customers")
                         .where("merchant",
-                            isEqualTo: FirebaseAuth.instance.currentUser!.uid
-                                .toString())
+                        isEqualTo: FirebaseAuth.instance.currentUser!.phoneNumber
+                            .toString())
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshots) {
                       if (snapshots.hasData) {
@@ -221,6 +224,42 @@ class _PaymentState extends State<Payment> {
                           ),
                           iconSize: 30,
                           buttonHeight: 50,
+                          searchController: searchController,
+                          searchInnerWidget: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 8,
+                              bottom: 4,
+                              right: 8,
+                              left: 8,
+                            ),
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              controller: searchController,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                hintText: LocaleString().searchCustomer.tr,
+                                hintStyle: const TextStyle(fontSize: 12),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                          searchMatchFn: (item, searchValue) {
+                            return (item.value.toString().toLowerCase().contains(searchValue.toLowerCase()));
+                          },
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              searchController.clear();
+                            }
+                          },
                           items: customerList.map((item) {
                             return DropdownMenuItem<String>(
                               value: item["name"].toString(),
@@ -232,6 +271,7 @@ class _PaymentState extends State<Payment> {
                               ),
                             );
                           }).toList(),
+
                           validator: (value) {
                             if (value == null) {
                               return 'Please select customer.';
@@ -246,14 +286,14 @@ class _PaymentState extends State<Payment> {
                             var uid = await FirebaseFirestore.instance
                                 .collection("customers")
                                 .where("name",
-                                    isEqualTo:
-                                        "${paymentController.customerName.value}")
+                                isEqualTo:
+                                "${paymentController.customerName.value}")
                                 .get();
 
                             print("UID : ${uid.docs[0].id}");
 
                             paymentController.customerUID.value =
-                                "${uid.docs[0].id}";
+                            "${uid.docs[0].data()["number"]}";
                           },
                         );
                       } else {
