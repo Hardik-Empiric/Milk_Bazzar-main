@@ -11,7 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
+// import 'package:path/path.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,7 +56,7 @@ class _ProfileState extends State<Profile> {
   var data;
   var user;
 
-  bool isMerchant = Get.arguments;
+  List twoDATA = Get.arguments;
 
   List allCusName = [];
 
@@ -64,7 +65,7 @@ class _ProfileState extends State<Profile> {
 
     print(prefs.getBool("isMerchant"));
 
-    if (isMerchant) {
+    if (twoDATA[0]) {
       var data = await FirebaseFirestore.instance
           .collection('merchants')
           .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
@@ -150,7 +151,7 @@ class _ProfileState extends State<Profile> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(twoDATA[1]).backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.shadow,
@@ -175,7 +176,7 @@ class _ProfileState extends State<Profile> {
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: GlobalText(
                           text: LocaleString().updateProfile.tr,
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(twoDATA[1]).primaryColor,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
@@ -184,7 +185,7 @@ class _ProfileState extends State<Profile> {
                       child: GlobalText(
                         text: LocaleString().profileMsg.tr,
                         fontSize: 13,
-                        color: Theme.of(context).hintColor,
+                        color: Theme.of(twoDATA[1]).hintColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -243,8 +244,8 @@ class _ProfileState extends State<Profile> {
                       final String downloadPath =
                           await ExternalPath.getExternalStoragePublicDirectory(
                               ExternalPath.DIRECTORY_DOWNLOADS);
-                      final String fileName = basename(img_path);
-                      final String fileExtension = extension(img_path);
+                      final String fileName = p.basename(img_path);
+                      final String fileExtension = p.extension(img_path);
 
                       tmpFile = await tmpFile.copy('$downloadPath/$fileName');
 
@@ -258,7 +259,7 @@ class _ProfileState extends State<Profile> {
 
                       final profilePictureName =
                           FirebaseAuth.instance.currentUser!.uid.toString();
-                      final path = 'file/${profilePictureName}.jpg';
+                      final path = 'file/${profilePictureName}.${fileExtension}';
                       final file = File(photo!.path);
 
                       final ref = FirebaseStorage.instance.ref().child(path);
@@ -386,7 +387,7 @@ class _ProfileState extends State<Profile> {
                 },
                 controller: fullNameController,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(twoDATA[1]).primaryColor,
                     fontWeight: FontWeight.w500,
                     fontFamily: "Graphik"),
                 decoration: InputDecoration(
@@ -394,7 +395,7 @@ class _ProfileState extends State<Profile> {
                         horizontal: 12, vertical: 10),
                     labelText: LocaleString().fullName.tr,
                     labelStyle: TextStyle(
-                        color: Theme.of(context).hintColor,
+                        color: Theme.of(twoDATA[1]).hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
@@ -430,10 +431,10 @@ class _ProfileState extends State<Profile> {
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(twoDATA[1]).backgroundColor,
                             border: Border.all(
                                 color: AppColors.borderColor, width: 2)),
-                        child: countryCodePicker(context),
+                        child: countryCodePicker(twoDATA[1]),
                       ),
                     ),
                     Expanded(
@@ -458,7 +459,7 @@ class _ProfileState extends State<Profile> {
                         inputFormatters: [LengthLimitingTextInputFormatter(10)],
                         controller: phoneController,
                         style: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(twoDATA[1]).primaryColor,
                             fontWeight: FontWeight.w500,
                             fontFamily: "Graphik"),
                         decoration: InputDecoration(
@@ -472,7 +473,7 @@ class _ProfileState extends State<Profile> {
                                   width: 2),
                             ),
                             labelStyle: TextStyle(
-                                color: Theme.of(context).hintColor,
+                                color: Theme.of(twoDATA[1]).hintColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: "Graphik"),
@@ -511,7 +512,7 @@ class _ProfileState extends State<Profile> {
                 maxLines: 5,
                 controller: addressController,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(twoDATA[1]).primaryColor,
                     fontWeight: FontWeight.w500,
                     fontFamily: "Graphik"),
                 decoration: InputDecoration(
@@ -524,7 +525,7 @@ class _ProfileState extends State<Profile> {
                           color: AppColors.pendingAmountColor, width: 2),
                     ),
                     labelStyle: TextStyle(
-                        color: Theme.of(context).hintColor,
+                        color: Theme.of(twoDATA[1]).hintColor,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Graphik"),
@@ -548,7 +549,7 @@ class _ProfileState extends State<Profile> {
               Padding(
                 padding: const EdgeInsets.only(top: 30),
                 child: Visibility(
-                  visible: isMerchant,
+                  visible: twoDATA[0],
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 65),
                     child: TextFormField(
@@ -562,7 +563,7 @@ class _ProfileState extends State<Profile> {
                       controller: prizePerLiterController,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(twoDATA[1]).primaryColor,
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                           fontFamily: "Graphik"),
@@ -571,7 +572,7 @@ class _ProfileState extends State<Profile> {
                               horizontal: 12, vertical: 10),
                           labelText: LocaleString().rupeesPerLiter.tr,
                           labelStyle: TextStyle(
-                              color: Theme.of(context).hintColor,
+                              color: Theme.of(twoDATA[1]).hintColor,
                               fontSize: 20,
                               fontWeight: FontWeight.w500,
                               fontFamily: "Graphik"),
@@ -593,7 +594,7 @@ class _ProfileState extends State<Profile> {
                           // prefix: GlobalText(text: "₹",color: AppColors.hintTextColor,fontSize: 25),
                           prefixText: "₹",
                           prefixStyle: TextStyle(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(twoDATA[1]).primaryColor,
                             fontSize: 20,
                           ),
                           hintText: LocaleString().enterYourRupees.tr,
@@ -622,7 +623,7 @@ class _ProfileState extends State<Profile> {
             margin: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(twoDATA[1]).backgroundColor,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.blue.withOpacity(0.5),
@@ -637,7 +638,7 @@ class _ProfileState extends State<Profile> {
               child: Icon(
                 Icons.close_rounded,
                 size: 30,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(twoDATA[1]).primaryColor,
               ),
             )),
       ),

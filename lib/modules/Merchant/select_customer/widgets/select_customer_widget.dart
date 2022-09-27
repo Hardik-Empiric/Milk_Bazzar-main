@@ -135,8 +135,8 @@ class _SelectCustomerState extends State<SelectCustomer> {
     required String msg,
     required IconData icon,
   }) {
-    return GestureDetector(
-      onTap: () {},
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.only(right: 20, left: 20),
         child: Stack(

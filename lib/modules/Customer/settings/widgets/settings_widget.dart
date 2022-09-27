@@ -270,7 +270,8 @@ class _SettingsState extends State<Settings> {
         bool isMerchant = prefs.getBool("isMerchant")??false;
         if(navigatorPageName == AppRoutes.profile)
           {
-            Get.toNamed(navigatorPageName,arguments: isMerchant);
+            List data = [isMerchant, context];
+            Get.toNamed(navigatorPageName,arguments: data);
           }
         else
           {

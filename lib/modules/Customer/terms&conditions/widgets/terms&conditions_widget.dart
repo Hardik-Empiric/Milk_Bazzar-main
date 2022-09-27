@@ -13,10 +13,9 @@ class TermsConditions extends StatefulWidget {
 
 enum TermsConditionss { hindi, english, gujarati }
 
-
 class _TermsConditionsState extends State<TermsConditions> {
-  final TermsConditionsController termsConditionsController = Get.put(TermsConditionsController());
-
+  final TermsConditionsController termsConditionsController =
+      Get.put(TermsConditionsController());
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +25,38 @@ class _TermsConditionsState extends State<TermsConditions> {
   termsConditionsDetails() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            closeButton(),
-            GlobalText(text: LocaleString().termsCondition.tr,fontSize: 20,fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor,),
-            Padding(
-              padding: const EdgeInsets.only(top: 20,right: 5,left: 5),
-              child: GlobalText(
-                text: LocaleString().termsAndConditions.tr,
-                textAlign: TextAlign.center,
-                color:  Theme.of(context).primaryColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+      child: Column(
+        children: [
+          Expanded(child: closeButton(),flex: 1,),
+          Expanded(
+            flex: 9,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  child: Column(
+            children: [
+                  GlobalText(
+                    text: LocaleString().termsCondition.tr,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, right: 5, left: 5),
+                    child: GlobalText(
+                      text: LocaleString().termsAndConditions.tr,
+                      textAlign: TextAlign.center,
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+            ],
+          ),
+                ),
+              )),
+        ],
       ),
     );
   }
@@ -54,16 +67,15 @@ class _TermsConditionsState extends State<TermsConditions> {
       child: Padding(
         padding: const EdgeInsets.only(right: 15, top: 15, bottom: 5),
         child: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-              child: Icon(
-                Icons.close_rounded,
-                size: 30,
-                color:  Theme.of(context).primaryColor,
-              )),
+            onTap: () {
+              Get.back();
+            },
+            child: Icon(
+              Icons.close_rounded,
+              size: 30,
+              color: Theme.of(context).primaryColor,
+            )),
       ),
     );
   }
-
 }

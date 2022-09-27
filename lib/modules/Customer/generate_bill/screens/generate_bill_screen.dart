@@ -57,25 +57,31 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         .collection("${navigatorData.month}")
         .doc("total_liter")
         .get();
-    totalLiterOfMonth = double.parse("${totalLiter.data()!["liter"]}");
+
+    if(totalLiter.exists)
+      {
+        totalLiterOfMonth = double.parse("${totalLiter.data()!["liter"]}");
 
 
-    var d = await FirebaseFirestore.instance
-        .collection("customers")
-        .doc("${navigatorData.uid}")
-        .get();
+        var d = await FirebaseFirestore.instance
+            .collection("customers")
+            .doc("${navigatorData.uid}")
+            .get();
 
-    var ppl = await FirebaseFirestore.instance
-        .collection("merchants")
-        .doc("${d.data()!["merchant"]}")
-        .get();
-
-
-      prizePerLiter = double.parse("${ppl.data()!["price_per_liter"]}");
+        var ppl = await FirebaseFirestore.instance
+            .collection("merchants")
+            .doc("${d.data()!["merchant"]}")
+            .get();
 
 
-    print("Total Liter of Month ${totalLiterOfMonth}");
-    print("Prize Per liter ${prizePerLiter}");
+        prizePerLiter = double.parse("${ppl.data()!["price_per_liter"]}");
+
+
+        print("Total Liter of Month ${totalLiterOfMonth}");
+        print("Prize Per liter ${prizePerLiter}");
+      }
+
+
   }
 
   getProfile() async {
@@ -454,6 +460,8 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
 
       setState(() {
         generateBillController.isLoading.value = false;
+        generateBillController.downloadEnabled.value = true;
+
       });
 
 
@@ -543,9 +551,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         print("finalTotal : $finalTotal");
         print("finalString : $finalString");
 
-      setState(() {
-        generateBillController.downloadEnabled.value = false;
-      });
+
 
       List months = [
         "january",
@@ -873,7 +879,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                               right: 40, left: 40, top: 30, bottom: 50),
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              primary: (generateBillController.downloadEnabled.value)
+                              backgroundColor: (generateBillController.downloadEnabled.value)
                                   ? AppColors.blue
                                   : AppColors.lightBlue,
                               padding:
@@ -892,6 +898,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                             label: GlobalText(
                               // text: LocaleString().downloadMonthBill.tr,
                               text: "Download ${showMonth} Bill",
+                              textAlign: TextAlign.center,
                               fontSize: 18,
                             ),
                           ),
